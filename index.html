@@ -97,6 +97,8 @@ tr:last-child th,tr:last-child td{border-bottom:0}
 td.best{background:var(--good-bg);color:var(--good);font-weight:700}
 details summary{cursor:pointer;font-weight:700}
 dl{margin:6px 0 0}dt{font-weight:700;margin-top:10px}dd{margin:2px 0 0;color:var(--muted);max-width:62ch}
+.floor{background:var(--signal-soft);color:var(--signal);border-radius:4px;padding:10px 12px;font-weight:700;font-size:15px}
+.disc{font-size:13px;color:var(--muted);margin:0}
 .cta{background:#333333;color:#FFFFFF;border-radius:4px;padding:18px;display:flex;flex-direction:column;gap:8px}
 .cta b{font-size:19px}.cta p{margin:0;color:#D6D6D6;font-size:15px}
 .cta .btn.ghost{background:transparent;color:#FFFFFF;border-color:#FFFFFF}
@@ -908,6 +910,10 @@ const RAW=`204511021|1000026447|ABB2224BRW|Amana|22 cu. ft. Bottom Freezer Refri
 336714914|1015535538|LF21G6201S|LG|33 in. W 21 cu. ft. 3-Door French Door Smart Refrigerator w/ Ice Maker|FD|1699|2188|4.3|359|32.75|69.94|31.25|24.81|42|20.8||None|C|1|LT1000P|N|0|1|1 yr parts & labor, 5 yr sealed system||S|28.75|0|0|
 340641189|1015433092|RF27CG5B30SR|Samsung|36 in. 26 cu. ft. Counter Depth 3-Door French Door w/ External Dispenser|FD|1899|2499|4.5|405|35.75|70|31.75|25|44|25.5||Both|C|1|HAF-QIN/EXP|N|0|0|1 yr parts & labor||S|29.43|0|0|`;
 const STYLE={FD:"French door",SS:"Side by side",TF:"Top freezer",BF:"Bottom freezer",SP:"Specialty",FL:"All fridge, no freezer"};
+const FLOORK="fc_floor_v1";let FLOOR={};try{FLOOR=JSON.parse(localStorage.getItem(FLOORK)||"{}")}catch(e){}
+const onFloor=u=>Object.prototype.hasOwnProperty.call(FLOOR,u.id);
+const floorTxt=u=>onFloor(u)?(FLOOR[u.id]?`On our floor · ${FLOOR[u.id]}`:"On our floor"):"";
+function saveFloor(){try{localStorage.setItem(FLOORK,JSON.stringify(FLOOR))}catch(e){}}
 const AV={O:"Online only",S:"Store & online",B:"Store only"};
 const CAT=RAW.trim().split("\n").map(l=>{const f=l.split("|");const n=v=>v===""?null:+v;
  return {id:f[0],sku:f[1],model:f[2],brand:f[3],label:f[4],type:f[5],price:n(f[6]),orig:n(f[7]),rating:n(f[8]),reviews:n(f[9]),w:n(f[10]),h:n(f[11]),d:n(f[12]),dnd:n(f[13]),d90:n(f[14]),cap:n(f[15]),kwh:n(f[16]),disp:f[17],counter:f[18]==="C",estar:f[19]==="1",filter:f[20],returnable:f[21]==="R",garage:f[22]==="1",smart:f[23]==="1",warranty:f[24],promo:f[25],av:f[26]||"S",dx:n(f[27]??""),zero:f[28]==="1",rev:f[29]==="1",deliv:f[30]||null};});
@@ -1062,7 +1068,7 @@ const STORE="Home Depot Cumberland, 2450 Cumberland Pkwy SE, Atlanta";
 const MAXP=3;
 const HL={c:["cook","Cooks most nights"],b:["bulk","Buys in bulk"],o:["host","Hosts a lot"],d:["dispenser","Wants ice/water in the door"],f:["flush","Wants a flush, built-in look"],r:["reliable","Last fridge died early"],g:["garage","Going in the garage"]};
 const MK={ow:"w",oh:"h",cab:"c",island:"i",hinge:"g",door:"d"};
-const st={ids:[],sp:{ow:null,oh:null,cab:null,island:null,hinge:null,door:null,path:"straight",water:"unsure"},adults:2,kids:0,habits:{},budget:null,name:""};
+const st={floor:[],ids:[],sp:{ow:null,oh:null,cab:null,island:null,hinge:null,door:null,path:"straight",water:"unsure"},adults:2,kids:0,habits:{},budget:null,name:""};
 let tab="picks",lim=20;const F={style:"all",ice:false,counter:false,brand:"",max:"",sort:"best",fits:true,size:true};
 function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,1900);}
 
@@ -1078,12 +1084,15 @@ function decode(h){h=(h||"").replace(/^#/,"");const t=h.split("-");if(t[0]!=="q1
   else if(k==="a")st.adults=Math.max(1,+v||2);else if(k==="k")st.kids=Math.max(0,+v||0);
   else if(k==="b"&&/^\d+$/.test(v))st.budget=+v;
   else if(k==="f")[...v].forEach(c=>{if(HL[c])st.habits[HL[c][0]]=true});
-  else if(k==="n")st.name=v.replace(/[^A-Za-z]/g,"").slice(0,20);}
+  else if(k==="n")st.name=v.replace(/[^A-Za-z]/g,"").slice(0,20);
+  else if(k==="o")st.floorIdx=[...v].map(Number);}
+ if(st.floorIdx){st.floor=st.floorIdx.map(i=>st.ids[i-1]).filter(Boolean);delete st.floorIdx;}
  st.ids=st.ids.filter(id=>CAT.some(u=>u.id===id)).slice(0,MAXP);return true;}
 function encode(){const t=["q1",...st.ids];for(const k in MK)if(st.sp[k]!=null)t.push(MK[k]+Math.round(st.sp[k]*100));
  t.push("p"+({straight:"s",turn:"t",stairs:"x"}[st.sp.path]||"s"),"r"+({yes:"y",no:"n",unsure:"u"}[st.sp.water]||"u"),"a"+st.adults,"k"+st.kids);
  if(st.budget)t.push("b"+Math.round(st.budget));
  const hb=Object.entries(HL).filter(([,v])=>st.habits[v[0]]).map(([c])=>c).join("");if(hb)t.push("f"+hb);
+ const fl=st.ids.map((id,i)=>st.floor.includes(id)?i+1:"").join("");if(fl)t.push("o"+fl);
  if(st.name)t.push("n"+st.name.toLowerCase());return t.join("-");}
 function save(){const h="#"+encode();try{history.replaceState(null,"",h)}catch(e){}try{localStorage.setItem("fp_state",h)}catch(e){}}
 function sync(){S.adults=st.adults;S.kids=st.kids;S.habits=st.habits;}
@@ -1109,7 +1118,8 @@ function renderPicks(){const us=picks(),sp=st.sp,n=needs();
   const g=gtkList(u,f,sp).map(x=>x.replace(/^Ask if there's a water line behind the old fridge$/,"Check that there's a water line behind your current fridge").replace(/ Look at zero-clearance models$/," Zero-clearance models avoid this (search them in Find more)."));
   html+=`<article class="pick">
    <div class="top">${miniSil(u)}<div><div class="num">Option ${i+1} of ${us.length}</div><div class="brand">${u.brand}</div><h2>${shortLabel(u)}</h2><div class="model">Model ${u.model}</div></div></div>
-   ${verdictHTML(f).replace("Checked against your measurements","Checked against your measurements").replace("Add your measurements to check","Measure your kitchen to check")}
+   ${st.floor.includes(u.id)?`<div class="floor">See it in person: this one is on display at the Cumberland store.</div>`:""}
+   ${verdictHTML(f).replace("Add your measurements to check","Measure your kitchen to check")}
    ${(sp.ow||sp.island||sp.hinge!=null)?`<div class="drawings"><div class="drawing"><span class="cap">Front · in your opening</span>${frontDrawing(u,sp)}${frontLegend(u,sp)}</div><div class="drawing"><span class="cap">From above · door swing</span>${planDrawing(u,sp)}${planLegend(u,sp)}</div></div>`:""}
    <ul class="facts"><li><small>Room for</small>${people(u)}</li><li><small>Inside</small>${u.cap} cu ft</li><li><small>Style</small>${STYLE[u.type]}${u.counter?", counter depth":""}</li><li><small>Owners rate it</small>${u.reviews?`★ ${u.rating.toFixed(1)} (${u.reviews.toLocaleString()})`:"No reviews yet"}</li><li><small>Size</small>${inch(u.w)} W × ${inch(u.h)} H × ${inch(u.d)} D</li><li><small>Ice & water</small>${u.disp==="None"?"None in the door":u.disp==="Both"?"Ice and water":u.disp}</li></ul>
    <h3>Why this one</h3><ul class="why">${(whyList(u,us).map(x=>`<li>${x}</li>`).join(""))||"<li>Solid all-around pick in your size</li>"}</ul>
@@ -1124,6 +1134,7 @@ function renderPicks(){const us=picks(),sp=st.sp,n=needs();
    ${R("Fit",u=>({ok:"Fits",chk:"Fits, with a note",no:"Won't fit",na:"Not checked"})[fit(u,sp).verdict])}
    ${R("Width",u=>inch(u.w),null)}${R("Doors open",u=>inch(u.d90)+" from wall",u=>u.d90||99)}${R("Ice & water",u=>u.disp)}
    ${R("Rating",u=>u.reviews?`★ ${u.rating.toFixed(1)}`:"–",u=>-BAYES(u))}${R("Returns",u=>u.returnable?"90 days":"Issues covered 2 days after delivery")}</tbody></table></div><p class="note">Green marks the best in each row.</p></section>`;}
+ html+=`<p class="disc">Fit check is a guide based on the measurements you entered. Confirm with the model’s installation guide before buying.</p>`;
  if(us.length<MAXP)html+=`<button class="btn ghost" data-go="find">Add another fridge to compare</button>`;
  return html+ctaHTML()+glossHTML();}
 function ctaHTML(){return `<section class="cta"><b>Ready to buy, or have questions?</b><p>Come back and ask for ${nm()||"the appliance team"} in Appliances at ${STORE}. Show this page and we'll pick up right where you left off. Your list and measurements are saved on this phone and in this page's link.</p><div class="row"><button class="btn ghost" id="copyLink">Copy my link</button></div></section>`;}
@@ -1202,8 +1213,8 @@ function renderFind(){const n=needs(),r=results(),brands=[...new Set(CAT.map(u=>
    <div class="fgrid"><label>Brand<select class="sel" id="f-brand"><option value="">Any brand</option>${brands.map(b=>`<option${F.brand===b?" selected":""}>${b}</option>`).join("")}</select></label>
     <label>Max price<input class="sel" id="f-max" inputmode="numeric" placeholder="${st.budget?fmt(st.budget):"No limit"}" value="${F.max}"></label>
     <label style="grid-column:1/-1">Sort by<select class="sel" id="f-sort"><option value="best"${F.sort==="best"?" selected":""}>Best match for us</option><option value="price"${F.sort==="price"?" selected":""}>Lowest price</option><option value="cap"${F.sort==="cap"?" selected":""}>Most space</option><option value="rated"${F.sort==="rated"?" selected":""}>Top rated</option></select></label></div>
-  </div></section>
-  <p class="note" aria-live="polite">${r.length} fridge${r.length===1?"":"s"} · ${st.ids.length} of ${MAXP} on your list</p>
+  </div><p class="disc">Prices come from homedepot.com and are updated every Sunday. Fit check is a guide based on the measurements you entered. Confirm with the model’s installation guide before buying.</p></section>
+  <p class="note" aria-live="polite">${r.length} fridge${r.length===1?"":"s"} · ${st.ids.length} of ${MAXP} on your list · prices as of ${DATA_DATE.toLocaleDateString("en-US",{month:"short",day:"numeric"})}</p>
   <div class="list">${r.length?r.slice(0,lim).map(({u,f})=>{const p=promo(u),on=st.ids.includes(u.id);
    return `<article class="item">${miniSil(u)}<div class="meta"><div class="brand">${u.brand}</div><p class="ttl">${shortLabel(u)}</p>
     <div class="row" style="gap:8px">${priceHTML(u.price)}${p&&p.save?`<span class="eff" style="margin:0">${fmt(p.eff)} with promo</span>`:""}</div>
