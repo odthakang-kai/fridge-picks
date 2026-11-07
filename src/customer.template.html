@@ -235,14 +235,15 @@ const STORE="Home Depot Cumberland, 2450 Cumberland Pkwy SE, Atlanta";
 const MAXP=3;
 const HL={c:["cook","Cooks most nights"],b:["bulk","Buys in bulk"],o:["host","Hosts a lot"],d:["dispenser","Wants ice/water in the door"],f:["flush","Wants a flush, built-in look"],r:["reliable","Last fridge died early"],g:["garage","Going in the garage"]};
 const MK={ow:"w",oh:"h",cab:"c",island:"i",hinge:"g",nook:"e",door:"d"};
-const st={floor:[],ids:[],sp:{ow:null,oh:null,cab:null,island:null,hinge:null,nook:null,door:null,path:"straight",water:"unsure",na:{}},yes:{},adults:2,kids:0,habits:{},budget:null,name:""};
+const st={floor:[],ids:[],sp:{ow:null,oh:null,cab:null,island:null,hinge:null,nook:null,door:null,path:"straight",water:"unsure",na:{}},yes:{},adults:2,kids:0,habits:{},budget:null,name:"",est:null,styles:[],bmin:null,auto:false,orig:[]};
 let tab="picks",lim=20,cv="cards",filtOpen=false;const F={style:"all",ice:false,counter:false,brand:"",max:"",sort:"best",fits:true,size:true};
 function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,1900);}
 const dShort=()=>DATA_DATE.toLocaleDateString("en-US",{month:"short",day:"numeric"});
 
 /* ---------- link <-> state ---------- */
+const STC={f:"FD",s:"SS",b:"BF",t:"TF"};
 function decode(h){h=(h||"").replace(/^#/,"");const t=h.split("-");if(t[0]!=="q1")return false;
- st.ids=[];st.habits={};st.sp.na={};
+ st.ids=[];st.habits={};st.sp.na={};st.styles=[];st.est=null;st.bmin=null;st.auto=false;
  for(const x of t.slice(1)){if(/^\d{9}$/.test(x)){if(!st.ids.includes(x))st.ids.push(x);continue}
   const k=x[0],v=x.slice(1);
   const mk=Object.keys(MK).find(m=>MK[m]===k);
@@ -254,16 +255,23 @@ function decode(h){h=(h||"").replace(/^#/,"");const t=h.split("-");if(t[0]!=="q1
   else if(k==="b"&&/^\d+$/.test(v))st.budget=+v;
   else if(k==="f")[...v].forEach(c=>{if(HL[c])st.habits[HL[c][0]]=true});
   else if(k==="n")st.name=v.replace(/[^A-Za-z]/g,"").slice(0,20);
-  else if(k==="o")st.floorIdx=[...v].map(Number);}
+  else if(k==="o")st.floorIdx=[...v].map(Number);
+  else if(k==="x"&&/^\d+$/.test(v))st.est=+v/100;
+  else if(k==="s")st.styles=[...v].map(c=>STC[c]).filter(Boolean);
+  else if(k==="l"&&/^\d+$/.test(v))st.bmin=+v;
+  else if(k==="m")st.auto=v==="1";}
  for(const k in st.sp.na)st.sp[k]=null;
  if(st.floorIdx){st.floor=st.floorIdx.map(i=>st.ids[i-1]).filter(Boolean);delete st.floorIdx;}
- st.ids=st.ids.filter(id=>CAT.some(u=>u.id===id)).slice(0,MAXP);return true;}
+ st.ids=st.ids.filter(id=>CAT.some(u=>u.id===id)).slice(0,MAXP);st.orig=st.ids.slice();return true;}
 function encode(){const t=["q1",...st.ids];for(const k in MK)if(st.sp[k]!=null)t.push(MK[k]+Math.round(st.sp[k]*100));
  const z=Object.keys(st.sp.na).map(k=>MK[k]).join("");if(z)t.push("z"+z);
  t.push("p"+({straight:"s",turn:"t",stairs:"x"}[st.sp.path]||"s"),"r"+({yes:"y",no:"n",unsure:"u"}[st.sp.water]||"u"),"a"+st.adults,"k"+st.kids);
  if(st.budget)t.push("b"+Math.round(st.budget));
  const hb=Object.entries(HL).filter(([,v])=>st.habits[v[0]]).map(([c])=>c).join("");if(hb)t.push("f"+hb);
  const fl=st.ids.map((id,i)=>st.floor.includes(id)?i+1:"").join("");if(fl)t.push("o"+fl);
+ if(st.est)t.push("x"+Math.round(st.est*100));
+ if(st.styles.length)t.push("s"+st.styles.map(x=>Object.keys(STC).find(c=>STC[c]===x)).join(""));
+ if(st.bmin)t.push("l"+Math.round(st.bmin));if(st.auto)t.push("m1");
  if(st.name)t.push("n"+st.name.toLowerCase());return t.join("-");}
 function save(){const h="#"+encode();try{history.replaceState(null,"",h)}catch(e){}try{localStorage.setItem("fp_state",h)}catch(e){}}
 function sync(){S.adults=st.adults;S.kids=st.kids;S.habits=st.habits;}
@@ -274,7 +282,7 @@ const measured=()=>Object.keys(MK).some(k=>st.sp[k]!=null);
 const picks=()=>st.ids.map(id=>CAT.find(u=>u.id===id)).filter(Boolean);
 const hasIce=u=>u.disp!=="None"&&u.disp!=="Beverage Center"||/ice maker|ice &|dual ice|craft ice|sphere ice/i.test(u.label);
 const fitTag=f=>`<span class="tag ${fitCls(f)}">${f.verdict==="na"?"Fit not checked":fitWord(f)}</span>`;
-function togglePick(id){const i=st.ids.indexOf(id);if(i>=0){st.ids.splice(i,1);toast("Removed from your picks")}
+function togglePick(id){st.auto=false;const i=st.ids.indexOf(id);if(i>=0){st.ids.splice(i,1);toast("Removed from your picks")}
  else{if(st.ids.length>=MAXP){toast(`Your list holds ${MAXP}. Remove one first`);return}st.ids.push(id);toast("Added to your picks")}save();render();}
 function copyLink(){const url=location.href;
  (navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(()=>toast("Link copied. Text it to yourself or to us")).catch(()=>toast("Press and hold the address bar to copy the link"));}
@@ -300,14 +308,14 @@ function checkedHTML(){const cv=coverage(),n=needs();
  const ic={done:`<span class="ci done" aria-hidden="true">✓</span>`,na:`<span class="ci na" aria-hidden="true">–</span>`,miss:`<span class="ci miss" aria-hidden="true"></span>`};
  return `<section class="panel checked"><div class="chead"><p class="eyebrow">What we checked</p><span class="cnt">${cv.done} of ${cv.rows.length} covered</span></div>
   <ul class="clist">${cv.rows.map(r=>`<li class="${r.s}">${ic[r.s]}<span class="cl">${r.l}</span><span class="cv">${r.s==="miss"?`<button class="linkbtn" data-go="measure" data-focus="${r.k}">${r.t}</button>`:r.t}</span></li>`).join("")}</ul>
-  <p class="note">Sized for ${n.people} ${n.people===1?"person":"people"}: ${n.lo}–${n.hi} cu ft${st.budget?` · under ${fmt(st.budget)}`:""}. ${cv.miss.length?"Anything not covered isn't part of the fit check yet.":"Everything that matters for fit is covered."}</p>
+  <p class="note">Sized for ${n.people} ${n.people===1?"person":"people"}: ${n.lo}–${n.hi} cu ft${st.budget&&st.bmin?` · ${fmt(st.bmin)} to ${fmt(st.budget)}`:st.budget?` · under ${fmt(st.budget)}`:st.bmin?` · ${fmt(st.bmin)} and up`:""}. ${cv.miss.length?"Anything not covered isn't part of the fit check yet.":"Everything that matters for fit is covered."}</p>
   <button class="btn ghost sm" data-go="measure">${cv.miss.length?"Finish measuring":"Change measurements"}</button></section>`;}
 function checkedWords(){const cv=coverage(),done=cv.rows.filter(r=>r.s==="done"&&r.k!=="water"&&!(r.k==="hinge"&&st.sp.nook!=null)).map(r=>r.short),miss=cv.rows.filter(r=>r.s==="miss"&&r.k!=="water"&&r.k!=="cab").map(r=>r.short);
  return {done,miss};}
 
 /* ---------- PICKS ---------- */
 function verdictBox(u,f){const k=fitKey(f),cw=checkedWords();
- if(k==="na")return `<div class="verdict na"><span class="ic" aria-hidden="true">?</span><span><b>Fit not checked yet</b>Measure your space and we'll check it for you.</span></div>`;
+ if(k==="na")return `<div class="verdict na"><span class="ic" aria-hidden="true">?</span><span><b>Not checked yet</b>${st.auto?"Measure your space and we'll check these and re-rank them for you.":"Measure your space and we'll check it for you."}${st.est?` <small>You're replacing about a ${inch(st.est)} wide fridge. That's a starting point, not a measurement.</small>`:""}</span></div>`;
  const items=f.checks.filter(c=>c.s!=="ok"&&!(c.k==="Water"&&!hasIce(u)));
  const head={ok:["✓","Fits your kitchen"],chk:["✓",items.length>1?`Fits, ${items.length} things to check`:"Fits, 1 thing to check"],tight:["!","Tight, double check"],no:["✕","Won't fit as measured"]}[k];
  const cls={ok:"ok",chk:"ok",tight:"chk",no:"no"}[k];
@@ -324,7 +332,7 @@ function cardHTML(u,i,us,sp){const f=fit(u,sp),p=promo(u),why=whyList(u,us),ex=e
  return `<article class="pick">
   <div class="top">${miniSil(u)}<div><div class="num">Option ${i+1}${us.length>1?` of ${us.length}`:""}</div><div class="brand">${u.brand}</div><h2>${shortLabel(u)}</h2><div class="model">Model ${u.model}</div></div></div>
   ${verdictBox(u,f)}
-  ${st.floor.includes(u.id)?`<div class="floor">On display at the Cumberland store. Come see it in person.</div>`:""}
+  ${st.floor.includes(u.id)?`<div class="floor">On display in store. Come see it in person.</div>`:""}
   <div class="pricebox"><div><small>Price on ${dShort()}</small>${priceHTML(u.price)}${p&&p.save?`<div class="eff">${fmt(p.eff)} with the current promotion</div>`:""}</div>
    <a class="btn ghost" href="https://www.homedepot.com/p/${u.id}" rel="noopener">See today's price</a></div>
   <ul class="facts"><li><small>Inside</small>${u.cap} cu ft</li><li><small>Room for</small>${people(u)}</li><li><small>Style</small>${STYLE[u.type]}${u.counter?", counter depth":""}</li><li><small>Owners rate it</small>${u.reviews?`★ ${u.rating.toFixed(1)} (${u.reviews.toLocaleString()})`:"No reviews yet"}</li></ul>
@@ -354,6 +362,7 @@ function beforeBuy(us,sp){const L=[],cov=coverage();
 function renderPicks(){const us=picks(),sp=st.sp;
  if(!us.length)return `<div class="empty"><b>No fridges on your list yet.</b><span>${measured()?"Your measurements are saved. See which fridges fit.":"Start by measuring your space, then pick up to 3 fridges that fit."}</span><div class="row" style="justify-content:center">${measured()?"":`<button class="btn" data-go="measure">Measure my kitchen</button>`}<button class="btn ${measured()?"":"ghost"}" data-go="find">Find fridges</button></div></div>`+ctaHTML();
  let html=checkedHTML();
+ if(st.auto&&measured())html+=`<p class="note">Re-ranked for the measurements you entered. Add or remove a fridge and your list stays put.</p>`;
  if(us.length>1)html+=`<div class="seg" role="tablist" aria-label="View"><button role="tab" data-cv="cards" aria-selected="${cv==="cards"}">Cards</button><button role="tab" data-cv="compare" aria-selected="${cv==="compare"}">Compare</button></div>`;
  if(us.length>1&&cv==="compare")html+=compareHTML(us,sp);
  else{if(us.length>1)html+=`<div class="pickbar" role="tablist" aria-label="Your picks">${us.map((u,i)=>`<button role="tab" data-pj="${i}" aria-selected="${i===0}"><b>${i+1}</b><span>${u.brand.length>12?u.brand.split(" ")[0]:u.brand}</span></button>`).join("")}</div>`;
@@ -404,11 +413,14 @@ function qHTML([k,q]){const sp=st.sp,yes=st.yes[k]||sp[k]!=null,no=!!sp.na[k];
  return `<div class="q"><p class="qt">${q}</p><div class="yn" role="group" aria-label="${q}"><button data-yn="${k}" data-v="y" aria-pressed="${yes}">Yes</button><button data-yn="${k}" data-v="n" aria-pressed="${no}">No</button></div>${yes?mfieldHTML(k):""}</div>`;}
 function measureStatus(){const us=picks(),cv=coverage(),left=cv.miss.length;
  if(!us.length)return `${left?`${left} left to answer`:"All set"} · <button class="linkbtn" data-go="find">See fridges that fit</button>`;
+ if(!measured())return `<b>${us.length} pick${us.length>1?"s":""} not checked yet</b> · ${left} left to answer`;
  const ok=us.filter(u=>fit(u,st.sp).verdict!=="no").length;
  return `<b>${ok} of ${us.length} pick${us.length>1?"s":""} fit so far</b> · ${left?`${left} left to answer`:"all covered"}`;}
 function renderMeasure(){const sp=st.sp;
  return `<section class="panel"><h2 class="sec">Measure your kitchen</h2><p class="lede">About 5 minutes with a tape measure. Everything saves as you type. Fractions work: type 35 3/4 or tap a fraction.</p>
-  <div class="tipbox"><b>Measure the space, not your old fridge.</b>Your new fridge has to fit the opening, get through the doorways, and have room for its doors to open.</div></section>
+  <div class="tipbox"><b>Measure the space, not your old fridge.</b>Your new fridge has to fit the opening, get through the doorways, and have room for its doors to open.</div>
+  ${st.est?`<p class="note">In the store we guessed about ${inch(st.est)} wide from the fridge you have now. Measure to be sure; the space can be a little wider.</p>`:""}
+  ${st.auto&&st.ids.length?`<p class="note">Your ${st.ids.length} picks aren't checked yet. Once you measure, we'll re-rank them for your space.</p>`:""}</section>
  <section class="panel"><p class="eyebrow">Step 1 · Always measure</p>${["ow","oh","door"].map(mfieldHTML).join("")}
   <div class="mfield"><div></div><div class="mbody"><label>Getting it inside<select id="m-path"><option value="straight"${sp.path==="straight"?" selected":""}>Straight shot to the kitchen</option><option value="turn"${sp.path==="turn"?" selected":""}>Tight turn on the way</option><option value="stairs"${sp.path==="stairs"?" selected":""}>Stairs on the way</option></select></label></div></div></section>
  <section class="panel"><p class="eyebrow">Step 2 · Only if it applies</p><p class="lede">Answer each one. "No" counts too, so we know it's covered.</p>
@@ -443,10 +455,8 @@ function bindMeasure(){let last=null;const fb=$("fracbar");
 function updMeasureNote(){const n=needs(),el=$("sizeNote");if(el)el.textContent=`Right size for you: ${n.lo}–${n.hi} cu ft`;updStatus();}
 
 /* ---------- FIND ---------- */
-function score(u,f){const n=needs(),h=st.habits,fk=fitKey(f);let s=0;if(fk==="ok")s+=3;else if(fk==="chk")s+=2.5;else if(fk==="tight")s+=0.5;if(!u.returnable)s-=0.75;if(u.av==="O")s-=1.25;
- if(u.cap>=n.lo&&u.cap<=n.hi+4)s+=3;else if(u.cap>=n.lo-2)s+=1;
- s+=BAYES(u)*1.2;if(h.reliable&&u.disp==="None")s+=1.5;if(h.dispenser&&u.disp!=="None")s+=1.5;if(h.flush&&u.counter)s+=2;if(h.garage&&u.garage)s+=2;if(st.budget&&effPrice(u)>st.budget)s-=4;
- if(st.sp.ow!=null){const g=st.sp.ow-u.w;if(g>=0.25&&g<=2)s+=2;else if(g>4)s-=1.5;}if(u.price==null)s-=3;return s;}
+function score(u,f){return scoreCore(u,f,{n:needs(),habits:st.habits,b:st.budget,bmin:st.bmin||null,ow:st.sp.ow,styles:st.styles&&st.styles.length?st.styles:null,floor:st.floor.includes(u.id)});}
+const byScore=(a,b)=>{const d=score(b.u,b.f)-score(a.u,a.f);return Math.abs(d)>1e-9?d:tieBreak(a.u,b.u)};
 function results(){const n=needs(),sp=st.sp,max=parseFloat(F.max)||st.budget||null;
  let r=CAT.map(u=>({u,f:fit(u,sp)}));
  if(F.fits&&measured())r=r.filter(x=>x.f.verdict!=="no");
@@ -455,7 +465,7 @@ function results(){const n=needs(),sp=st.sp,max=parseFloat(F.max)||st.budget||nu
  if(F.ice)r=r.filter(x=>x.u.disp!=="None");if(F.counter)r=r.filter(x=>x.u.counter);if(st.habits.garage)r=r.filter(x=>x.u.garage);
  if(F.brand)r=r.filter(x=>x.u.brand===F.brand);if(max)r=r.filter(x=>x.u.price!=null&&effPrice(x.u)<=max);
  const P=u=>u.price==null?Infinity:effPrice(u);
- if(F.sort==="price")r.sort((a,b)=>P(a.u)-P(b.u));else if(F.sort==="cap")r.sort((a,b)=>b.u.cap-a.u.cap);else if(F.sort==="rated")r.sort((a,b)=>BAYES(b.u)-BAYES(a.u));else r.sort((a,b)=>score(b.u,b.f)-score(a.u,a.f));
+ if(F.sort==="price")r.sort((a,b)=>P(a.u)-P(b.u));else if(F.sort==="cap")r.sort((a,b)=>b.u.cap-a.u.cap);else if(F.sort==="rated")r.sort((a,b)=>BAYES(b.u)-BAYES(a.u));else r.sort(byScore);
  const groups=new Map();for(const x of r){const k=gkey(x.u);if(groups.has(k))groups.get(k).alts.push(x.u);else groups.set(k,{...x,alts:[]});}
  return [...groups.values()];}
 const gkey=u=>[u.brand,u.type,u.cap,u.w,u.price].join("|");
@@ -491,8 +501,17 @@ function bindFind(){document.querySelectorAll("[data-f]").forEach(b=>b.onclick=(
  document.querySelectorAll("[data-fin]").forEach(b=>b.onclick=()=>{FIN[b.dataset.gk]=b.dataset.fin;const y=scrollY;render();scrollTo(0,y);});
  if($("more"))$("more").onclick=()=>{lim+=20;const y=scrollY;render();scrollTo(0,y);};}
 
+/* ---------- re-rank picks from a "send home to measure" link once they measure ---------- */
+function rerank(){if(!st.auto||!measured())return;const n=needs(),sp=st.sp,max=st.budget;
+ let r=CAT.filter(u=>u.price!=null).map(u=>({u,f:fit(u,sp)})).filter(x=>x.f.verdict!=="no"&&x.u.cap>=n.lo-1&&x.u.cap<=n.hi+6&&(!max||effPrice(x.u)<=max));
+ if(st.habits.garage)r=r.filter(x=>x.u.garage);if(st.styles.length&&r.filter(x=>st.styles.includes(x.u.type)).length>=3)r=r.filter(x=>st.styles.includes(x.u.type));
+ const roomy=r.filter(x=>fitKey(x.f)!=="tight");if(roomy.length>=3)r=roomy;
+ const sc=x=>score(x.u,x.f)+(st.orig.includes(x.u.id)?2:0);r.sort((a,b)=>(sc(b)-sc(a))||tieBreak(a.u,b.u));
+ const seen=new Set(),out=[];for(const x of r){const k=[x.u.brand,x.u.type,Math.round(x.u.cap),Math.round(x.u.w)].join("|");if(seen.has(k))continue;seen.add(k);out.push(x.u.id);if(out.length===MAXP)break;}
+ if(out.length&&out.join()!==st.ids.join()){st.ids=out;st.floor=st.floor.filter(id=>out.includes(id));save();}}
+
 /* ---------- shell ---------- */
-function render(){sync();const n=st.ids.length;$("pickCt").hidden=!n;$("pickCt").textContent=n;
+function render(){sync();if(tab==="picks")rerank();const n=st.ids.length;$("pickCt").hidden=!n;$("pickCt").textContent=n;
  document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===tab));
  $("by").textContent=`${nm()?`Prepared with ${nm()}, appliance associate`:"Your fridge planner"} · prices as of ${DATA_DATE.toLocaleDateString("en-US",{month:"long",day:"numeric"})}`;
  $("h1").textContent=tab==="measure"?"Measure your kitchen":tab==="find"?"Find more fridges":n?`Your ${n} fridge pick${n>1?"s":""}`:"Your fridge plan";
@@ -514,7 +533,7 @@ function focusField(k){if(k==="water"){const q=document.querySelector("[data-wat
 function go(t){tab=t;render();scrollTo(0,0);}
 document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>go(b.dataset.t));
 function boot(){let ok=decode(location.hash);if(!ok){try{const h=localStorage.getItem("fp_state");if(h)ok=decode(h)}catch(e){}}
- tab=st.ids.length?"picks":"measure";save();render();}
+ tab=st.auto&&!measured()?"measure":st.ids.length?"picks":"measure";save();render();}
 window.addEventListener("hashchange",()=>{if(location.hash!=="#"+encode()){decode(location.hash);tab=st.ids.length?"picks":tab;render();}});
 boot();
 </script>

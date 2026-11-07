@@ -20,6 +20,7 @@ Julian's personal tool for selling refrigerators as an appliance associate at th
 | `src/app/` | Web app sources: `pwa.js` (inlined into `app/index.html`), `sw.template.js`, `manifest.webmanifest`, icons. |
 | `src/vendor/zxing/` | zxing-wasm 3.1.6 reader (MIT; ZXing-C++ Apache 2.0). Barcode fallback for phones without `BarcodeDetector` (iPhone). Copied to `app/vendor/`. |
 | `tools/make_icons.py` | Redraws the app icons (needs Pillow). Original art, no store logos. |
+| `tools/check_picks.py` | Loads the built floor tool in headless Chrome (Playwright) and prints the top 3 auto picks, with score, rating, reviews, style, price and fit, for six sample customers. `--json out.json` saves them for before/after diffs, `--floor` seeds a few floor fridges first. Run it after any ranking change. |
 
 ## Where things are published
 
@@ -51,28 +52,37 @@ A Claude scheduled task ("Floor Copilot weekly price refresh", Sundays 9:13 PM E
 
 ## Customer link format (QR)
 
-`index.html#q1-<itemId>-<itemId>-...-w<width×100>-h<height×100>-c<wall to counter edge×100>-i<wall to island×100>-g<gap to side wall×100>-e<nook depth×100>-d<doorway×100>-z<letters of measurements that don't apply: h,c,i,g,e>-p<s|t|x path>-r<y|n|u water>-a<adults>-k<kids>-b<budget>-f<habit letters c,b,o,d,f,r,g>-o<1-based indexes of picks on our floor>-n<associate name>`
+`index.html#q1-<itemId>-<itemId>-...-w<width×100>-h<height×100>-c<wall to counter edge×100>-i<wall to island×100>-g<gap to side wall×100>-e<nook depth×100>-d<doorway×100>-z<letters of measurements that don't apply: h,c,i,g,e>-p<s|t|x path>-r<y|n|u water>-a<adults>-k<kids>-b<budget max>-l<budget min>-f<habit letters c,b,o,d,f,r,g>-o<1-based indexes of picks on our floor>-x<estimated width×100>-s<picked style: f French door, s side by side, b bottom freezer, t top freezer>-m1-n<associate name>`
 
-Only letters, digits and hyphens. Nothing personal about the customer goes in the link. Old links without `e`/`z` still work.
+- `x` is the quick-path width estimate (never treated as measured), `s` the style they picked, `l` the low end of a budget chip.
+- `m1` = "Send home to measure": the page opens on the Measure tab, picks say "Not checked yet", and once anything is measured `rerank()` replaces the list with the best 3 that fit (original picks get a small bonus so they stay if they still fit). Adding or removing a pick turns `m1` off and the list stays put.
+
+Only letters, digits and hyphens. Nothing personal about the customer goes in the link. Old links without `e`/`z`/`x`/`s`/`l`/`m` still work, and older copies of the page ignore the new tokens.
 
 ## Measurements and fit
 
 - Fields (floor ids / customer keys): `ow` width, `oh` height, `door` narrowest doorway + `path`, `cab` wall to counter edge, `island` wall to island, `hinge` gap to side wall (one wall), `nook` nook depth (walls on both sides), `water` yes/no/unsure.
 - In the floor tool, typing or tapping **None** in oh/cab/island/hinge/nook marks it "doesn't apply" (`sp.na`), which the customer page shows as covered.
 - Nook: the fridge is pulled forward so its body front lines up with the side walls (`pull = nook - (depth without doors + 1)`). The island and counter checks use that real position; the one-wall hinge check is skipped when a nook depth is given.
+- Estimated width: the Customer tab's "What width are they replacing?" chips (30/33/36) set `S.est`. `space()` uses it as `ow` only when no width is typed, with `sp.est=true`. The width check then only says yes/no (never tight), every fit label says "(estimate)", drawings say "Estimated opening, not measured", and the QR sends it as `x`, never as a measured `w`.
 - `fit()` checks carry `kind`: `fit` (how it fits the space), `todo` (sort out before delivery: handles/doors off, water line), `pref` (flush look). Labels come from `fitKey/fitWord/fitCls`: Fits / Fits, check N things / Tight, double check (a `fit`-kind check is close) / Won't fit / Not checked.
-- Ranking (`sorter` best, customer `score`, `autoPicks`): tight fits score low and are left out of auto picks when 3 roomier ones exist; non-returnable and online-only models lose points.
+- Ranking lives in one shared function, `scoreCore(u,f,o)` (inside the `const BAYES=` … `const DISP=` range), used by `sorter` best/`autoPicks` on the floor tool and `score`/`rerank` on the customer page. Points: fit Fits +3 / check +2.5 / tight +0.5; no returns −2; in the size box +3 (close +1); rating `(BAYES−4.2)×6` (about 4.8 points between a 4.0 and a 4.8) and −2.5 under 20 reviews; picked style +3, otherwise the styles the size box recommends (`needs().types`) +1.5; habits (dispenser, reliable, flush, garage) as before; over budget −4, under a picked budget floor −2; width gap 0.25–2" +2, over 4" −2.5; no price −3; price sanity: with no "$3k+"-style minimum, `−6×log2(price / typical price)` when it costs more than the median standard-depth fridge within 3 cu ft (counter depth allowed 1.5×), see `medPrice()`; on our floor +4 unless tight, won't fit, too small or over budget. Online only gets no penalty (it is just a tag). Ties break by more reviews, then lower price per cu ft (`tieBreak`). Auto picks skip tight fits when 3 roomier ones exist and skip near-duplicates (same brand, style, cu ft and width).
+- "Why this one": when the dearest other pick costs more than 1.5× this one, it says "Lowest price of these three" with no dollar gap.
 
 ## Customer page layout
 
-Your picks: What we checked box (8 items: covered, doesn't apply, or not yet), Cards or Compare view, verdict-first cards with "Checked / Not checked yet", details folded under More details, Before you buy checklist, come-back box. Measure: Step 1 always measure (width, height, doorway), Step 2 yes/no questions that reveal optional fields (No counts as covered), Step 3 household; one fraction bar follows the focused field; sticky status shows how many picks fit. Find more: style chips plus a Filters and sort button, 20 at a time.
+Floor tool Customer tab: quick path first (adults/kids, style chips, budget chips Under $1k / $1–2k / $2–3k / $3k+ / No limit, optional "What width are they replacing?"), extra habits and an exact budget under "More about them", then "Walk them to these" (the 3 picks, floor models first with their aisle, "Send home to measure" QR), then the full measurement form folded under "They have measurements" (opens by itself once any measurement is filled). Header bar: "Not measured yet · N fridges", "N fit their space" once anything is measured, or `Estimated 36" width · N could fit` with only the estimate.
+
+Floor tool Fridges tab: "On our floor" view on top, floor fridges grouped by aisle note with each one's fit for the current customer, last seen date, "Mark seen today" and "No longer on display". "Walk the aisle" asks for the aisle note once, then every scan (or typed code) adds that fridge to the floor list with the note and today's date and keeps the camera open; unmatched codes offer the usual link-by-hand flow, and linking during a walk also adds the fridge and goes back to scanning. Picks on the Customer and Options tabs show "On the floor, <aisle>" or "Not on display". The customer page only says "On display in store".
+
+Customer page: Your picks: What we checked box (8 items: covered, doesn't apply, or not yet), Cards or Compare view, verdict-first cards with "Checked / Not checked yet", details folded under More details, Before you buy checklist, come-back box. Measure: Step 1 always measure (width, height, doorway), Step 2 yes/no questions that reveal optional fields (No counts as covered), Step 3 household; one fraction bar follows the focused field; sticky status shows how many picks fit. Find more: style chips plus a Filters and sort button, 20 at a time.
 
 ## Local-only data (lives on Julian's phone, not in the repo)
 
-- Floor list: `localStorage["fc_floor_v1"]` = `{itemId: "aisle note"}`
+- Floor list: `localStorage["fc_floor_v2"]` = `{itemId: {a: "aisle note", s: "YYYY-MM-DD last seen" or null}}`. `fc_floor_v1` (`{itemId: "aisle note"}`) is still written alongside on every save, and on load any v1 entries missing from v2 are migrated in (last seen unknown), so nothing is lost and an older cached app still sees the list. Use `floorSet(id, aisle)` / `floorDel(id)` / `floorAisle(u)`.
 - Text size: `localStorage["fc_z"]`
 - Linked barcodes: `localStorage["fc_codes_v1"]` = `{codeKey: itemId}` (codes Julian linked by hand, e.g. box UPCs; numeric keys drop leading zeros)
-- The artifact and the home-screen app are different origins, so their storage is separate. The Take-home tab's "Saved on this phone" panel copies and restores a backup (`FC1:` + base64 JSON) to move the floor list and linked codes between them.
+- The artifact and the home-screen app are different origins, so their storage is separate. The Take-home tab's "Saved on this phone" panel copies and restores a backup (`FC1:` + base64 JSON of `{f: {itemId: "aisle"}, f2: {itemId: {a, s}}, c: {code: itemId}}`) to move the floor list and linked codes between them. Restore reads old backups (only `f`) and new ones, adds to what's there, and keeps the newer last-seen date.
 
 ## Barcode scanning
 

@@ -68,6 +68,19 @@ label.f .unit{font-weight:500}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{border:1px solid var(--line);background:var(--card);border-radius:4px;padding:8px 13px;font-size:14px;font-weight:500;cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--signal-soft);color:var(--ink);border-color:var(--signal);box-shadow:inset 0 0 0 1px var(--signal)}
+.quick .eyebrow{margin-top:4px}
+.morebox{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+.measdet>summary{cursor:pointer;font-weight:700;font-size:15px;display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--ink)}
+.measdet>summary .ct{font-size:12.5px;color:var(--muted);font-weight:600}
+.measdet[open]>summary{margin-bottom:4px}
+.quickres h3{margin:0;font-family:var(--display);font-size:22px}
+.qpicks{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:4px}
+.qpick{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:10px;border-top:1px solid var(--line);background:none;border-left:0;border-right:0;border-bottom:0;text-align:left;cursor:pointer;font:inherit;color:var(--ink);width:100%}
+.qpick:first-child{border-top:0}
+.qpick .n{font:800 20px var(--display);color:var(--signal);line-height:1}
+.qpick .t{display:flex;flex-direction:column;gap:4px;min-width:0}
+.qpick b{font-size:15px}.qpick small{color:var(--muted);font-size:12.5px}
+.qpick .where{font-size:13px;font-weight:700;color:var(--signal)}.qpick .where.off{color:var(--muted);font-weight:600}
 .callout{background:var(--deep);color:#FFFFFF;border-radius:4px;padding:16px;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;align-items:center}
 .callout .num{font-family:var(--display);font-weight:800;font-size:46px;line-height:.9;color:var(--signal);font-variant-numeric:tabular-nums;grid-row:span 2}
 .callout .num small{font-size:18px;color:#CFCFCF;font-weight:600;margin-left:3px}
@@ -284,12 +297,32 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
 .scanwrap video{flex:1;min-height:0;width:100%;object-fit:cover;background:#000}
 .scanframe{position:absolute;left:10%;right:10%;top:calc(18% + env(safe-area-inset-top,0px));height:24%;border:3px solid #FFFFFF;border-radius:6px;box-shadow:0 0 0 9999px rgba(0,0,0,.35);pointer-events:none}
 .scanframe::after{content:"";position:absolute;left:6%;right:6%;top:50%;height:2px;background:var(--signal)}
-.scanbar{background:#FFFFFF;color:#333333;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:10px}
+.scanbar{position:relative;z-index:1;background:#FFFFFF;color:#333333;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:10px}
 .scanbar p{margin:0;font-size:15px;font-weight:700}
 .scanbar p.warn{color:var(--warn)}
 .scanbar form{display:flex;gap:8px}
 .scanbar input{flex:1;min-width:0;font:500 16px var(--body);padding:12px;border:1px solid var(--line);border-radius:4px}
 .linkpanel{border-color:var(--signal);background:var(--signal-soft)}
+.scanbar p.ok{color:var(--good)}
+.walkbar{display:flex;justify-content:space-between;gap:10px;align-items:baseline;background:var(--signal-soft,#FDEBDD);color:#333333;border-radius:4px;padding:8px 10px;font-size:13px}
+.walkbar b{font-size:14px}
+/* floor view */
+.floorv{padding:0;gap:0}
+.floorv>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.floorv>summary::-webkit-details-marker{display:none}
+.floorv>summary h3{margin:0;font-family:var(--display);font-size:20px}
+.floorv>summary .ct{font-size:12.5px;color:var(--muted);font-weight:600}
+.floorv>summary .chev{color:var(--muted);transition:transform .2s}.floorv[open]>summary .chev{transform:rotate(180deg)}
+.floorin{padding:0 14px 14px;display:flex;flex-direction:column;gap:12px}
+.fgroup h4{margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--signal)}
+.frows{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:4px}
+.frow2{display:flex;flex-direction:column;gap:6px;padding:10px;border-top:1px solid var(--line)}.frow2:first-child{border-top:0}
+.frow2.dim{opacity:.62}
+.fopen{background:none;border:0;padding:0;text-align:left;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:2px}
+.fopen b{font-size:15px}.fopen small{color:var(--muted);font-size:12.5px}
+.ftags{display:flex;flex-wrap:wrap;gap:5px}
+.fact{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12px;color:var(--muted)}
+.fact .rm{font-size:12.5px}
 .bk textarea{width:100%;min-height:90px;font:13px var(--mono);padding:10px;border:1px solid var(--line);border-radius:4px;box-sizing:border-box}
 </style>
 
@@ -305,20 +338,27 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
     <button id="qclear" hidden>Clear</button>
     <button id="scanBtn" class="scan" type="button" aria-label="Scan a shelf tag or barcode"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V4h3M18 4h3v3M21 17v3h-3M6 20H3v-3"/><path d="M7 8v8M10 8v8M13 8v8M16 8v8"/></svg></button>
   </label>
-  <div class="fitbar"><div class="meter"><span id="fitmeter"></span></div><span><b id="fitcount">80</b> fit their space</span></div>
+  <div class="fitbar"><div class="meter"><span id="fitmeter"></span></div><span id="fittxt">Not measured yet</span></div>
 </div></header>
 
 <main class="gut">
 <!-- CUSTOMER -->
 <section class="view" id="v-customer">
-  <div><h2>Size up the customer</h2><p class="sub">Sixty seconds of questions. Everything else in the app filters off these answers.</p></div>
-  <div class="panel">
-    <p class="eyebrow">Household</p>
+  <div><h2>Size up the customer</h2><p class="sub">Three taps for a walk-in. Measurements can wait until they get home.</p></div>
+  <div class="panel quick">
+    <p class="eyebrow">1 · Who lives there</p>
     <div class="fields">
       <div class="f"><label class="f" for="adults">Adults</label><div class="stepper"><button data-step="adults" data-d="-1" aria-label="Fewer adults">−</button><output id="adults">2</output><button data-step="adults" data-d="1" aria-label="More adults">+</button></div></div>
       <div class="f"><label class="f" for="kids">Kids</label><div class="stepper"><button data-step="kids" data-d="-1" aria-label="Fewer kids">−</button><output id="kids">1</output><button data-step="kids" data-d="1" aria-label="More kids">+</button></div></div>
-      <label class="f">Budget $<input id="budget" type="number" inputmode="numeric" placeholder="No limit"></label>
     </div>
+    <p class="eyebrow">2 · Style they want</p>
+    <div class="chips" id="qStyle"><button class="chip" data-qs="FD" aria-pressed="false">French door</button><button class="chip" data-qs="SS" aria-pressed="false">Side by side</button><button class="chip" data-qs="BF" aria-pressed="false">Bottom freezer</button><button class="chip" data-qs="TF" aria-pressed="false">Top freezer</button><button class="chip" data-qs="" aria-pressed="true">Not sure</button></div>
+    <p class="eyebrow">3 · Budget</p>
+    <div class="chips" id="qBud"><button class="chip" data-qb="0-1000" aria-pressed="false">Under $1k</button><button class="chip" data-qb="1000-2000" aria-pressed="false">$1–2k</button><button class="chip" data-qb="2000-3000" aria-pressed="false">$2–3k</button><button class="chip" data-qb="3000-" aria-pressed="false">$3k+</button><button class="chip" data-qb="" aria-pressed="true">No limit</button></div>
+    <p class="eyebrow">Optional · What width are they replacing?</p>
+    <div class="chips" id="qWidth"><button class="chip" data-qw="30" aria-pressed="false">30"</button><button class="chip" data-qw="33" aria-pressed="false">33"</button><button class="chip" data-qw="36" aria-pressed="false">36"</button><button class="chip" data-qw="" aria-pressed="true">Not sure</button></div>
+    <p class="note" id="qWidthNote" hidden></p>
+    <details class="mhelp"><summary>More about them</summary><div class="morebox">
     <div class="chips" id="habits">
       <button class="chip" data-k="cook" aria-pressed="false">Cooks most nights</button>
       <button class="chip" data-k="bulk" aria-pressed="false">Buys in bulk</button>
@@ -328,8 +368,11 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
       <button class="chip" data-k="reliable" aria-pressed="false">Last one died early</button>
       <button class="chip" data-k="garage" aria-pressed="false">For the garage</button>
     </div>
+      <label class="f" style="max-width:220px">Exact budget $<input id="budget" type="number" inputmode="numeric" placeholder="No limit"></label>
+    </div></details>
   </div>
-  <div class="panel">
+  <div class="panel quickres" id="quickRes"></div>
+  <details class="panel measdet" id="measDet"><summary><span>They have measurements</span><span class="ct" id="measCt"></span></summary>
     <div class="optnote"><p class="eyebrow">Their kitchen · inches</p><button class="rm" id="loadEx">Load example kitchen</button></div>
     <div class="fields">
       <label class="f">Opening width<input class="meas" id="ow" type="text" inputmode="decimal" placeholder="e.g. 35 3/4" autocomplete="off"></label>
@@ -351,13 +394,14 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
       <li><b>Nook depth:</b> walls or tall cabinets on both sides: back wall to their front edge. The fridge sits forward so its doors clear them.</li>
       <li>Tap <b>None</b> next to a field when it doesn't apply (no cabinet above, no island, no wall beside it, not in a nook). The customer's page then shows it as covered. Tap again to undo.</li></ul></details>
     <p class="note">Fractions work: type 35 3/4, 35-3/4, or tap a fraction.</p>
-  </div>
+  </details>
   <div class="callout" id="walkto"></div>
   <button class="btn y" id="goFind">See the fridges that fit</button>
 </section>
 
 <!-- FIND -->
 <section class="view" id="v-find" hidden>
+  <details class="panel floorv" id="floorView" open></details>
   <div class="rail"><div class="filters" id="styleChips">
     <button class="chip" data-style="all" aria-pressed="true">All styles</button>
     <button class="chip" data-style="FD" aria-pressed="false">French door <span class="ct" data-sc="FD"></span></button>
@@ -443,6 +487,7 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
   <div class="scanframe" aria-hidden="true"></div>
   <div class="scanbar">
     <p id="scanmsg">Starting camera</p>
+    <div class="walkbar" id="scanwalk" hidden><b id="walkLbl"></b><span id="walkCt"></span></div>
     <div class="row" id="scanlinkrow" hidden><button class="btn y" id="scanlink">Find it and link this code</button></div>
     <form id="scanform"><input id="scanman" type="text" inputmode="text" autocomplete="off" placeholder="Or type SKU, Internet # or model" aria-label="Type a SKU, Internet number or model"><button class="btn y" type="submit">Find</button></form>
     <div class="row"><button class="btn ghost" id="scantorch" type="button" hidden>Light</button><button class="btn" id="scanclose" type="button">Close</button></div>
@@ -3495,10 +3540,22 @@ const RAW=`204511021|1000026447|ABB2224BRW|Amana|22 cu. ft. Bottom Freezer Refri
 336714914|1015535538|LF21G6201S|LG|33 in. W 21 cu. ft. 3-Door French Door Smart Refrigerator w/ Ice Maker|FD|1699|2188|4.3|359|32.75|69.94|31.25|24.81|42|20.8||None|C|1|LT1000P|N|0|1|1 yr parts & labor, 5 yr sealed system||S|28.75|0|0|
 340641189|1015433092|RF27CG5B30SR|Samsung|36 in. 26 cu. ft. Counter Depth 3-Door French Door w/ External Dispenser|FD|1899|2499|4.5|405|35.75|70|31.75|25|44|25.5||Both|C|1|HAF-QIN/EXP|N|0|0|1 yr parts & labor||S|29.43|0|0|`;
 const STYLE={FD:"French door",SS:"Side by side",TF:"Top freezer",BF:"Bottom freezer",SP:"Specialty",FL:"All fridge, no freezer"};
-const FLOORK="fc_floor_v1";let FLOOR={};try{FLOOR=JSON.parse(localStorage.getItem(FLOORK)||"{}")}catch(e){}
+/* floor list: fc_floor_v2 = {itemId:{a:"aisle note",s:"YYYY-MM-DD last seen" or null}}. fc_floor_v1 ({itemId:"aisle note"})
+   is still written alongside so an older cached copy of the app keeps working, and is migrated in on load. */
+const FLOORK="fc_floor_v1",FLOORK2="fc_floor_v2";let FLOOR={};
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+function floorNorm(v){if(typeof v==="string")return {a:v.slice(0,40),s:null};if(v&&typeof v==="object")return {a:String(v.a||"").slice(0,40),s:/^\d{4}-\d\d-\d\d$/.test(v.s||"")?v.s:null};return null}
+try{const v2=JSON.parse(localStorage.getItem(FLOORK2)||"null"),v1=JSON.parse(localStorage.getItem(FLOORK)||"{}");
+ for(const [k,v] of Object.entries(v2||{})){const n=floorNorm(v);if(n)FLOOR[k]=n;}
+ for(const [k,v] of Object.entries(v1||{}))if(!FLOOR[k]){const n=floorNorm(v);if(n)FLOOR[k]=n;}}catch(e){}
 const onFloor=u=>Object.prototype.hasOwnProperty.call(FLOOR,u.id);
-const floorTxt=u=>onFloor(u)?(FLOOR[u.id]?`On our floor · ${FLOOR[u.id]}`:"On our floor"):"";
-function saveFloor(){try{localStorage.setItem(FLOORK,JSON.stringify(FLOOR))}catch(e){}}
+const floorAisle=u=>onFloor(u)?FLOOR[u.id].a:"";
+const floorTxt=u=>onFloor(u)?(floorAisle(u)?`On our floor · ${floorAisle(u)}`:"On our floor"):"";
+const floorPickTxt=u=>onFloor(u)?(floorAisle(u)?`On the floor, ${floorAisle(u)}`:"On the floor"):"Not on display";
+const floorFlat=()=>Object.fromEntries(Object.entries(FLOOR).map(([k,v])=>[k,v.a]));
+function saveFloor(){try{localStorage.setItem(FLOORK2,JSON.stringify(FLOOR));localStorage.setItem(FLOORK,JSON.stringify(floorFlat()))}catch(e){}}
+function floorSet(id,a){const was=FLOOR[id];FLOOR[id]={a:a==null?(was?was.a:""):String(a).trim().slice(0,40),s:today()};saveFloor();return was?(was.a===FLOOR[id].a?"seen":"moved"):"added";}
+function floorDel(id){delete FLOOR[id];saveFloor();}
 const AV={O:"Online only",S:"Store & online",B:"Store only"};
 const CAT=RAW.trim().split("\n").map(l=>{const f=l.split("|");const n=v=>v===""?null:+v;
  return {id:f[0],sku:f[1],model:f[2],brand:f[3],label:f[4],type:f[5],price:n(f[6]),orig:n(f[7]),rating:n(f[8]),reviews:n(f[9]),w:n(f[10]),h:n(f[11]),d:n(f[12]),dnd:n(f[13]),d90:n(f[14]),cap:n(f[15]),kwh:n(f[16]),disp:f[17],counter:f[18]==="C",estar:f[19]==="1",filter:f[20],returnable:f[21]==="R",garage:f[22]==="1",smart:f[23]==="1",warranty:f[24],promo:f[25],av:f[26]||"S",dx:n(f[27]??""),zero:f[28]==="1",rev:f[29]==="1",deliv:f[30]||null};});
@@ -3544,14 +3601,20 @@ function needs(){const h=S.habits,people=S.adults+S.kids;
  else if(h.dispenser)say.push("Door dispenser needs a water line. Confirm one is behind the fridge now.");
  if(h.bulk)say.push("Bulk buyer: a small chest freezer can beat upsizing the fridge.");
  if(h.flush)say.push("Counter depth costs more for less space. Show the cu ft difference so it's their call.");
- return {lo,hi,style,say,people};}
+ /* styles the size box recommends, as type codes (ranking boosts these unless a style was picked) */
+ let types=[];if(S.kids>0||h.cook)types=["FD","BF"];if(h.reliable)types=types.length?types.filter(t=>t==="BF"):["TF","BF"];
+ return {lo,hi,style,say,people,types};}
 
 /* ---------- fit ---------- */
 function space(){const g=id=>parseIn($(id).value);const na={};["oh","cab","island","hinge","nook"].forEach(id=>{if(/^\s*(none|n\/a|na|no)\s*$/i.test($(id).value))na[id]=1});
- return {ow:g("ow"),oh:g("oh"),cab:g("cab"),island:g("island"),hinge:g("hinge"),nook:g("nook"),door:g("door"),path:$("path").value,water:$("water").value,na}}
+ let ow=g("ow"),est=false;if(ow==null&&S.est){ow=S.est;est=true}/* estimated width from "What width are they replacing", never shown as measured */
+ return {ow,est,oh:g("oh"),cab:g("cab"),island:g("island"),hinge:g("hinge"),nook:g("nook"),door:g("door"),path:$("path").value,water:$("water").value,na}}
+/* anything really measured (not counting the estimate) */
+const realMeas=sp=>(sp.ow!=null&&!sp.est)||["oh","cab","island","hinge","nook","door"].some(k=>sp[k]!=null);
 function fit(u,sp=space()){const c=[];
  /* kind: "fit" = how it fits the space (tight here means double check), "todo" = something to sort out before delivery */
- if(sp.ow!=null){const m=sp.ow-u.w;c.push({k:"Width",kind:"fit",s:m<0?"no":m<0.25?"chk":"ok",t:m<0?`${inch(-m)} too wide for the ${inch(sp.ow)} opening`:m<0.25?`Only ${inch(m)} to spare in width. Tight, so check the install guide`:`${inch(m)} to spare in width`});}
+ if(sp.ow!=null&&sp.est){const m=sp.ow-u.w;c.push({k:"Width",kind:"fit",s:m<0?"no":"ok",t:m<0?`${inch(-m)} wider than the ${inch(sp.ow)} fridge they're replacing (estimate, not measured)`:`Same width class as the ${inch(sp.ow)} fridge they're replacing (estimate, not measured)`});}
+ else if(sp.ow!=null){const m=sp.ow-u.w;c.push({k:"Width",kind:"fit",s:m<0?"no":m<0.25?"chk":"ok",t:m<0?`${inch(-m)} too wide for the ${inch(sp.ow)} opening`:m<0.25?`Only ${inch(m)} to spare in width. Tight, so check the install guide`:`${inch(m)} to spare in width`});}
  if(sp.oh!=null){const m=sp.oh-u.h;c.push({k:"Height",kind:"fit",s:m<0?"no":m<1?"chk":"ok",t:m<0?`${inch(-m)} too tall for the opening`:m<1?`Only ${inch(m)} above it. 1" is recommended for air`:`${inch(m)} to spare on top`});}
  if(sp.door!=null){const M={straight:.5,turn:1.5,stairs:2}[sp.path]||.5,why={straight:"",turn:" with a tight turn",stairs:" on stairs"}[sp.path]||"";
    const on=Math.min(u.w,u.d),noH=Math.min(u.w,u.dx||u.d),off=Math.min(u.w,u.dnd??u.d);
@@ -3573,11 +3636,13 @@ function fit(u,sp=space()){const c=[];
    if(sp.water==="no")c.push({k:"Water",kind:"todo",s:"no",t:"Needs a water line run before ice and water work"});
    else if(sp.water==="unsure")c.push({k:"Water",kind:"todo",s:"chk",t:"Check for a water line behind your current fridge"});}
  const bad=c.some(x=>x.s==="no"&&x.k!=="Water"), warn=c.some(x=>x.s==="chk"||x.s==="no"), tight=!bad&&c.some(x=>x.s==="chk"&&x.kind==="fit");
- return {checks:c,verdict:!c.length?"na":bad?"no":warn?"chk":"ok",tight,pull,todo:c.filter(x=>x.s!=="ok").length};}
+ return {checks:c,verdict:!c.length?"na":bad?"no":warn?"chk":"ok",tight,pull,todo:c.filter(x=>x.s!=="ok").length,est:sp.est?sp.ow:null};}
 /* fit labels: ok = Fits, chk = Fits with something to check, tight = double check, no = won't fit */
 const fitKey=f=>f.verdict==="chk"&&f.tight?"tight":f.verdict;
 const FITW={ok:"Fits",chk:"Fits, check 1 thing",tight:"Tight, double check",no:"Won't fit",na:"Not checked"};
-const fitWord=f=>{const k=fitKey(f);return k==="chk"&&f.todo>1?`Fits, check ${f.todo} things`:FITW[k]};
+const fitWord=f=>{const k=fitKey(f);if(f.est&&k!=="na"){const wide=f.checks.some(c=>c.k==="Width"&&c.s==="no");
+  return k==="no"?(wide?`Too wide for ${f.est}" (estimate)`:"Won't fit"):k==="tight"?"Tight, estimate only":`Should fit ${f.est}" (estimate)`}
+ return k==="chk"&&f.todo>1?`Fits, check ${f.todo} things`:FITW[k]};
 const fitCls=f=>({ok:"fit",chk:"fit",tight:"chk",no:"no",na:""})[fitKey(f)];
 
 /* ---------- drawings ---------- */
@@ -3602,7 +3667,7 @@ function frontDrawing(u,sp){const pad=6,W=Math.max(u.w,sp.ow||0)+pad*2,H=Math.ma
  s+=silhouette(u,fx*k,fy*k,u.w*k,u.h*k,col,"var(--card)",3.5);
  return s+`</svg>`;}
 function frontLegend(u,sp){const r=[`<span class="dim"><i class="sw ink"></i>Fridge ${inch(u.w)} × ${inch(u.h)}</span>`];
- if(sp.ow)r.push(`<span class="dim"><i class="sw blue"></i>Opening ${inch(sp.ow)}${sp.oh?` × ${inch(sp.oh)}`:""}</span>`);
+ if(sp.ow)r.push(`<span class="dim"><i class="sw blue"></i>${sp.est?"Estimated opening":"Opening"} ${inch(sp.ow)}${sp.oh?` × ${inch(sp.oh)}`:""}${sp.est?", not measured":""}</span>`);
  const g=[];if(sp.ow){const x=(sp.ow-u.w)/2;g.push(`${x<0?"":"+"}${+x.toFixed(2)}" each side`)}if(sp.oh){const t=sp.oh-u.h;g.push(`${t<0?"":"+"}${+t.toFixed(2)}" on top`)}
  if(g.length)r.push(`<span class="dim strong">${g.join(" · ")}</span>`);return `<div class="legend">${r.join("")}</div>`;}
 function planDrawing(u,sp){const lp=sp.hinge!=null?Math.max(6,sp.hinge+6):6;const pl=sp.nook!=null?Math.max(0,sp.nook-(u.dnd??u.d)-1):0;const reach=Math.max((u.d90||u.d)+pl,sp.island?sp.island+5:0)+4,W=u.w+lp+6,k=4;
@@ -3632,6 +3697,30 @@ if(sp.nook!=null){}else if(sp.hinge!=null)r.push(`<span class="dim strong ${!u.z
  return `<div class="legend">${r.join("")}</div>`;}
 /* ---------- list: filters + sorts ---------- */
 const BAYES=r=>{const v=r.reviews||0,R=r.rating||0,m=50,C=4.2;return (v/(v+m))*R+(m/(v+m))*C};
+/* Best match score, shared by the floor tool (sorter, autoPicks) and the customer page.
+   o: {n:needs(), habits, b:budget max, bmin, ow, est, styles:[picked type codes] or null, floor:on display} */
+function scoreCore(u,f,o){const n=o.n,h=o.habits||{},fk=fitKey(f),P=u.price==null?Infinity:effPrice(u);let s=0;
+ if(fk==="ok")s+=3;else if(fk==="chk")s+=2.5;else if(fk==="tight")s+=0.5;
+ if(!u.returnable)s-=2;
+ if(u.cap>=n.lo&&u.cap<=n.hi+4)s+=3;else if(u.cap>=n.lo-2)s+=1;
+ s+=(BAYES(u)-4.2)*6;if((u.reviews||0)<20)s-=2.5;
+ if(o.styles&&o.styles.length){if(o.styles.includes(u.type))s+=3;}else if(n.types&&n.types.includes(u.type))s+=1.5;
+ if(h.reliable&&u.disp==="None")s+=1.5;if(h.dispenser&&u.disp!=="None")s+=1.5;if(h.flush&&u.counter)s+=2;if(h.garage&&u.garage)s+=2;
+ if(o.b&&P>o.b)s-=4;if(o.bmin&&P<o.bmin*0.8)s-=2;
+ if(o.ow!=null){const g=o.ow-u.w;if(g>=(o.est?0:0.25)&&g<=2)s+=2;else if(g>4)s-=2.5;}
+ if(u.price==null)s-=3;
+ /* price sanity: with no premium budget picked, a fridge priced well above similar ones loses points */
+ if(!o.bmin&&u.price!=null){const r=effPrice(u)/medPrice(u);if(r>1)s-=6*Math.log2(r);}
+ if(o.floor&&fk!=="tight"&&fk!=="no"&&u.cap>=n.lo-2&&!(o.b&&P>o.b))s+=4;
+ return s;}
+const ppcf=u=>u.price==null||!u.cap?1e9:effPrice(u)/u.cap;
+/* typical price for this much fridge: median price of standard-depth fridges with 20+ reviews within 3 cu ft
+   (counter depth allowed 1.5x, since it costs more per cu ft). Built-in luxury models don't set the bar. */
+const MEDP={};function medPrice(u){const c=Math.round(u.cap);if(MEDP[c]==null){
+ const v=CAT.filter(x=>x.price!=null&&(x.reviews||0)>=20&&!x.counter&&Math.abs(x.cap-c)<=3).map(effPrice).sort((a,b)=>a-b);
+ MEDP[c]=v.length>=5?v[v.length>>1]:c*80;}return MEDP[c]*(u.counter?1.5:1);}
+/* ties: more reviews first, then better price per cu ft. Never catalog order. */
+const tieBreak=(a,b)=>((b.reviews||0)-(a.reviews||0))||(ppcf(a)-ppcf(b));
 const DISP=[["None","No dispenser"],["Water Only","Water only"],["Ice Only","Ice only"],["Both","Ice + water"],["Beverage Center","Beverage center"]];
 const dispKey=u=>DISP.some(d=>d[0]===u.disp)?u.disp:"Both";
 const FLAGS=[
@@ -3690,12 +3779,14 @@ const SORTS=[
   ["rated","Top rated","Weighted by review count, so 4.6★ from 5,000 beats 5★ from 3",u=>u.reviews?`★ ${u.rating.toFixed(1)} · ${u.reviews.toLocaleString()}`:null],
   ["reviewed","Most reviewed","Most proven in real kitchens",u=>u.reviews?`${u.reviews.toLocaleString()} reviews`:null]]]];
 const SORTMAP={};SORTS.forEach(([,opts])=>opts.forEach(o=>SORTMAP[o[0]]=o));
+function matchScore(x,c){return sorter("_score",c)(x)}
+function pickedStyles(){return S.f.styles.size?[...S.f.styles]:S.qstyle?[S.qstyle]:null}
 function sorter(key,c){const n=c.n,b=c.b,sp=c.sp;const P=u=>u.price==null?Infinity:effPrice(u);
- const score=({u,f})=>{let s=0;const fk=fitKey(f);if(fk==="ok")s+=3;else if(fk==="chk")s+=2.5;else if(fk==="tight")s+=0.5;if(!u.returnable)s-=0.75;if(u.av==="O")s-=1.25;if(u.cap>=n.lo&&u.cap<=n.hi+4)s+=3;else if(u.cap>=n.lo-2)s+=1;
-   s+=BAYES(u)*1.2;if(S.habits.reliable&&u.disp==="None")s+=1.5;if(S.habits.dispenser&&u.disp!=="None")s+=1.5;if(S.habits.flush&&u.counter)s+=2;if(b&&P(u)>b)s-=4;
-   if(sp.ow!=null){const g=sp.ow-u.w;if(g>=0.25&&g<=2)s+=2;else if(g>4)s-=1.5;}if(u.price==null)s-=3;return s};
+ const o={n,habits:S.habits,b,bmin:S.bmin||null,ow:sp.ow,est:!!sp.est,styles:pickedStyles()};
+ const score=({u,f})=>scoreCore(u,f,{...o,floor:onFloor(u)});
  const by=fn=>(a,b2)=>fn(a)-fn(b2);
- return {best:(a,b2)=>score(b2)-score(a),eff:by(x=>P(x.u)),effd:by(x=>x.u.price==null?Infinity:-P(x.u)),
+ const best=(a,b2)=>{const d=score(b2)-score(a);return Math.abs(d)>1e-9?d:tieBreak(a.u,b2.u)};
+ return {_score:score,best,eff:by(x=>P(x.u)),effd:by(x=>x.u.price==null?Infinity:-P(x.u)),
   off:by(x=>x.u.price&&x.u.orig>x.u.price?-(x.u.orig-x.u.price):0),pct:by(x=>x.u.price&&x.u.orig>x.u.price?-(1-x.u.price/x.u.orig):0),
   ppcf:by(x=>P(x.u)/x.u.cap),tier:by(x=>{const p=promo(x.u);return p&&p.next?p.next.at-x.u.price:Infinity}),
   cap:by(x=>-x.u.cap),capa:by(x=>x.u.cap),narrow:by(x=>x.u.w),shallow:by(x=>x.u.d),swing:by(x=>x.u.d90||99),path:by(x=>Math.min(x.u.w,x.u.dnd??x.u.d)),
@@ -3735,8 +3826,37 @@ function renderToggles(){const c=ctx(),sp=c.sp;const base=CAT.map(u=>({u,f:fit(u
  $$("#styleChips .chip").forEach(x=>x.setAttribute("aria-pressed",x.dataset.style==="all"?!S.f.styles.size:S.f.styles.has(x.dataset.style)));
  const a=activeCount();$("fcount").hidden=!a;$("fcount").textContent=a;$("sortLabel").textContent=SORTMAP[S.sort][1];
  $$(".rail").forEach(updRail);}
+function seenTxt(d){if(!d)return "not recorded";const t=today();if(d===t)return "today";const days=Math.round((new Date(t+"T12:00:00")-new Date(d+"T12:00:00"))/864e5);
+ return days===1?"yesterday":new Date(d+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"})+(days>30?` (${days} days ago)`:"");}
+/* does a floor fridge work for this customer: fits (not tight), big enough, in budget */
+function floorWorks(u,f,c){return f.verdict!=="no"&&fitKey(f)!=="tight"&&u.cap>=c.n.lo-1&&!(c.b&&effPrice(u)>c.b)}
+function renderFloor(){const el=$("floorView");if(!el)return;const q=$("q").value.trim();el.hidden=!!q;if(q)return;
+ const c=ctx(),items=Object.keys(FLOOR).map(id=>CAT.find(u=>u.id===id)).filter(Boolean).map(u=>({u,f:fit(u,c.sp)}));
+ const works=items.filter(x=>floorWorks(x.u,x.f,c)).length;
+ const head=`<summary><div><h3>On our floor</h3><span class="ct">${items.length?`${items.length} on display · ${works} could work for them`:"Nothing saved yet"}</span></div><span class="chev" aria-hidden="true">▾</span></summary>`;
+ if(!items.length){el.innerHTML=head+`<div class="floorin"><p class="note">Save the fridges you have on display so they show up first for every customer. Tap <b>Walk the aisle</b>, type where you're standing (like "Aisle 12, end cap"), then scan each shelf tag one after another. You can also open any fridge and tick <b>On our floor</b>.</p><button class="btn y" id="walkBtn">Walk the aisle</button></div>`;}
+ else{const G=new Map();items.forEach(x=>{const k=floorAisle(x.u)||"";if(!G.has(k))G.set(k,[]);G.get(k).push(x)});
+  const keys=[...G.keys()].sort((a,b)=>!a?1:!b?-1:a.localeCompare(b,undefined,{numeric:true,sensitivity:"base"}));
+  const row=({u,f})=>{const ok=floorWorks(u,f,c),tags=[`<span class="tag ${fitCls(f)}">${f.verdict==="na"?"Fit not checked":fitWord(f)}</span>`];
+   if(u.cap<c.n.lo-1)tags.push(`<span class="tag chk">Small for ${c.n.people}</span>`);if(c.b&&effPrice(u)>c.b)tags.push(`<span class="tag no">Over budget</span>`);
+   return `<div class="frow2 ${ok?"":"dim"}"><button class="fopen" data-open="${u.id}"><b>${u.brand} ${u.model}</b><small>${STYLE[u.type]} · ${u.cap} cu ft · ${fmt(u.price==null?null:effPrice(u))}${u.reviews?` · ★ ${u.rating.toFixed(1)} (${u.reviews.toLocaleString()})`:""}</small></button>
+    <div class="ftags">${tags.join("")}</div><div class="fact">${FLOOR[u.id].s===today()?`<span>Seen today</span>`:`<span>Last seen ${seenTxt(FLOOR[u.id].s)}</span><button class="rm" data-seen="${u.id}">Mark seen today</button>`}<button class="rm" data-gone="${u.id}">No longer on display</button></div></div>`};
+  const sc=x=>matchScore(x,c);
+  el.innerHTML=head+`<div class="floorin">${keys.map(k=>{const L=G.get(k).sort((a,b)=>(floorWorks(b.u,b.f,c)-floorWorks(a.u,a.f,c))||(sc(b)-sc(a)));
+   return `<div class="fgroup"><h4>${k||"No aisle noted"}</h4><div class="frows">${L.map(row).join("")}</div></div>`}).join("")}
+   <button class="btn ghost" id="walkBtn">Walk the aisle</button></div>`;}
+ el.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openSheet(b.dataset.open));
+ el.querySelectorAll("[data-seen]").forEach(b=>b.onclick=()=>{floorSet(b.dataset.seen,null);toast("Marked as seen today");renderFloor();});
+ el.querySelectorAll("[data-gone]").forEach(b=>b.onclick=()=>{const u=CAT.find(x=>x.id===b.dataset.gone);floorDel(u.id);toast(`Removed ${u.brand} ${u.model} from the floor list`);renderList(true);});
+ $("walkBtn").onclick=openWalk;}
+function openWalk(){openPS(`<div class="ps-head"><h3>Walk the aisle</h3><button class="x" data-close aria-label="Close">×</button></div><div class="ps-inner" style="gap:12px;padding-top:14px">
+  <label class="f">Where are you standing?<input id="walkA" type="text" maxlength="40" autocomplete="off" placeholder="e.g. Aisle 12, end cap" value="${(S.walkAisle||"").replace(/"/g,"&quot;")}"></label>
+  <p class="note">Every shelf tag you scan next goes on the floor list with this note. A fridge that's already saved just gets this aisle and today's date. The camera stays on between scans.</p></div>
+  <div class="ps-foot"><button class="btn ghost" id="walkCancel">Cancel</button><button class="btn y" id="walkGo">Start scanning</button></div>`);
+ $("walkCancel").onclick=closePS;setTimeout(()=>$("walkA")&&$("walkA").focus(),50);
+ $("walkGo").onclick=()=>{S.walkAisle=$("walkA").value.trim().slice(0,40);S.walk={a:S.walkAisle,n:0};closePS();startScan();};}
 function renderList(keep){if(!keep)S.lim=40;const c=ctx();const r=filtered();const q=$("q").value.trim();
- renderToggles();
+ renderToggles();renderFloor();
  $("resultCount").textContent=q?`${r.length} match${r.length===1?"":"es"} for "${q}"`:`${r.length} of ${CAT.length} fridges`;
  $("sortWhy").textContent="";
  S.lim=S.lim||40;$("list").innerHTML=r.length?r.slice(0,S.lim).map(x=>cardHTML(x,c)).join("")+(r.length>S.lim?`<button class="btn ghost" id="more">Show ${Math.min(40,r.length-S.lim)} more of ${r.length-S.lim}</button>`:""):`<div class="empty">Nothing matches. ${q?"Check the model or SKU, or clear the search.":"Remove a filter above, or recheck the measurements."}</div>`;}
@@ -3823,7 +3943,10 @@ function syncF(){const body=$("psheetBody");const c=ctx();const base=CAT.map(u=>
 $("openFilters").onclick=openFilters;
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("psheet").hidden)closePS()});
 
-function renderFitbar(){const sp=space();const ok=CAT.filter(u=>fit(u,sp).verdict!=="no").length;$("fitcount").textContent=ok;$("fitmeter").style.width=(ok/CAT.length*100)+"%";}
+function renderFitbar(){const sp=space(),real=realMeas(sp);
+ if(!real&&!sp.est){$("fittxt").innerHTML=`Not measured yet · <b>${CAT.length}</b> fridges`;$("fitmeter").style.width="100%";return}
+ const ok=CAT.filter(u=>fit(u,sp).verdict!=="no").length;$("fitmeter").style.width=(ok/CAT.length*100)+"%";
+ $("fittxt").innerHTML=real?`<b>${ok}</b> fit their space`:`Estimated ${sp.ow}" width · <b>${ok}</b> could fit`;}
 
 /* ---------- detail sheet ---------- */
 function openSheet(id){const u=CAT.find(x=>x.id===id),sp=space(),f=fit(u,sp),p=promo(u),n=needs();
@@ -3839,7 +3962,8 @@ function openSheet(id){const u=CAT.find(x=>x.id===id),sp=space(),f=fit(u,sp),p=p
    :`<p class="note">${u.promo==="S"?"Special Buy pricing. Not tagged for Spend More Save More.":"Check the tag for Spend More Save More eligibility."}</p>`}
   <div class="row"><button class="btn ${inCmp?"ghost":"y"}" id="addCmp">${inCmp?"Remove from compare":"Compare"}</button><a class="btn ghost" href="https://www.homedepot.com/p/${u.id}" target="_blank" rel="noopener">Open on homedepot.com</a></div>
   <div class="panel floorpanel"><div class="optnote"><p class="eyebrow">On display at our store</p><label class="tick"><input type="checkbox" id="floorChk" ${onFloor(u)?"checked":""}> On our floor</label></div>
-   <label class="f" ${onFloor(u)?"":"hidden"} id="floorWhere">Where (optional)<input id="floorNote" type="text" maxlength="40" placeholder="e.g. Aisle 12, end cap" value="${(FLOOR[u.id]||"").replace(/"/g,"&quot;")}"></label>
+   <label class="f" ${onFloor(u)?"":"hidden"} id="floorWhere">Where (optional)<input id="floorNote" type="text" maxlength="40" placeholder="e.g. Aisle 12, end cap" value="${floorAisle(u).replace(/"/g,"&quot;")}"></label>
+   ${onFloor(u)?`<p class="note">Last seen ${seenTxt(FLOOR[u.id].s)}. <button class="rm" id="floorSeen">Seen it today</button></p>`:""}
    <p class="note">Saved on this phone. Shows on cards, the Options view, and the customer's QR page.</p></div>
   <div class="panel"><p class="eyebrow">Will it fit at their house</p>
    ${(sp.ow||sp.island)?`<div class="drawings"><div class="drawing"><span class="cap">Front · in their opening</span>${frontDrawing(u,sp)}${frontLegend(u,sp)}</div><div class="drawing"><span class="cap">From above · door swing</span>${planDrawing(u,sp)}${planLegend(u,sp)}</div></div>`:`<p class="note">Add their opening on the Customer tab to see this drawn to scale.</p>`}
@@ -3861,11 +3985,14 @@ function openSheet(id){const u=CAT.find(x=>x.id===id),sp=space(),f=fit(u,sp),p=p
  </div>`;
  $("sheet").hidden=false;document.body.style.overflow="hidden";
  $("closeSheet").onclick=closeSheet;
- if($("linkCode")){$("linkCode").onclick=()=>{CODES[S.pendingCode]=u.id;saveCodes();S.pendingCode=null;toast("Linked. Scanning it now opens this fridge");openSheet(u.id);};
+ if($("linkCode")){$("linkCode").onclick=()=>{CODES[S.pendingCode]=u.id;saveCodes();S.pendingCode=null;
+   if(S.walk){floorSet(u.id,S.walk.a);S.walk.n++;closeSheet();toast(`Linked and added to ${S.walk.a||"the floor list"}`);startScan();return}
+   toast("Linked. Scanning it now opens this fridge");openSheet(u.id);};
   $("linkStop").onclick=()=>{S.pendingCode=null;openSheet(u.id);};}
  $("addCmp").onclick=()=>{toggleCmp(u.id);openSheet(u.id)};
- $("floorChk").onchange=e=>{if(e.target.checked)FLOOR[u.id]=FLOOR[u.id]||"";else delete FLOOR[u.id];saveFloor();$("floorWhere").hidden=!e.target.checked;toast(e.target.checked?"Marked as on our floor":"Removed from floor list");};
- $("floorNote").oninput=e=>{if(onFloor(u)){FLOOR[u.id]=e.target.value.trim().slice(0,40);saveFloor();}};
+ $("floorChk").onchange=e=>{if(e.target.checked)floorSet(u.id,null);else floorDel(u.id);toast(e.target.checked?"Marked as on our floor":"Removed from floor list");openSheet(u.id);if(e.target.checked)setTimeout(()=>$("floorNote")&&$("floorNote").focus(),50);};
+ $("floorNote").oninput=e=>{if(onFloor(u)){FLOOR[u.id].a=e.target.value.trim().slice(0,40);saveFloor();}};
+ if($("floorSeen"))$("floorSeen").onclick=()=>{floorSet(u.id,null);toast("Marked as seen today");openSheet(u.id);};
  if($("showKwh"))$("showKwh").onclick=()=>{S.showKwh=true;openSheet(u.id);setTimeout(()=>$("kwhIn")&&$("kwhIn").focus(),50)};
  if($("kwhIn")){$("kwhIn").oninput=e=>{const v=num(e.target.value);if(v)S.kwh[u.id]=v;else delete S.kwh[u.id];};
  $("kwhIn").onchange=()=>openSheet(u.id);}
@@ -3886,20 +4013,21 @@ function autoPicks(){const c=ctx(),n=c.n,h=S.habits;
  if(h.garage)C.push(["garage ready",x=>x.u.garage]);
  if(h.flush)C.push(["counter depth",x=>x.u.counter]);
  if(h.dispenser)C.push(["ice/water in the door",x=>x.u.disp!=="None"]);
- if(c.b)C.push(["their budget",x=>effPrice(x.u)<=c.b]);
+ if(S.qstyle&&!S.f.styles.size)C.push([`${STYLE[S.qstyle].toLowerCase()} style`,x=>x.u.type===S.qstyle]);
+ if(c.b||S.bmin)C.push(["their budget",x=>(!c.b||effPrice(x.u)<=c.b)&&(!S.bmin||effPrice(x.u)>=S.bmin*0.8)]);
  const roomy=base.filter(x=>fitKey(x.f)!=="tight"),pool=roomy.length>=3?roomy:base;
  let act=C.slice(),dropped=[],r=pool.filter(x=>act.every(([,fn])=>fn(x)));
  while(r.length<3&&act.length){dropped.push(act.shift()[0]);r=pool.filter(x=>act.every(([,fn])=>fn(x)));}
  const relaxed=dropped.length?dropped:null;
  const mid=(n.lo+n.hi)/2,cmp=sorter("best",c);
- if(S.sort==="best")r.sort((a,b)=>cmp(a,b)||Math.abs(a.u.cap-mid)-Math.abs(b.u.cap-mid));
- const seen=new Set(),out=[];for(const x of r){const k=[x.u.brand,x.u.type,x.u.cap,Math.round(x.u.w)].join("|");if(seen.has(k))continue;seen.add(k);out.push(x.u);if(out.length===3)break;}
+ if(S.sort==="best")r.sort(cmp);
+ const seen=new Set(),out=[];for(const x of r){const k=[x.u.brand,x.u.type,Math.round(x.u.cap),Math.round(x.u.w)].join("|");if(seen.has(k))continue;seen.add(k);out.push(x.u);if(out.length===3)break;}
  return {us:out,relaxed};}
 function optSet(){if(S.cmp.length)return {us:S.cmp.map(id=>CAT.find(u=>u.id===id)),auto:false};const a=autoPicks();return {us:a.us,auto:true,relaxed:a.relaxed};}
 function basisChips(){const n=needs(),sp=space(),b=num($("budget").value),h=S.habits,L=[];
- L.push(`${n.people} ${n.people===1?"person":"people"}`);L.push(`${n.lo}–${n.hi} cu ft`);if(b)L.push(`Under ${fmt(b)}`);
+ L.push(`${n.people} ${n.people===1?"person":"people"}`);L.push(`${n.lo}–${n.hi} cu ft`);if(S.bmin&&b)L.push(`${fmt(S.bmin)}–${fmt(b)}`);else if(S.bmin)L.push(`${fmt(S.bmin)}+`);else if(b)L.push(`Under ${fmt(b)}`);if(S.qstyle)L.push(STYLE[S.qstyle]);
  const HL={cook:"Cooks a lot",bulk:"Buys in bulk",host:"Hosts",dispenser:"Ice/water in door",flush:"Flush look",reliable:"Reliability first",garage:"Garage"};
- for(const k in HL)if(h[k])L.push(HL[k]);if(sp.ow)L.push(`${inch(sp.ow)} opening`);if(sp.hinge!=null)L.push(`${inch(sp.hinge)} at hinge`);
+ for(const k in HL)if(h[k])L.push(HL[k]);if(sp.ow)L.push(sp.est?`Replacing ${inch(sp.ow)} (estimate)`:`${inch(sp.ow)} opening`);if(sp.hinge!=null)L.push(`${inch(sp.hinge)} at hinge`);
  const F=[];S.f.styles.forEach(t=>F.push(STYLE[t]));S.f.brands.forEach(b=>F.push(b));S.f.disp.forEach(d=>F.push(DISP.find(x=>x[0]===d)[1]));
  for(const k in S.f.r){const [lo,hi]=S.f.r[k],RR=RANGES[k];F.push(`${RR.label} ${RR.fmt(lo)}–${RR.fmt(hi)}`);}
  FLAGS.forEach(([k,l])=>{if(S.t[k]&&k!=="fits")F.push(l)});
@@ -3911,7 +4039,7 @@ function nameOf(u,us){return us.filter(x=>x.brand===u.brand).length>1?`${u.brand
 function whyList(u,us){const P=x=>effPrice(x),o=us.filter(x=>x!==u),w=[];
  if(o.length){
   const top=(fn,dir)=>us.every(x=>x===u||(dir>0?fn(u)>fn(x):fn(u)<fn(x)));
-  if(top(P,-1)){const hi=o.reduce((a,b)=>P(a)>P(b)?a:b);w.push(`Lowest price: ${fmt(P(hi)-P(u))} less than the ${nameOf(hi,us)}`);}
+  if(top(P,-1)){const hi=o.reduce((a,b)=>P(a)>P(b)?a:b);w.push(P(hi)>P(u)*1.5?`Lowest price of these ${us.length===2?"two":"three"}`:`Lowest price: ${fmt(P(hi)-P(u))} less than the ${nameOf(hi,us)}`);}
   if(top(x=>x.cap,1)){const nx=o.reduce((a,b)=>a.cap>b.cap?a:b);w.push(`Most space: ${(u.cap-nx.cap).toFixed(1)} cu ft more than the ${nameOf(nx,us)}`);}
   if(top(x=>P(x)/x.cap,-1)&&!top(P,-1))w.push(`Best value: $${Math.round(P(u)/u.cap)} per cu ft`);
   if(u.reviews>=30&&top(BAYES,1))w.push(`Best reviewed: ★ ${u.rating.toFixed(1)} from ${u.reviews.toLocaleString()} owners`);
@@ -3932,13 +4060,13 @@ function gtkList(u,f,sp){const g=[];
  if(u.av==="O")g.push("Online only, ships to your home");
  return [...new Set(g)].slice(0,4);}
 function verdictHTML(f){const k=fitKey(f),first=f.checks.find(c=>c.s==="no"&&c.k!=="Water")||f.checks.find(c=>c.s==="chk"&&c.kind==="fit")||f.checks.find(c=>c.s!=="ok");
- const m={ok:["✓","Fits","Checked against the measurements entered"],chk:["✓",fitWord(f),first?first.t:""],tight:["!","Tight, double check",first?first.t:""],no:["✕","Won't fit as measured",first?first.t:""],na:["?","Fit not checked yet","Add measurements to check"]}[k];
+ const m={ok:["✓",f.est?fitWord(f):"Fits",f.est?"Based on the width they're replacing. Measure the space to confirm":"Checked against the measurements entered"],chk:["✓",fitWord(f),first?first.t:""],tight:["!","Tight, double check",first?first.t:""],no:["✕","Won't fit as measured",first?first.t:""],na:["?","Fit not checked yet","Add measurements to check"]}[k];
  return `<div class="verdict ${k==="chk"?"ok":k==="tight"?"chk":k}"><span class="ic" aria-hidden="true">${m[0]}</span><span><b>${m[1]}</b>${m[2]}</span></div>`;}
 function shortLabel(u){return u.label.replace(/\s+(in|with)\s+(Fingerprint|Smudge|PrintProof|Print|Stainless|White|Black|Slate|Panel|Matte|Bespoke|P$|Pr)[\s\S]*$/i,"").replace(/[\s,]+$/,"").trim()}
 function optCard(u,i,us,auto,sp){const f=fit(u,sp),p=promo(u),kwh=S.kwh[u.id]??u.kwh;
  const short=shortLabel(u);
  return `<article class="opt" aria-label="${u.brand} ${u.model}">
-  <div class="opt-top">${miniSil(u)}<div>${auto?`<div class="rank">Match #${i+1}</div>`:""}${onFloor(u)?`<div class="tag floor" style="display:inline-block;margin:4px 0">${floorTxt(u).replace("On our floor","See it on our floor")}</div>`:""}<div class="brand">${u.brand}</div><h3>${short}</h3><div class="model">Model ${u.model}</div></div></div>
+  <div class="opt-top">${miniSil(u)}<div>${auto?`<div class="rank">Match #${i+1}</div>`:""}<div class="tag ${onFloor(u)?"floor":""}" style="display:inline-block;margin:4px 0">${floorPickTxt(u)}</div><div class="brand">${u.brand}</div><h3>${short}</h3><div class="model">Model ${u.model}</div></div></div>
   <div class="pricerow">${priceHTML(u.price)}${p&&p.save?`<span class="eff">${fmt(p.eff)} after promo</span>`:""}</div>
   ${verdictHTML(f)}
   <ul class="facts"><li><small>Room for</small>${people(u)}</li><li><small>Inside</small>${u.cap} cu ft</li>
@@ -3975,7 +4103,7 @@ function renderCmp(){const {us,auto}=optSet(),sp=space();
   $("diffOnly").onchange=e=>{S.diffOnly=e.target.checked;renderCmp();};}
  $("optSub").textContent=S.optMode==="cust"?"Turn the phone around. This view is written for the customer.":"Side by side specs for you.";
  if(!$("qrOpt")&&S.optMode==="cust"&&us.length){$("cmp").insertAdjacentHTML("afterbegin",`<button class="btn y qrbtn" id="qrOpt">Send these home with a QR code</button>`);}
- if($("qrOpt"))$("qrOpt").onclick=showQR;
+ if($("qrOpt"))$("qrOpt").onclick=()=>showQR();
  if($("backAuto"))$("backAuto").onclick=()=>{S.cmp=[];renderBadge();renderCmp();toast("Showing top matches");};
  if($("keepAuto"))$("keepAuto").onclick=()=>{S.cmp=us.map(u=>u.id);renderBadge();renderCmp();toast("Saved to their options");};
  $$("#cmp [data-rm]").forEach(b=>b.onclick=()=>{toggleCmp(b.dataset.rm);renderCmp()});
@@ -3987,9 +4115,10 @@ function renderSum(){const n=needs(),sp=space(),me=$("me").value.trim()||"your a
  const us=optSet().us;
  if(!us.length){$("sum").textContent="Add fridges to Compare first. They'll show up here as a text you can send.";return;}
  let s=`${c?`Hi ${c}, here`:"Here"} are the fridges we looked at today at Home Depot Cumberland.\n\nRight size for your household: ${n.lo}–${n.hi} cu ft\n`;
- if(sp.ow)s+=`Your opening: ${inch(sp.ow)} wide${sp.oh?` × ${inch(sp.oh)} tall`:""}\n`;
+ if(sp.ow&&sp.est)s+=`You're replacing a ${inch(sp.ow)} wide fridge. Measure the space before you buy\n`;
+ else if(sp.ow)s+=`Your opening: ${inch(sp.ow)} wide${sp.oh?` × ${inch(sp.oh)} tall`:""}\n`;
  us.forEach((u,i)=>{const f=fit(u,sp),p=promo(u);const issues=f.checks.filter(x=>x.s!=="ok").map(x=>`   • ${x.t}`);
-  s+=`\n${i+1}. ${u.brand} ${u.model}\n   ${shortLabel(u)}\n   ${fmt(u.price)}${p&&p.save?` (${fmt(p.eff)} with Spend More Save More through 12/2)`:""} · ${u.cap} cu ft\n   ${({ok:"Fits your space",chk:"Fits, with something to check:",tight:"Tight fit, double check:",no:"Does NOT fit your space",na:"Bring your measurements to confirm fit"})[fitKey(f)]}\n${issues.join("\n")}${issues.length?"\n":""}   homedepot.com/p/${u.id}\n`;});
+  s+=`\n${i+1}. ${u.brand} ${u.model}\n   ${shortLabel(u)}\n   ${fmt(u.price)}${p&&p.save?` (${fmt(p.eff)} with Spend More Save More through 12/2)`:""} · ${u.cap} cu ft\n   ${sp.est&&fitKey(f)!=="no"?"Should fit, based on the width you're replacing. Measure to confirm":({ok:"Fits your space",chk:"Fits, with something to check:",tight:"Tight fit, double check:",no:"Does NOT fit your space",na:"Bring your measurements to confirm fit"})[fitKey(f)]}\n${issues.join("\n")}${issues.length?"\n":""}   homedepot.com/p/${u.id}\n`;});
  s+=`\nBefore delivery\n• Measure the path one more time, front door to kitchen\n• Moving the old fridge to the garage? Georgia Power will pick up a working spare for free and pay you a rebate: georgiapower.com/refrigerator\n\nReady to order or have questions? Ask for ${me} in Appliances.`;
  $("sum").textContent=s;}
 
@@ -3999,7 +4128,31 @@ function show(v){S.view=v;if(v==="home")renderBk();["customer","find","compare",
 $$("nav.dock button").forEach(b=>b.onclick=()=>show(b.dataset.v));
 $("goFind").onclick=()=>show("find");
 function renderWalk(){const n=needs();$("walkto").innerHTML=`<div class="num">${n.lo}–${n.hi}<small>cu ft</small></div><p><b>Walk them to this size.</b></p><p>${n.people} ${n.people===1?"person":"people"} in the home</p><ul>${n.style.map(s=>`<li>${s}</li>`).join("")}${n.say.map(s=>`<li><b>Say:</b> ${s}</li>`).join("")}</ul>`;}
-function all(){renderWalk();renderFitbar();if(S.view==="find")renderList();if(S.view==="compare")renderCmp();if(S.view==="home")renderSum();}
+/* ---------- quick path ---------- */
+function quickPicks(){const us=optSet().us.slice();return us.map((u,i)=>({u,i})).sort((a,b)=>(onFloor(b.u)-onFloor(a.u))||(a.i-b.i)).map(x=>x.u);}
+function renderQuick(){const el=$("quickRes");if(!el)return;const sp=space(),us=quickPicks(),saved=!!S.cmp.length;
+ if(!us.length){el.innerHTML=`<h3>Walk them to these</h3><div class="empty">Nothing matches yet. Try "Not sure" on style or a wider budget.</div>`;return}
+ el.innerHTML=`<div class="optnote"><h3>Walk them to these</h3>${saved?`<span class="note">Your saved picks</span>`:""}</div>
+  <div class="qpicks">${us.map((u,i)=>{const f=fit(u,sp),p=promo(u);return `<button class="qpick" data-open="${u.id}"><span class="n">${i+1}</span><span class="t">
+   <span class="where ${onFloor(u)?"":"off"}">${floorPickTxt(u)}</span><b>${u.brand} ${u.model}</b>
+   <small>${STYLE[u.type]} · ${u.cap} cu ft · ${fmt(u.price)}${p&&p.save?` (${fmt(p.eff)} after promo)`:""}${u.reviews?` · ★ ${u.rating.toFixed(1)} (${u.reviews.toLocaleString()})`:""}</small>
+   <span class="ftags"><span class="tag ${fitCls(f)}">${f.verdict==="na"?"Fit not checked":fitWord(f)}</span></span></span></button>`}).join("")}</div>
+  <div class="row"><button class="btn y" id="qMeasure">Send home to measure</button><button class="btn ghost" id="qOpts">Show them the options</button></div>
+  <p class="note">${sp.est?`Width is an estimate from the ${sp.ow}" fridge they're replacing, not a measurement. `:""}The QR opens these on their phone with a guide to measure. Once they measure, the picks re-rank for their space.</p>`;
+ el.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openSheet(b.dataset.open));
+ $("qMeasure").onclick=()=>showQR({us,measure:true});$("qOpts").onclick=()=>show("compare");}
+function syncQuick(){$$("#qStyle .chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.qs===(S.qstyle||"")));
+ $$("#qBud .chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.qb===(S.qbud||"")));
+ $$("#qWidth .chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.qw===String(S.est||"")));
+ const real=parseIn($("ow").value)!=null,wn=$("qWidthNote");wn.hidden=!S.est;
+ wn.textContent=real?`They measured the width (${inch(parseIn($("ow").value))}), so the estimate is ignored.`:S.est?`Estimate only. Fit labels say "estimate" until they measure.`:"";
+ const n=["ow","oh","cab","island","hinge","nook","door"].filter(id=>$(id).value.trim()).length;$("measCt").textContent=n?`${n} entered`:"";
+ if(n&&!S.measAuto){$("measDet").open=true;S.measAuto=true;}if(!n)S.measAuto=false;}
+$$("#qStyle .chip").forEach(c=>c.onclick=()=>{S.qstyle=c.dataset.qs||null;all();});
+$$("#qBud .chip").forEach(c=>c.onclick=()=>{S.qbud=c.dataset.qb;const [lo,hi]=(c.dataset.qb||"-").split("-");S.bmin=+lo||null;$("budget").value=hi||"";all();});
+$$("#qWidth .chip").forEach(c=>c.onclick=()=>{S.est=+c.dataset.qw||null;all();});
+$("budget").addEventListener("input",()=>{S.qbud=$("budget").value?"x":"";S.bmin=null;});
+function all(){syncQuick();renderQuick();renderWalk();renderFitbar();if(S.view==="find")renderList();if(S.view==="compare")renderCmp();if(S.view==="home")renderSum();}
 $$("[data-step]").forEach(b=>b.onclick=()=>{const k=b.dataset.step;S[k]=Math.max(k==="adults"?1:0,Math.min(12,S[k]+ +b.dataset.d));$(k).textContent=S[k];all();});
 $$("#habits .chip").forEach(c=>c.onclick=()=>{const on=c.getAttribute("aria-pressed")!=="true";c.setAttribute("aria-pressed",on);S.habits[c.dataset.k]=on;
  if(c.dataset.k==="garage")S.t.garage=on;if(c.dataset.k==="flush")S.t.counter=on;all();});
@@ -4016,7 +4169,7 @@ $("list").addEventListener("click",e=>{if(e.target.id==="more"){S.lim+=40;render
 function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,1700);}
 function copy(text,msg){navigator.clipboard.writeText(text).then(()=>toast(msg||"Copied")).catch(()=>toast("Copy blocked here. Press and hold to select"));}
 $("copySum").onclick=()=>copy($("sum").textContent,"Summary copied");
-function resetCustomer(){setTimeout(syncNone);["ow","oh","cab","island","hinge","nook","door","budget","cust","q"].forEach(id=>$(id).value="");$("path").value="straight";$("water").value="unsure";S.adults=2;S.kids=1;$("adults").textContent=2;$("kids").textContent=1;S.habits={};S.cmp=[];S.kwh={};
+function resetCustomer(){setTimeout(syncNone);["ow","oh","cab","island","hinge","nook","door","budget","cust","q"].forEach(id=>$(id).value="");$("path").value="straight";$("water").value="unsure";S.adults=2;S.kids=1;$("adults").textContent=2;$("kids").textContent=1;S.habits={};S.cmp=[];S.kwh={};S.qstyle=null;S.qbud="";S.bmin=null;S.est=null;S.measAuto=false;$("measDet").open=false;
  $$("#habits .chip").forEach(c=>c.setAttribute("aria-pressed","false"));S.t={fits:true};S.f={styles:new Set(),brands:new Set(),disp:new Set(),r:{}};S.sort="best";renderBadge();all();show("customer");toast("Ready for the next customer");}
 
 /* ---------- fractions ---------- */
@@ -4028,8 +4181,12 @@ $$("#fracs button").forEach(b=>{b.addEventListener("mousedown",e=>e.preventDefau
 
 /* ---------- QR handoff ---------- */
 const CUST_URL="https://odthakang-kai.github.io/fridge-picks/";
-function custLink(){const us=optSet().us,sp=space(),t=["q1",...us.map(u=>u.id)];
- const M={ow:"w",oh:"h",cab:"c",island:"i",hinge:"g",nook:"e",door:"d"};for(const k in M)if(sp[k]!=null)t.push(M[k]+Math.round(sp[k]*100));
+function custLink(us,o={}){us=us||optSet().us;const sp=space(),t=["q1",...us.map(u=>u.id)];
+ const M={ow:"w",oh:"h",cab:"c",island:"i",hinge:"g",nook:"e",door:"d"};for(const k in M)if(sp[k]!=null&&!(k==="ow"&&sp.est))t.push(M[k]+Math.round(sp[k]*100));
+ if(sp.est)t.push("x"+Math.round(sp.ow*100));
+ if(S.qstyle)t.push("s"+{FD:"f",SS:"s",BF:"b",TF:"t"}[S.qstyle]);
+ if(S.bmin)t.push("l"+Math.round(S.bmin));
+ if(o.measure)t.push("m1");
  const z=Object.keys(sp.na).map(k=>M[k]).join("");if(z)t.push("z"+z);
  t.push("p"+({straight:"s",turn:"t",stairs:"x"}[sp.path]||"s"),"r"+({yes:"y",no:"n",unsure:"u"}[sp.water]||"u"),"a"+S.adults,"k"+S.kids);
  const bud=num($("budget").value);if(bud)t.push("b"+Math.round(bud));
@@ -4037,15 +4194,15 @@ function custLink(){const us=optSet().us,sp=space(),t=["q1",...us.map(u=>u.id)];
  const H={cook:"c",bulk:"b",host:"o",dispenser:"d",flush:"f",reliable:"r",garage:"g"};const hb=Object.keys(H).filter(k=>S.habits[k]).map(k=>H[k]).join("");if(hb)t.push("f"+hb);
  const nm=($("me").value||"").replace(/[^A-Za-z]/g,"").slice(0,20);if(nm)t.push("n"+nm.toLowerCase());
  return CUST_URL+"#"+t.join("-");}
-function showQR(){const us=optSet().us;if(!us.length){toast("Pick at least one fridge first");return}
- const url=custLink(),box=$("qrbox");box.innerHTML="";
+function showQR(o={}){const us=o.us||optSet().us;if(!us.length){toast("Pick at least one fridge first");return}
+ const url=custLink(us,o),box=$("qrbox");box.innerHTML="";
  try{const q=qrcode(0,"M");q.addData(url);q.make();box.innerHTML=q.createSvgTag({cellSize:8,margin:0,scalable:true});}catch(e){box.innerHTML=`<p style="word-break:break-all;font-size:13px">${url}</p>`;}
- $("qrsub").textContent=`Opens their ${us.length} fridge${us.length>1?"s":""}, the fit check for their kitchen, and links to today's price. Nothing about them is saved.`;
+ $("qrsub").textContent=o.measure?`Opens their ${us.length} pick${us.length>1?"s":""} on the Measure tab, marked not checked yet. Once they measure, the page re-ranks the picks for their space. Nothing about them is saved.`:`Opens their ${us.length} fridge${us.length>1?"s":""}, the fit check for their kitchen, and links to today's price. Nothing about them is saved.`;
  $("qrwrap").hidden=false;S.qrUrl=url;
 }
 $("qrdone").onclick=()=>{$("qrwrap").hidden=true};
 $("qrcopy").onclick=()=>copy(S.qrUrl,"Link copied");
-$("qrHome").onclick=showQR;
+$("qrHome").onclick=()=>showQR();
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("qrwrap").hidden)$("qrwrap").hidden=true});
 
 /* ---------- barcode scanner ---------- */
@@ -4063,7 +4220,8 @@ function matchCode(raw){const s=String(raw||"").trim();if(!s)return null;const b
  if(n.length>=7){u=CAT.find(x=>{const mm=normC(x.model);return mm.length>=7&&n.includes(mm)});if(u)return u;}
  return null;}
 const SC={stream:null,t:0,det:null,busy:false,last:"",cv:null,torch:false};
-function scanMsg(t,warn){$("scanmsg").textContent=t;$("scanmsg").classList.toggle("warn",!!warn);}
+function scanMsg(t,warn,ok){$("scanmsg").textContent=t;$("scanmsg").classList.toggle("warn",!!warn);$("scanmsg").classList.toggle("ok",!!ok);}
+function walkHdr(){const w=S.walk;$("scanwalk").hidden=!w;if(!w)return;$("walkLbl").textContent=`Walking: ${w.a||"no aisle note"}`;$("walkCt").textContent=`${w.n} scanned`;}
 async function getDetector(){
  if("BarcodeDetector" in window){try{const fm=await BarcodeDetector.getSupportedFormats();const want=["qr_code","code_128","upc_a","upc_e","ean_13","ean_8","code_39","itf","data_matrix"].filter(f=>fm.includes(f));
   if(want.length){const d=new BarcodeDetector({formats:want});return async v=>(await d.detect(v)).map(r=>r.rawValue);}}catch(e){}}
@@ -4073,7 +4231,7 @@ async function getDetector(){
  return null;}
 function stopStream(){clearTimeout(SC.t);if(SC.stream){SC.stream.getTracks().forEach(t=>t.stop());SC.stream=null;}const v=$("scanvid");v.srcObject=null;}
 function stopScan(){stopStream();$("scanwrap").hidden=true;document.body.style.overflow="";}
-async function startScan(){SC.last="";SC.torch=false;$("scanlinkrow").hidden=true;$("scantorch").hidden=true;$("scanman").value="";$("scanwrap").hidden=false;document.body.style.overflow="hidden";scanMsg("Starting camera");
+async function startScan(){SC.last="";SC.torch=false;$("scanlinkrow").hidden=true;$("scantorch").hidden=true;$("scanman").value="";$("scanwrap").hidden=false;document.body.style.overflow="hidden";walkHdr();scanMsg("Starting camera");
  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){scanMsg("No camera here. Type the number below.",true);return}
  try{SC.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}},audio:false});}
  catch(e){scanMsg(e&&e.name==="NotAllowedError"?"Camera is blocked. Allow it in settings, or type the number below.":"Camera not available here. Use the home-screen app, or type the number below.",true);return}
@@ -4082,18 +4240,24 @@ async function startScan(){SC.last="";SC.torch=false;$("scanlinkrow").hidden=tru
  const tr=SC.stream.getVideoTracks()[0];try{const caps=tr.getCapabilities?tr.getCapabilities():{};$("scantorch").hidden=!caps.torch;}catch(e){}
  SC.det=SC.det||await getDetector();
  if(!SC.det){scanMsg("This browser can't read barcodes. Type the number below.",true);return}
- scanMsg("Point at the barcode or QR code on the shelf tag");scanLoop();}
+ scanMsg(S.walk?"Scan each shelf tag. The camera stays on for the next one":"Point at the barcode or QR code on the shelf tag");scanLoop();}
 async function scanLoop(){if(!SC.stream)return;const v=$("scanvid");
  if(v.readyState>=2&&!SC.busy){SC.busy=true;try{const c=await SC.det(v);if(c.length)onCode(c[0]);}catch(e){}SC.busy=false;}
  if(SC.stream)SC.t=setTimeout(scanLoop,160);}
 function onCode(raw){raw=String(raw).trim();const u=matchCode(raw);
+ if(S.walk){const w=S.walk,now=Date.now(),key=u?u.id:raw;if(w.lastK===key&&now-w.lastT<3000)return;w.lastK=key;w.lastT=now;
+  if(u){const r=floorSet(u.id,w.a);w.n++;try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}$("scanlinkrow").hidden=true;SC.last="";
+   scanMsg(`✓ ${r==="added"?"Added":r==="moved"?"Moved here":"Already here, marked seen"}: ${u.brand} ${u.model}`,false,true);walkHdr();return}
+  SC.last=raw;scanMsg(`Read ${raw.length>40?raw.slice(0,40)+"…":raw}. No fridge matches. Link it by hand, or scan the next tag.`,true);$("scanlinkrow").hidden=false;return}
  if(u){try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}stopScan();openSheet(u.id);toast(`Found ${u.brand} ${u.model}`);return}
  if(raw===SC.last)return;SC.last=raw;scanMsg(`Read ${raw.length>40?raw.slice(0,40)+"…":raw}. No fridge in the list matches.`,true);$("scanlinkrow").hidden=false;}
-$("scanBtn").onclick=e=>{e.preventDefault();startScan();};
-$("scanclose").onclick=stopScan;
+$("scanBtn").onclick=e=>{e.preventDefault();S.walk=null;startScan();};
+$("scanclose").onclick=()=>{stopScan();if(S.walk){const w=S.walk;S.walk=null;toast(`${w.n} scanned into ${w.a||"the floor list"}`);if(S.view==="find")renderList(true);}};
 $("scantorch").onclick=async()=>{const tr=SC.stream&&SC.stream.getVideoTracks()[0];if(!tr)return;SC.torch=!SC.torch;try{await tr.applyConstraints({advanced:[{torch:SC.torch}]})}catch(e){SC.torch=false;toast("Light not available")}};
 $("scanlink").onclick=()=>{S.pendingCode=codeKey(SC.last);stopScan();$("q").value="";$("qclear").hidden=true;show("find");toast("Find the fridge, then tap Link code on its page");};
-$("scanform").onsubmit=e=>{e.preventDefault();const v=$("scanman").value.trim();if(!v)return;const u=matchCode(v);stopScan();
+$("scanform").onsubmit=e=>{e.preventDefault();const v=$("scanman").value.trim();if(!v)return;
+ if(S.walk){S.walk.lastK=null;onCode(v);$("scanman").value="";return}
+ const u=matchCode(v);stopScan();
  if(u){openSheet(u.id);return}$("q").value=v;$("q").dispatchEvent(new Event("input"));};
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("scanwrap").hidden)stopScan()});
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&!$("scanwrap").hidden)stopScan()});
@@ -4102,12 +4266,15 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden&&!$("scanwr
 function netState(){$("offline").hidden=navigator.onLine!==false;}
 window.addEventListener("online",netState);window.addEventListener("offline",netState);netState();
 function renderBk(){const f=Object.keys(FLOOR).length,c=Object.keys(CODES).length;$("bkStat").textContent=`Floor list: ${f} fridge${f===1?"":"s"} · Linked barcodes: ${c}`;}
-function bkCode(){return "FC1:"+btoa(unescape(encodeURIComponent(JSON.stringify({f:FLOOR,c:CODES}))));}
+/* FC1 backup: {f:{itemId:"aisle"} (old format, read by older copies), f2:{itemId:{a,s}}, c:{code:itemId}} */
+function bkCode(){return "FC1:"+btoa(unescape(encodeURIComponent(JSON.stringify({f:floorFlat(),f2:FLOOR,c:CODES}))));}
 $("bkCopy").onclick=()=>copy(bkCode(),"Backup copied. Paste it into the other app");
 $("bkPaste").onclick=()=>{openPS(`<div class="ps-head"><h3>Restore backup</h3><button class="x" data-close aria-label="Close">×</button></div><div class="ps-inner"><label class="f">Paste the backup text<textarea id="bkIn" autocomplete="off" spellcheck="false"></textarea></label><p class="note">Adds to what is already on this phone. Nothing is deleted.</p></div><div class="ps-foot"><button class="btn ghost" id="bkCancel">Cancel</button><button class="btn y" id="bkGo">Restore</button></div>`);
  $("bkCancel").onclick=closePS;
  $("bkGo").onclick=()=>{try{const t=$("bkIn").value.trim().replace(/^FC1:/,"");const o=JSON.parse(decodeURIComponent(escape(atob(t))));let nf=0,nc=0;
-   for(const [k,v] of Object.entries(o.f||{}))if(CAT.some(u=>u.id===k)&&typeof v==="string"){if(!onFloor({id:k}))nf++;FLOOR[k]=v.slice(0,40);}
+   const inF={...(o.f||{}),...(o.f2||{})};
+   for(const [k,v] of Object.entries(inF)){const n=floorNorm(v);if(!n||!CAT.some(u=>u.id===k))continue;const cur=FLOOR[k];if(!cur)nf++;
+    FLOOR[k]={a:n.a||(cur?cur.a:""),s:[n.s,cur&&cur.s].filter(Boolean).sort().pop()||null};}
    for(const [k,v] of Object.entries(o.c||{}))if(typeof v==="string"&&CAT.some(u=>u.id===v)){if(!CODES[codeKey(k)])nc++;CODES[codeKey(k)]=v;}
    saveFloor();saveCodes();closePS();toast(`Restored: ${nf} new floor fridge${nf===1?"":"s"}, ${nc} new code${nc===1?"":"s"}`);}
   catch(e){toast("That backup text didn't read. Copy it again");}};};
