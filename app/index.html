@@ -73,6 +73,9 @@ h2{font-family:var(--display);font-weight:700;font-size:24px;line-height:1.05;ma
 label.f{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--muted);min-width:0}
 label.f input,label.f select{font:600 17px var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:9px 10px;width:100%;min-width:0;font-variant-numeric:tabular-nums}
 label.f .unit{font-weight:500}
+.lrow{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.nonebtn{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:4px;padding:3px 8px;font:600 12px var(--body);cursor:pointer;flex:none}
+.nonebtn[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
 .stepper{display:flex;align-items:center;border:1px solid var(--line);border-radius:4px;background:var(--paper);overflow:hidden}
 .stepper button{border:0;background:none;width:42px;height:42px;font-size:20px;cursor:pointer}
 .stepper output{flex:1;text-align:center;font:700 18px var(--body);font-variant-numeric:tabular-nums}
@@ -348,24 +351,23 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
     <div class="optnote"><p class="eyebrow">Their kitchen · inches</p><button class="rm" id="loadEx">Load example kitchen</button></div>
     <div class="fields">
       <label class="f">Opening width<input class="meas" id="ow" type="text" inputmode="decimal" placeholder="e.g. 35 3/4" autocomplete="off"></label>
-      <label class="f">Opening height<input class="meas" id="oh" type="text" inputmode="decimal" placeholder="to cabinet" autocomplete="off"></label>
-      <label class="f">Wall to counter edge<input class="meas" id="cab" type="text" inputmode="decimal" placeholder="about 25" autocomplete="off"></label>
-      <label class="f">Wall to island<input class="meas" id="island" type="text" inputmode="decimal" placeholder="none" autocomplete="off"></label>
-      <label class="f">Gap to side wall<input class="meas" id="hinge" type="text" inputmode="decimal" placeholder="none" autocomplete="off"></label>
-      <label class="f">Nook depth<input class="meas" id="nook" type="text" inputmode="decimal" placeholder="walls both sides?" autocomplete="off"></label>
+      <label class="f"><span class="lrow">Opening height<button type="button" class="nonebtn" data-none="oh" aria-pressed="false" aria-label="Opening height: doesn't apply">None</button></span><input class="meas" id="oh" type="text" inputmode="decimal" placeholder="to cabinet" autocomplete="off"></label>
+      <label class="f"><span class="lrow">Wall to counter edge<button type="button" class="nonebtn" data-none="cab" aria-pressed="false" aria-label="Wall to counter edge: doesn't apply">None</button></span><input class="meas" id="cab" type="text" inputmode="decimal" placeholder="about 25" autocomplete="off"></label>
+      <label class="f"><span class="lrow">Wall to island<button type="button" class="nonebtn" data-none="island" aria-pressed="false" aria-label="Wall to island: doesn't apply">None</button></span><input class="meas" id="island" type="text" inputmode="decimal" placeholder="e.g. 66" autocomplete="off"></label>
+      <label class="f"><span class="lrow">Gap to side wall<button type="button" class="nonebtn" data-none="hinge" aria-pressed="false" aria-label="Gap to side wall: doesn't apply">None</button></span><input class="meas" id="hinge" type="text" inputmode="decimal" placeholder="e.g. 2" autocomplete="off"></label>
+      <label class="f"><span class="lrow">Nook depth<button type="button" class="nonebtn" data-none="nook" aria-pressed="false" aria-label="Nook depth: doesn't apply">None</button></span><input class="meas" id="nook" type="text" inputmode="decimal" placeholder="e.g. 26" autocomplete="off"></label>
       <label class="f">Narrowest door / hall<input class="meas" id="door" type="text" inputmode="decimal" placeholder="e.g. 32" autocomplete="off"></label>
       <label class="f">Delivery path<select id="path"><option value="straight">Straight shot</option><option value="turn">Tight turn</option><option value="stairs">Stairs</option></select></label>
       <label class="f">Water line there?<select id="water"><option value="unsure">Not sure</option><option value="yes">Yes</option><option value="no">No</option></select></label>
     </div>
     <div class="fracs" id="fracs" aria-label="Add a fraction to the selected measurement"><span>Add to field</span>
       <button data-frac="0.125">⅛</button><button data-frac="0.25">¼</button><button data-frac="0.375">⅜</button><button data-frac="0.5">½</button><button data-frac="0.625">⅝</button><button data-frac="0.75">¾</button><button data-frac="0.875">⅞</button></div>
-    <div class="fracs" id="nonebar" hidden><span>Doesn't apply</span><button type="button" id="setNone">None</button></div>
-    <details class="mhelp"><summary>What each one means</summary><ul>
+        <details class="mhelp"><summary>What each one means</summary><ul>
       <li><b>Wall to counter edge:</b> back wall to the front edge of the countertop (about 25"). Shows how far it sticks out.</li>
       <li><b>Wall to island:</b> back wall to the island or counter across. Checks the doors open all the way.</li>
       <li><b>Gap to side wall:</b> only a wall or tall pantry on one side: gap from it to the fridge's side.</li>
       <li><b>Nook depth:</b> walls or tall cabinets on both sides: back wall to their front edge. The fridge sits forward so its doors clear them.</li>
-      <li>Tap <b>None</b> when something doesn't apply, so the customer's page shows it as covered.</li></ul></details>
+      <li>Tap <b>None</b> next to a field when it doesn't apply (no cabinet above, no island, no wall beside it, not in a nook). The customer's page then shows it as covered. Tap again to undo.</li></ul></details>
     <p class="note">Fractions work: type 35 3/4, 35-3/4, or tap a fraction.</p>
   </div>
   <div class="callout" id="walkto"></div>
@@ -4032,12 +4034,14 @@ $("list").addEventListener("click",e=>{if(e.target.id==="more"){S.lim+=40;render
 function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,1700);}
 function copy(text,msg){navigator.clipboard.writeText(text).then(()=>toast(msg||"Copied")).catch(()=>toast("Copy blocked here. Press and hold to select"));}
 $("copySum").onclick=()=>copy($("sum").textContent,"Summary copied");
-function resetCustomer(){["ow","oh","cab","island","hinge","nook","door","budget","cust","q"].forEach(id=>$(id).value="");$("path").value="straight";$("water").value="unsure";S.adults=2;S.kids=1;$("adults").textContent=2;$("kids").textContent=1;S.habits={};S.cmp=[];S.kwh={};
+function resetCustomer(){setTimeout(syncNone);["ow","oh","cab","island","hinge","nook","door","budget","cust","q"].forEach(id=>$(id).value="");$("path").value="straight";$("water").value="unsure";S.adults=2;S.kids=1;$("adults").textContent=2;$("kids").textContent=1;S.habits={};S.cmp=[];S.kwh={};
  $$("#habits .chip").forEach(c=>c.setAttribute("aria-pressed","false"));S.t={fits:true};S.f={styles:new Set(),brands:new Set(),disp:new Set(),r:{}};S.sort="best";renderBadge();all();show("customer");toast("Ready for the next customer");}
 
 /* ---------- fractions ---------- */
-let lastMeas=null;const NONEOK=["oh","cab","island","hinge","nook"];$$(".meas").forEach(i=>{i.addEventListener("focus",()=>{lastMeas=i;$("nonebar").hidden=!NONEOK.includes(i.id);});i.addEventListener("blur",()=>{const v=parseIn(i.value);if(v!=null)i.value=showIn(v);all();});});
-$("setNone").addEventListener("mousedown",e=>e.preventDefault());$("setNone").onclick=()=>{const i=lastMeas;if(!i||!NONEOK.includes(i.id))return;i.value="None";all();i.focus();};
+let lastMeas=null;const isNone=v=>/^\s*(none|n\/a|na|no)\s*$/i.test(v);
+function syncNone(){$$(".nonebtn").forEach(b=>b.setAttribute("aria-pressed",isNone($(b.dataset.none).value)));}
+$$(".nonebtn").forEach(b=>b.onclick=e=>{e.preventDefault();const i=$(b.dataset.none);i.value=isNone(i.value)?"":"None";syncNone();all();});
+$$(".meas").forEach(i=>{i.addEventListener("input",syncNone);i.addEventListener("focus",()=>{lastMeas=i;});i.addEventListener("blur",()=>{const v=parseIn(i.value);if(v!=null)i.value=showIn(v);all();});});
 $$("#fracs button").forEach(b=>{b.addEventListener("mousedown",e=>e.preventDefault());b.onclick=()=>{const i=lastMeas||$("ow");const base=Math.floor(parseIn(i.value)||0);i.value=showIn(base+ +b.dataset.frac);all();i.focus();};});
 
 /* ---------- QR handoff ---------- */
@@ -4142,7 +4146,7 @@ $("priceNote").textContent=`Prices from homedepot.com for the Cumberland store, 
 
 $("reset").onclick=()=>resetCustomer();
 
-$("loadEx").onclick=()=>{$("ow").value="36";$("oh").value="70 ½";$("cab").value="25";$("door").value="32";$("island").value="66";$("hinge").value="None";$("nook").value="None";all();toast("Example kitchen loaded");};
+$("loadEx").onclick=()=>{$("ow").value="36";$("oh").value="70 ½";$("cab").value="25";$("door").value="32";$("island").value="66";$("hinge").value="None";$("nook").value="None";syncNone();all();toast("Example kitchen loaded");};
 $("catCount").textContent=CAT.length+" fridges";all();renderBadge();
 </script>
 
