@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <title>Your Fridge Shortlist</title>
 <style>
-/* Layout: a shopper's take-home fridge planner. Orange header with who helped them, sticky three-tab bar (Your picks, Measure, Find more), one column of cards. Picks show fit, to-scale drawings, reasons and today's-price links; Measure walks through each measurement with a small diagram; Find more browses the full catalog against their kitchen. */
+/* Layout: a shopper's take-home fridge planner. Orange header with who helped them, sticky three-tab bar (Your picks, Measure, Find more), one column of cards. Picks show fit, to-scale drawings, reasons and today's-price links; Picks open with a What we checked box and verdict-first cards (Cards or Compare); Measure is guided: always-measure fields, then yes/no questions that reveal optional measurements; Find more browses the full catalog against their kitchen. */
 :root{
   --paper:#F5F5F5; --card:#FFFFFF; --sunk:#EEEEEE; --ink:#333333; --muted:#666666; --line:#D9D9D9;
   --band:#F96302; --band-ink:#FFFFFF; --signal:#F96302; --signal-ink:#FFFFFF; --signal-soft:#FEEBDF;
@@ -167,6 +167,57 @@ dl{margin:6px 0 0}dt{font-weight:700;margin-top:10px}dd{margin:2px 0 0;color:var
 .fin{border:1px solid var(--line);background:var(--card);border-radius:4px;padding:5px 8px;font-size:13px;cursor:pointer}
 .fin[aria-pressed="true"]{border-color:var(--signal);box-shadow:inset 0 0 0 1px var(--signal);font-weight:700}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#333333;color:#FFFFFF;padding:10px 16px;border-radius:6px;font-weight:600;font-size:14px;z-index:50;max-width:calc(100% - 32px)}
+/* v2: what we checked, verdict-first cards, guided measure */
+.pick{border-top:1px solid var(--line)}
+.pick .num{color:var(--muted)}
+.eff{color:var(--good)}
+.btn.sm{padding:9px 14px;font-size:14px;align-self:flex-start}
+.checked{gap:10px}
+.chead{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.cnt{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.clist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.clist li{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:15px}
+.clist li:first-child{border-top:0}
+.clist .cv{text-align:right;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.clist li.done .cv{color:var(--ink);font-weight:600}
+.clist .cv .linkbtn{font-size:14px;padding:0}
+.ci{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800}
+.ci.done{background:var(--good);color:#FFFFFF}.ci.na{background:var(--sunk);color:var(--muted)}.ci.miss{border:2px dashed var(--muted)}
+.clist li.na .cl{color:var(--muted)}
+.verdict small{display:block;margin-top:6px;font-size:13px;opacity:.9;color:var(--ink)}
+.vlist{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:3px;color:var(--ink)}
+.verdict b{font-size:17px}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--card)}
+.seg button{border:0;background:none;padding:10px;font-weight:700;font-size:15px;color:var(--muted);cursor:pointer}
+.seg button[aria-selected="true"]{background:var(--ink);color:var(--card)}
+.pickbar{margin-bottom:-6px}
+.pickbar button span{overflow:hidden;text-overflow:ellipsis;min-width:0}
+td .tag{display:inline-block;white-space:nowrap}
+.more{border-top:1px solid var(--line);padding-top:10px}
+.more summary{font-weight:700;font-size:15px;color:var(--blue)}
+.morein{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.todo{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:15px}
+.todo li{display:grid;grid-template-columns:20px 1fr;gap:8px}
+.todo li::before{content:"";width:14px;height:14px;border:2px solid var(--muted);border-radius:3px;margin-top:3px}
+.todo .linkbtn{text-align:left;padding:0;font-size:15px}
+.mfield figure{margin:0;display:flex;flex-direction:column;gap:2px}
+.mfield figcaption{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center}
+.mbody{display:flex;flex-direction:column;min-width:0}
+.mbody .linkbtn{align-self:flex-start;margin-top:6px}
+.q{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.q:first-of-type{border-top:0;padding-top:0}
+.q .mfield{border-top:0;padding:4px 0 0}
+.q.flash{animation:flash 1.4s ease}
+@keyframes flash{0%,60%{background:var(--signal-soft)}100%{background:transparent}}
+.qt{margin:0;font-weight:700;font-size:15.5px}
+.hint{margin:0;font-size:13.5px;color:var(--muted)}
+.yn{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:260px}
+.yn.three{grid-template-columns:1fr 1fr 1fr;max-width:340px}
+.yn button{border:1px solid var(--line);background:var(--card);border-radius:4px;padding:10px;font-weight:700;font-size:15px;cursor:pointer}
+.yn button[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.mstatus{position:sticky;bottom:0;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:12px 14px;font-size:14.5px;box-shadow:0 -2px 10px rgba(0,0,0,.06);margin-bottom:calc(env(safe-area-inset-bottom,0px))}
+.mstatus .linkbtn{padding:0}
+#fracbar{margin:8px 0 2px}
 </style>
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
@@ -947,7 +998,7 @@ const $=id=>document.getElementById(id);
 const num=v=>{const x=parseFloat(v);return isFinite(x)?x:null};
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const priceHTML=n=>{if(n==null)return `<span class="price na">See price online</span>`;const d=Math.floor(n),c=Math.round((n-d)*100);return `<span class="price"><sup>$</sup>${d.toLocaleString()}<sup>${String(c).padStart(2,"0")}</sup></span>`};
-const fmt=n=>n==null?"See price online":"$"+(Math.round(n*100)%100?n.toFixed(2):Math.round(n).toLocaleString());
+const fmt=n=>n==null?"See price online":"$"+(Math.round(n*100)%100?n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):Math.round(n).toLocaleString());
 const inch=n=>n==null?"–":(+n.toFixed(2))+'"';
 
 /* ---------- promo ---------- */
@@ -986,28 +1037,35 @@ function needs(){const h=S.habits,people=S.adults+S.kids;
 
 /* ---------- fit ---------- */
 function fit(u,sp=space()){const c=[];
- if(sp.ow!=null){const m=sp.ow-u.w;c.push({k:"Width",s:m<0?"no":m<0.25?"chk":"ok",t:m<0?`${inch(-m)} too wide for the ${inch(sp.ow)} opening`:m<0.25?`Only ${inch(m)} to spare. Very tight`:`${inch(m)} to spare`});}
- if(sp.oh!=null){const m=sp.oh-u.h;c.push({k:"Height",s:m<0?"no":m<1?"chk":"ok",t:m<0?`${inch(-m)} too tall for the opening`:m<1?`${inch(m)} on top. 1" is recommended for air`:`${inch(m)} to spare on top`});}
+ /* kind: "fit" = how it fits the space (tight here means double check), "todo" = something to sort out before delivery */
+ if(sp.ow!=null){const m=sp.ow-u.w;c.push({k:"Width",kind:"fit",s:m<0?"no":m<0.25?"chk":"ok",t:m<0?`${inch(-m)} too wide for the ${inch(sp.ow)} opening`:m<0.25?`Only ${inch(m)} to spare in width. Tight, so check the install guide`:`${inch(m)} to spare in width`});}
+ if(sp.oh!=null){const m=sp.oh-u.h;c.push({k:"Height",kind:"fit",s:m<0?"no":m<1?"chk":"ok",t:m<0?`${inch(-m)} too tall for the opening`:m<1?`Only ${inch(m)} above it. 1" is recommended for air`:`${inch(m)} to spare on top`});}
  if(sp.door!=null){const M={straight:.5,turn:1.5,stairs:2}[sp.path]||.5,why={straight:"",turn:" with a tight turn",stairs:" on stairs"}[sp.path]||"";
    const on=Math.min(u.w,u.d),noH=Math.min(u.w,u.dx||u.d),off=Math.min(u.w,u.dnd??u.d);
-   if(on+M<=sp.door)c.push({k:"Delivery",s:"ok",t:`Fits through the ${inch(sp.door)} doorway ${{straight:"as is",turn:"with room to make the turn",stairs:"with room for the stairs"}[sp.path]||"as is"}`});
-   else if(noH+M<=sp.door)c.push({k:"Delivery",s:"chk",t:`Handles come off to get through ${inch(sp.door)}${why}. Note it on the order`});
-   else if(off+M<=sp.door)c.push({k:"Delivery",s:"chk",t:`Doors come off to get through ${inch(sp.door)}${why} (${inch(off)} without doors). Note it on the order`});
-   else c.push({k:"Delivery",s:"no",t:`Won't make it through a ${inch(sp.door)} doorway${why}, even with doors off`});}
- if(sp.island!=null&&u.d90){const need=u.d90+1,m=sp.island-need;c.push({k:"Doors",s:m<0?"no":m<6?"chk":"ok",t:m<0?`Doors open 90° need ${inch(need)} from the wall (incl. 1" behind); the island is at ${inch(sp.island)}`:m<6?`Doors clear the island by only ${inch(m)}`:`Doors open fully with ${inch(m)} to the island`});}
- if(sp.hinge!=null){const need=hingeNeed(u);
-   if(u.zero)c.push({k:"Hinge",s:"ok",t:"Zero-clearance hinges. Opens fully right against a wall"});
-   else if(sp.hinge>=need)c.push({k:"Hinge",s:"ok",t:`Needs about ${inch(need)} beside the hinge; they have ${inch(sp.hinge)}`});
-   else if(u.rev&&(u.type==="TF"||u.type==="BF"))c.push({k:"Hinge",s:"chk",t:`Only ${inch(sp.hinge)} beside the hinge (needs about ${inch(need)}). Door is reversible, so hinge it on the open side`});
-   else c.push({k:"Hinge",s:"chk",t:`Only ${inch(sp.hinge)} beside the hinge; needs about ${inch(need)}. The door stops short of 90°, so ${u.type==="TF"?"door bins":"crisper drawers"} may not slide out. Look at zero-clearance models`});}
- if(sp.cab!=null){const cs=(u.dnd??u.d)+1-sp.cab,dr=(u.dx||u.d)+1-sp.cab;
-   c.push({k:"Depth",s:S.habits.flush&&cs>1.5?"chk":"ok",t:cs<=0.5?`Case sits flush with the ${inch(sp.cab)} counters; doors stick out ${inch(Math.max(0,dr))}`:`Case sticks out ${inch(cs)} past the counters, doors ${inch(dr)} (includes 1" behind for the water line and air)`});}
- const hasIce=u.disp!=="None"||/ice/i.test(u.label);
+   if(on+M<=sp.door)c.push({k:"Delivery",kind:"todo",s:"ok",t:`Fits through the ${inch(sp.door)} doorway ${{straight:"as is",turn:"with room to make the turn",stairs:"with room for the stairs"}[sp.path]||"as is"}`});
+   else if(noH+M<=sp.door)c.push({k:"Delivery",kind:"todo",s:"chk",t:`Handles come off to get through ${inch(sp.door)}${why}. Note it on the order`});
+   else if(off+M<=sp.door)c.push({k:"Delivery",kind:"todo",s:"chk",t:`Doors come off to get through ${inch(sp.door)}${why} (${inch(off)} without doors). Note it on the order`});
+   else c.push({k:"Delivery",kind:"fit",s:"no",t:`Won't make it through a ${inch(sp.door)} doorway${why}, even with doors off`});}
+ const P0=(u.dnd??u.d)+1,pull=sp.nook!=null?Math.max(0,sp.nook-P0):0,P=P0+pull;
+ if(sp.nook!=null)c.push({k:"Nook",kind:"fit",s:"ok",t:pull>0.25?`Sits ${inch(pull)} out from the back wall so its front lines up with the side walls and the doors open fully`:`Front sits past the side walls, so the doors open fully`});
+ if(sp.island!=null&&u.d90){const need=u.d90+1+pull,m=sp.island-need;c.push({k:"Doors",kind:"fit",s:m<0?"no":m<6?"chk":"ok",t:m<0?`Open doors reach ${inch(need)} from the wall${pull>0.25?" (it sits forward in the nook)":""}; the island is at ${inch(sp.island)}`:m<6?`Open doors clear the island by only ${inch(m)}`:`Doors open fully with ${inch(m)} to the island`});}
+ if(sp.hinge!=null&&sp.nook==null){const need=hingeNeed(u);
+   if(u.zero)c.push({k:"Hinge",kind:"fit",s:"ok",t:"Zero-clearance hinges. Opens fully right against a wall"});
+   else if(sp.hinge>=need)c.push({k:"Hinge",kind:"fit",s:"ok",t:`Needs about ${inch(need)} beside the wall; there's ${inch(sp.hinge)}`});
+   else if(u.rev&&(u.type==="TF"||u.type==="BF"))c.push({k:"Hinge",kind:"todo",s:"chk",t:`Only ${inch(sp.hinge)} beside the wall (needs about ${inch(need)}). The door is reversible, so hinge it on the open side`});
+   else c.push({k:"Hinge",kind:"fit",s:"chk",t:`Only ${inch(sp.hinge)} beside the wall; needs about ${inch(need)}. The door stops short of fully open, so ${u.type==="TF"?"door bins":"crisper drawers"} may not slide out. Zero-clearance models avoid this`});}
+ if(sp.cab!=null){const cs=P-sp.cab,dr=P+((u.dx||u.d)-(u.dnd??u.d))-sp.cab;
+   c.push({k:"Depth",kind:"pref",s:S.habits.flush&&cs>1.5?"chk":"ok",t:cs<=0.5?`Body lines up with the ${inch(sp.cab)} counters; doors stick out ${inch(Math.max(0,dr))}`:`Body sticks out ${inch(cs)} past the counters, doors ${inch(dr)} (includes 1" behind for the water line and air)`});}
  if(u.disp!=="None"&&u.disp!=="Beverage Center"||/ice maker|ice &|dual ice|craft ice|sphere ice/i.test(u.label)){
-   if(sp.water==="no")c.push({k:"Water",s:"no",t:"Needs a water line run before ice and water work"});
-   else if(sp.water==="unsure")c.push({k:"Water",s:"chk",t:"Ask if there's a water line behind the old fridge"});}
- const bad=c.some(x=>x.s==="no"&&x.k!=="Water"), warn=c.some(x=>x.s==="chk"||x.s==="no");
- return {checks:c,verdict:!c.length?"na":bad?"no":warn?"chk":"ok"};}
+   if(sp.water==="no")c.push({k:"Water",kind:"todo",s:"no",t:"Needs a water line run before ice and water work"});
+   else if(sp.water==="unsure")c.push({k:"Water",kind:"todo",s:"chk",t:"Check for a water line behind your current fridge"});}
+ const bad=c.some(x=>x.s==="no"&&x.k!=="Water"), warn=c.some(x=>x.s==="chk"||x.s==="no"), tight=!bad&&c.some(x=>x.s==="chk"&&x.kind==="fit");
+ return {checks:c,verdict:!c.length?"na":bad?"no":warn?"chk":"ok",tight,pull,todo:c.filter(x=>x.s!=="ok").length};}
+/* fit labels: ok = Fits, chk = Fits with something to check, tight = double check, no = won't fit */
+const fitKey=f=>f.verdict==="chk"&&f.tight?"tight":f.verdict;
+const FITW={ok:"Fits",chk:"Fits, check 1 thing",tight:"Tight, double check",no:"Won't fit",na:"Not checked"};
+const fitWord=f=>{const k=fitKey(f);return k==="chk"&&f.todo>1?`Fits, check ${f.todo} things`:FITW[k]};
+const fitCls=f=>({ok:"fit",chk:"fit",tight:"chk",no:"no",na:""})[fitKey(f)];
 
 /* ---------- drawings ---------- */
 function silhouette(u,x,y,w,h,stroke="currentColor",fill="none",sw=1.5){
@@ -1027,33 +1085,36 @@ function frontDrawing(u,sp){const pad=6,W=Math.max(u.w,sp.ow||0)+pad*2,H=Math.ma
  s+=`<line x1="0" y1="${base*k}" x2="${W*k}" y2="${base*k}" stroke="var(--muted)" stroke-width="3"/>`;
  for(let i=0;i<W;i+=4)s+=`<line x1="${i*k}" y1="${base*k}" x2="${(i-3)*k}" y2="${(base+3)*k}" stroke="var(--line)" stroke-width="2"/>`;
  if(sp.ow&&sp.oh){const x=(W-sp.ow)/2;s+=`<rect x="${x*k}" y="${(base-sp.oh)*k}" width="${sp.ow*k}" height="${sp.oh*k}" fill="var(--blue-soft)" stroke="var(--blue)" stroke-width="3" stroke-dasharray="12 7"/>`;}
- const fx=(W-u.w)/2,fy=base-u.h;const v=fit(u,sp).verdict;const col=v==="no"?"var(--bad)":v==="chk"?"var(--warn)":"var(--ink)";
+ const fx=(W-u.w)/2,fy=base-u.h;const v=fitKey(fit(u,sp));const col=v==="no"?"var(--bad)":v==="tight"?"var(--warn)":"var(--ink)";
  s+=silhouette(u,fx*k,fy*k,u.w*k,u.h*k,col,"var(--card)",3.5);
  return s+`</svg>`;}
 function frontLegend(u,sp){const r=[`<span class="dim"><i class="sw ink"></i>Fridge ${inch(u.w)} × ${inch(u.h)}</span>`];
  if(sp.ow)r.push(`<span class="dim"><i class="sw blue"></i>Opening ${inch(sp.ow)}${sp.oh?` × ${inch(sp.oh)}`:""}</span>`);
  const g=[];if(sp.ow){const x=(sp.ow-u.w)/2;g.push(`${x<0?"":"+"}${+x.toFixed(2)}" each side`)}if(sp.oh){const t=sp.oh-u.h;g.push(`${t<0?"":"+"}${+t.toFixed(2)}" on top`)}
  if(g.length)r.push(`<span class="dim strong">${g.join(" · ")}</span>`);return `<div class="legend">${r.join("")}</div>`;}
-function planDrawing(u,sp){const lp=sp.hinge!=null?Math.max(6,sp.hinge+6):6;const reach=Math.max(u.d90||u.d,sp.island?sp.island+5:0)+4,W=u.w+lp+6,k=4;
+function planDrawing(u,sp){const lp=sp.hinge!=null?Math.max(6,sp.hinge+6):6;const pl=sp.nook!=null?Math.max(0,sp.nook-(u.dnd??u.d)-1):0;const reach=Math.max((u.d90||u.d)+pl,sp.island?sp.island+5:0)+4,W=u.w+lp+6,k=4;
  let s=`<svg viewBox="0 0 ${W*k} ${(reach+3)*k}" role="img" aria-label="Top view showing door swing">`;
  s+=`<rect x="0" y="0" width="${W*k}" height="${3*k}" fill="var(--line)"/>`;
- const x=lp,y=4,dk=(u.dnd??u.d);
+ const pull=sp.nook!=null?Math.max(0,sp.nook-(u.dnd??u.d)-1):0;
+ const x=lp,y=4+pull,dk=(u.dnd??u.d);
  const doorY=(y+dk)*k, sw=u.d90?(u.d90-dk):u.w/2;
  const arc=(hx,dir,len)=>`<path d="M ${hx*k} ${doorY} L ${(hx+dir*len)*k} ${doorY} A ${len*k} ${len*k} 0 0 ${dir>0?1:0} ${hx*k} ${doorY+len*k} Z" fill="var(--blue-soft)" stroke="var(--blue)" stroke-width="2.5"/><line x1="${hx*k}" y1="${doorY}" x2="${hx*k}" y2="${doorY+len*k}" stroke="var(--blue)" stroke-width="4" stroke-linecap="round"/>`;
  if(u.type==="FD")s+=arc(x,1,Math.min(u.w/2,sw))+arc(x+u.w,-1,Math.min(u.w/2,sw));
  else if(u.type==="SS")s+=arc(x,1,Math.min(u.w*.42,sw))+arc(x+u.w,-1,Math.min(u.w*.58,sw));
  else s+=arc(x,1,Math.min(u.w,sw));
  s+=`<rect x="${x*k}" y="${y*k}" width="${u.w*k}" height="${dk*k}" fill="var(--card)" stroke="var(--ink)" stroke-width="3.5"/>`;
- if(sp.hinge!=null){const need=hingeNeed(u),bad=!u.zero&&sp.hinge<need,wx=x-sp.hinge;
+ if(sp.nook!=null){const gl=sp.ow!=null?Math.max(0.25,(sp.ow-u.w)/2):0.5;s+=`<rect x="${(x-gl-3)*k}" y="0" width="${3*k}" height="${sp.nook*k}" fill="var(--muted)" opacity=".55"/><rect x="${(x+u.w+gl)*k}" y="0" width="${3*k}" height="${sp.nook*k}" fill="var(--muted)" opacity=".55"/>`;}
+ if(sp.hinge!=null&&sp.nook==null){const need=hingeNeed(u),bad=!u.zero&&sp.hinge<need,wx=x-sp.hinge;
    s+=`<rect x="${(wx-4)*k}" y="0" width="${4*k}" height="${(y+dk+10)*k}" fill="${bad?"var(--bad)":"var(--muted)"}" opacity="${bad?.75:.55}"/>`;
    if(!u.zero)s+=`<rect x="${(x-need)*k}" y="${(y+dk-0.5)*k}" width="${need*k}" height="${3*k}" fill="none" stroke="${bad?"var(--bad)":"var(--good)"}" stroke-width="2.5" stroke-dasharray="6 4"/>`;}
- if(sp.island){const iy=(y+sp.island)*k;const m=sp.island-(u.d90||0)-1;s+=`<rect x="0" y="${iy}" width="${W*k}" height="${5*k}" fill="${m<0?"var(--bad)":"var(--muted)"}" opacity=".6"/>`;}
+ if(sp.island){const iy=(4+sp.island)*k;const m=sp.island-(u.d90||0)-1-pull;s+=`<rect x="0" y="${iy}" width="${W*k}" height="${5*k}" fill="${m<0?"var(--bad)":"var(--muted)"}" opacity=".6"/>`;}
  return s+`</svg>`;}
-function planLegend(u,sp){const r=[];if(u.d90)r.push(`<span class="dim"><i class="sw blue"></i>Doors open: ${inch(u.d90+1)} from wall</span>`);
- if(sp.island&&u.d90){const m=sp.island-u.d90-1;r.push(`<span class="dim strong ${m<0?"bad":""}">${m<0?`Hits island by ${inch(-m)}`:`${inch(m)} to island`}</span>`)}
- else r.push(`<span class="dim">Add "back wall to island" to check</span>`);
+function planLegend(u,sp){const r=[],pull=sp.nook!=null?Math.max(0,sp.nook-(u.dnd??u.d)-1):0;if(u.d90)r.push(`<span class="dim"><i class="sw blue"></i>Doors open: ${inch(u.d90+1+pull)} from wall</span>`);
+ if(pull>0.25)r.push(`<span class="dim">Sits ${inch(pull)} forward in the nook</span>`);
+ if(sp.island&&u.d90){const m=sp.island-u.d90-1-pull;r.push(`<span class="dim strong ${m<0?"bad":""}">${m<0?`Hits island by ${inch(-m)}`:`${inch(m)} to island`}</span>`)}
+ else r.push(`<span class="dim">Add "wall to island" to check</span>`);
  const need=hingeNeed(u);
- if(sp.hinge!=null)r.push(`<span class="dim strong ${!u.zero&&sp.hinge<need?"bad":""}">${u.zero?"Zero-clearance hinge":`Hinge side needs ~${inch(need)}, has ${inch(sp.hinge)}`}</span>`);
+if(sp.nook!=null){}else if(sp.hinge!=null)r.push(`<span class="dim strong ${!u.zero&&sp.hinge<need?"bad":""}">${u.zero?"Zero-clearance hinge":`Hinge side needs ~${inch(need)}, has ${inch(sp.hinge)}`}</span>`);
  else r.push(`<span class="dim">Hinge side needs ~${inch(need)}${u.zero?" (zero-clearance)":""}</span>`);
  return `<div class="legend">${r.join("")}</div>`;}
 const BAYES=r=>{const v=r.reviews||0,R=r.rating||0,m=50,C=4.2;return (v/(v+m))*R+(m/(v+m))*C};
@@ -1082,26 +1143,28 @@ function gtkList(u,f,sp){const g=[];
  if(!u.returnable)g.push("No change-of-mind returns. Issues are covered for 2 days after delivery");
  if(u.av==="O")g.push("Online only, ships to your home");
  return [...new Set(g)].slice(0,4);}
-function verdictHTML(f){const first=f.checks.find(c=>c.s==="no")||f.checks.find(c=>c.s==="chk");
- const m={ok:["✓","Fits your kitchen","Checked against your measurements"],chk:["!","Fits, with a note",first?first.t:""],no:["✕","Won't fit as measured",first?first.t:""],na:["?","Fit not checked yet","Add your measurements to check"]}[f.verdict];
- return `<div class="verdict ${f.verdict}"><span class="ic" aria-hidden="true">${m[0]}</span><span><b>${m[1]}</b>${m[2]}</span></div>`;}
+function verdictHTML(f){const k=fitKey(f),first=f.checks.find(c=>c.s==="no"&&c.k!=="Water")||f.checks.find(c=>c.s==="chk"&&c.kind==="fit")||f.checks.find(c=>c.s!=="ok");
+ const m={ok:["✓","Fits","Checked against the measurements entered"],chk:["✓",fitWord(f),first?first.t:""],tight:["!","Tight, double check",first?first.t:""],no:["✕","Won't fit as measured",first?first.t:""],na:["?","Fit not checked yet","Add measurements to check"]}[k];
+ return `<div class="verdict ${k==="chk"?"ok":k==="tight"?"chk":k}"><span class="ic" aria-hidden="true">${m[0]}</span><span><b>${m[1]}</b>${m[2]}</span></div>`;}
 function shortLabel(u){return u.label.replace(/\s+(in|with)\s+(Fingerprint|Smudge|PrintProof|Print|Stainless|White|Black|Slate|Panel|Matte|Bespoke|P$|Pr)[\s\S]*$/i,"").replace(/[\s,]+$/,"").trim()}
 
 const STORE="Home Depot Cumberland, 2450 Cumberland Pkwy SE, Atlanta";
 const MAXP=3;
 const HL={c:["cook","Cooks most nights"],b:["bulk","Buys in bulk"],o:["host","Hosts a lot"],d:["dispenser","Wants ice/water in the door"],f:["flush","Wants a flush, built-in look"],r:["reliable","Last fridge died early"],g:["garage","Going in the garage"]};
-const MK={ow:"w",oh:"h",cab:"c",island:"i",hinge:"g",door:"d"};
-const st={floor:[],ids:[],sp:{ow:null,oh:null,cab:null,island:null,hinge:null,door:null,path:"straight",water:"unsure"},adults:2,kids:0,habits:{},budget:null,name:""};
-let tab="picks",lim=20;const F={style:"all",ice:false,counter:false,brand:"",max:"",sort:"best",fits:true,size:true};
+const MK={ow:"w",oh:"h",cab:"c",island:"i",hinge:"g",nook:"e",door:"d"};
+const st={floor:[],ids:[],sp:{ow:null,oh:null,cab:null,island:null,hinge:null,nook:null,door:null,path:"straight",water:"unsure",na:{}},yes:{},adults:2,kids:0,habits:{},budget:null,name:""};
+let tab="picks",lim=20,cv="cards",filtOpen=false;const F={style:"all",ice:false,counter:false,brand:"",max:"",sort:"best",fits:true,size:true};
 function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,1900);}
+const dShort=()=>DATA_DATE.toLocaleDateString("en-US",{month:"short",day:"numeric"});
 
 /* ---------- link <-> state ---------- */
 function decode(h){h=(h||"").replace(/^#/,"");const t=h.split("-");if(t[0]!=="q1")return false;
- st.ids=[];st.habits={};
+ st.ids=[];st.habits={};st.sp.na={};
  for(const x of t.slice(1)){if(/^\d{9}$/.test(x)){if(!st.ids.includes(x))st.ids.push(x);continue}
   const k=x[0],v=x.slice(1);
   const mk=Object.keys(MK).find(m=>MK[m]===k);
   if(mk&&/^\d+$/.test(v))st.sp[mk]=+v/100;
+  else if(k==="z")[...v].forEach(c=>{const m=Object.keys(MK).find(m=>MK[m]===c);if(m&&m!=="ow"&&m!=="door")st.sp.na[m]=1});
   else if(k==="p")st.sp.path={s:"straight",t:"turn",x:"stairs"}[v]||"straight";
   else if(k==="r")st.sp.water={y:"yes",n:"no",u:"unsure"}[v]||"unsure";
   else if(k==="a")st.adults=Math.max(1,+v||2);else if(k==="k")st.kids=Math.max(0,+v||0);
@@ -1109,9 +1172,11 @@ function decode(h){h=(h||"").replace(/^#/,"");const t=h.split("-");if(t[0]!=="q1
   else if(k==="f")[...v].forEach(c=>{if(HL[c])st.habits[HL[c][0]]=true});
   else if(k==="n")st.name=v.replace(/[^A-Za-z]/g,"").slice(0,20);
   else if(k==="o")st.floorIdx=[...v].map(Number);}
+ for(const k in st.sp.na)st.sp[k]=null;
  if(st.floorIdx){st.floor=st.floorIdx.map(i=>st.ids[i-1]).filter(Boolean);delete st.floorIdx;}
  st.ids=st.ids.filter(id=>CAT.some(u=>u.id===id)).slice(0,MAXP);return true;}
 function encode(){const t=["q1",...st.ids];for(const k in MK)if(st.sp[k]!=null)t.push(MK[k]+Math.round(st.sp[k]*100));
+ const z=Object.keys(st.sp.na).map(k=>MK[k]).join("");if(z)t.push("z"+z);
  t.push("p"+({straight:"s",turn:"t",stairs:"x"}[st.sp.path]||"s"),"r"+({yes:"y",no:"n",unsure:"u"}[st.sp.water]||"u"),"a"+st.adults,"k"+st.kids);
  if(st.budget)t.push("b"+Math.round(st.budget));
  const hb=Object.entries(HL).filter(([,v])=>st.habits[v[0]]).map(([c])=>c).join("");if(hb)t.push("f"+hb);
@@ -1124,102 +1189,181 @@ function sync(){S.adults=st.adults;S.kids=st.kids;S.habits=st.habits;}
 const nm=()=>st.name?st.name[0].toUpperCase()+st.name.slice(1).toLowerCase():"";
 const measured=()=>Object.keys(MK).some(k=>st.sp[k]!=null);
 const picks=()=>st.ids.map(id=>CAT.find(u=>u.id===id)).filter(Boolean);
-const fitTag=v=>`<span class="tag ${v==="ok"?"fit":v==="chk"?"chk":v==="no"?"no":""}">${{ok:"Fits your kitchen",chk:"Fits, with a note",no:"Won't fit",na:"Fit not checked"}[v]}</span>`;
+const hasIce=u=>u.disp!=="None"&&u.disp!=="Beverage Center"||/ice maker|ice &|dual ice|craft ice|sphere ice/i.test(u.label);
+const fitTag=f=>`<span class="tag ${fitCls(f)}">${f.verdict==="na"?"Fit not checked":fitWord(f)}</span>`;
 function togglePick(id){const i=st.ids.indexOf(id);if(i>=0){st.ids.splice(i,1);toast("Removed from your picks")}
  else{if(st.ids.length>=MAXP){toast(`Your list holds ${MAXP}. Remove one first`);return}st.ids.push(id);toast("Added to your picks")}save();render();}
 function copyLink(){const url=location.href;
  (navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(()=>toast("Link copied. Text it to yourself or to us")).catch(()=>toast("Press and hold the address bar to copy the link"));}
 
+/* ---------- what we checked ---------- */
+const COV=[
+ {k:"ow",l:"Width of the space",short:"width",req:1},
+ {k:"oh",l:"Height of the space",short:"height",req:1,na:"No cabinet above"},
+ {k:"door",l:"Doorways on the way in",short:"doorway",req:1},
+ {k:"island",l:"Room for the doors to open",short:"door swing",na:"Nothing across from it"},
+ {k:"hinge",l:"Wall right beside it",short:"side wall",na:"No wall beside it"},
+ {k:"nook",l:"Walls on both sides",short:"nook",na:"Not in a nook"},
+ {k:"cab",l:"How far it sticks out",short:"counter line",na:"Skipped"},
+ {k:"water",l:"Water line for ice",short:"water line"}];
+function covState(c){const sp=st.sp;
+ if(c.k==="water")return sp.water==="unsure"?{s:"miss",t:"Not sure yet"}:{s:"done",t:sp.water==="yes"?"Yes, there's one":"No water line"};
+ if(c.k==="hinge"&&sp.nook!=null)return {s:"done",t:"Covered by the nook depth"};
+ if(sp[c.k]!=null)return {s:"done",t:c.k==="door"?`${inch(sp.door)}, ${({straight:"straight shot",turn:"tight turn",stairs:"stairs"})[sp.path]}`:inch(sp[c.k])};
+ if(sp.na[c.k])return {s:"na",t:c.na||"Doesn't apply"};
+ return {s:"miss",t:c.req?"Not measured yet":"Not answered yet"};}
+function coverage(){const r=COV.map(c=>({...c,...covState(c)}));return {rows:r,done:r.filter(x=>x.s!=="miss").length,miss:r.filter(x=>x.s==="miss")};}
+function checkedHTML(){const cv=coverage(),n=needs();
+ const ic={done:`<span class="ci done" aria-hidden="true">✓</span>`,na:`<span class="ci na" aria-hidden="true">–</span>`,miss:`<span class="ci miss" aria-hidden="true"></span>`};
+ return `<section class="panel checked"><div class="chead"><p class="eyebrow">What we checked</p><span class="cnt">${cv.done} of ${cv.rows.length} covered</span></div>
+  <ul class="clist">${cv.rows.map(r=>`<li class="${r.s}">${ic[r.s]}<span class="cl">${r.l}</span><span class="cv">${r.s==="miss"?`<button class="linkbtn" data-go="measure" data-focus="${r.k}">${r.t}</button>`:r.t}</span></li>`).join("")}</ul>
+  <p class="note">Sized for ${n.people} ${n.people===1?"person":"people"}: ${n.lo}–${n.hi} cu ft${st.budget?` · under ${fmt(st.budget)}`:""}. ${cv.miss.length?"Anything not covered isn't part of the fit check yet.":"Everything that matters for fit is covered."}</p>
+  <button class="btn ghost sm" data-go="measure">${cv.miss.length?"Finish measuring":"Change measurements"}</button></section>`;}
+function checkedWords(){const cv=coverage(),done=cv.rows.filter(r=>r.s==="done"&&r.k!=="water"&&!(r.k==="hinge"&&st.sp.nook!=null)).map(r=>r.short),miss=cv.rows.filter(r=>r.s==="miss"&&r.k!=="water"&&r.k!=="cab").map(r=>r.short);
+ return {done,miss};}
+
 /* ---------- PICKS ---------- */
-function renderPicks(){const us=picks(),sp=st.sp,n=needs();
+function verdictBox(u,f){const k=fitKey(f),cw=checkedWords();
+ if(k==="na")return `<div class="verdict na"><span class="ic" aria-hidden="true">?</span><span><b>Fit not checked yet</b>Measure your space and we'll check it for you.</span></div>`;
+ const items=f.checks.filter(c=>c.s!=="ok"&&!(c.k==="Water"&&!hasIce(u)));
+ const head={ok:["✓","Fits your kitchen"],chk:["✓",items.length>1?`Fits, ${items.length} things to check`:"Fits, 1 thing to check"],tight:["!","Tight, double check"],no:["✕","Won't fit as measured"]}[k];
+ const cls={ok:"ok",chk:"ok",tight:"chk",no:"no"}[k];
+ return `<div class="verdict ${cls}"><span class="ic" aria-hidden="true">${head[0]}</span><span><b>${head[1]}</b>
+  ${items.length?`<ul class="vlist">${items.slice(0,3).map(c=>`<li>${c.t}</li>`).join("")}</ul>`:""}
+  <small>Checked: ${cw.done.join(", ")||"nothing yet"}${cw.miss.length?`. Not checked yet: ${cw.miss.join(", ")}`:""}.</small></span></div>`;}
+function extrasList(u,sp){const g=[];
+ if(hasIce(u)&&sp.water!=="yes"&&!(sp.water==="no"))g.push("Needs a water line behind it for ice and water");
+ if(hasIce(u)&&S.habits.reliable)g.push("Ice makers are the most common repair. Ask us about the protection plan");
+ if(!u.returnable)g.push("No change-of-mind returns. Problems are covered for 2 days after delivery");
+ if(u.av==="O")g.push("Online only, so it ships to your home and isn't in the store");
+ return g;}
+function cardHTML(u,i,us,sp){const f=fit(u,sp),p=promo(u),why=whyList(u,us),ex=extrasList(u,sp);
+ return `<article class="pick">
+  <div class="top">${miniSil(u)}<div><div class="num">Option ${i+1}${us.length>1?` of ${us.length}`:""}</div><div class="brand">${u.brand}</div><h2>${shortLabel(u)}</h2><div class="model">Model ${u.model}</div></div></div>
+  ${verdictBox(u,f)}
+  ${st.floor.includes(u.id)?`<div class="floor">On display at the Cumberland store. Come see it in person.</div>`:""}
+  <div class="pricebox"><div><small>Price on ${dShort()}</small>${priceHTML(u.price)}${p&&p.save?`<div class="eff">${fmt(p.eff)} with the current promotion</div>`:""}</div>
+   <a class="btn ghost" href="https://www.homedepot.com/p/${u.id}" rel="noopener">See today's price</a></div>
+  <ul class="facts"><li><small>Inside</small>${u.cap} cu ft</li><li><small>Room for</small>${people(u)}</li><li><small>Style</small>${STYLE[u.type]}${u.counter?", counter depth":""}</li><li><small>Owners rate it</small>${u.reviews?`★ ${u.rating.toFixed(1)} (${u.reviews.toLocaleString()})`:"No reviews yet"}</li></ul>
+  <div><h3>Why this one</h3><ul class="why">${(why.slice(0,3).map(x=>`<li>${x}</li>`).join(""))||"<li>Solid all-around pick in your size</li>"}</ul></div>
+  <details class="more"><summary>More details</summary><div class="morein">
+   <ul class="facts"><li><small>Size (W × H × D)</small>${inch(u.w)} × ${inch(u.h)} × ${inch(u.d)}</li><li><small>Doors open</small>${u.d90?inch(u.d90)+" from the back":"–"}</li><li><small>Ice & water</small>${u.disp==="None"?"None in the door":u.disp==="Both"?"Ice and water":u.disp}</li><li><small>Returns</small>${u.returnable?"90 days":"Problems only, 2 days"}</li></ul>
+   ${why.length>3?`<ul class="why">${why.slice(3).map(x=>`<li>${x}</li>`).join("")}</ul>`:""}
+   ${ex.length?`<div><h3>Good to know</h3><ul class="gtk">${ex.map(x=>`<li>${x}</li>`).join("")}</ul></div>`:""}
+   ${(sp.ow||sp.island||sp.hinge!=null||sp.nook!=null)?`<div class="drawings"><div class="drawing"><span class="cap">Front · in your space</span>${frontDrawing(u,sp)}${frontLegend(u,sp)}</div><div class="drawing"><span class="cap">From above · doors open</span>${planDrawing(u,sp)}${planLegend(u,sp)}</div></div>`:""}
+   <button class="linkbtn" data-rm="${u.id}" style="align-self:flex-start">Remove from my picks</button></div></details>
+ </article>`;}
+function compareHTML(us,sp){const R=(label,fn,best)=>{let bi=-1;if(best){const v=us.map(best),t=Math.min(...v);if(isFinite(t)&&v.filter(x=>x===t).length===1)bi=v.indexOf(t)}return `<tr><th scope="row">${label}</th>${us.map((u,i)=>`<td class="${i===bi?"best":""}">${fn(u)}</td>`).join("")}</tr>`};
+ return `<section class="panel"><div class="tablewrap"><table><thead><tr><th scope="row"></th>${us.map((u,i)=>`<th>Option ${i+1}<div class="model">${u.brand}</div></th>`).join("")}</tr></thead><tbody>
+  ${R("Fit",u=>fitTag(fit(u,sp)))}
+  ${R("Price",u=>fmt(u.price),u=>u.price??Infinity)}${us.some(u=>promo(u)&&promo(u).save)?R("With promotion",u=>{const p=promo(u);return p&&p.save?fmt(p.eff):"–"},u=>effPrice(u)):""}
+  ${R("Inside",u=>u.cap+" cu ft",u=>-u.cap)}${R("$ per cu ft",u=>"$"+Math.round(effPrice(u)/u.cap),u=>effPrice(u)/u.cap)}
+  ${R("Width",u=>inch(u.w),null)}${R("Doors open",u=>u.d90?inch(u.d90)+" from back":"–",u=>u.d90||99)}${R("Ice & water",u=>u.disp==="None"?"None":u.disp==="Both"?"Ice + water":u.disp)}
+  ${R("Rating",u=>u.reviews?`★ ${u.rating.toFixed(1)} (${u.reviews.toLocaleString()})`:"–",u=>-BAYES(u))}${R("Returns",u=>u.returnable?"90 days":"Problems only, 2 days")}${R("In the store",u=>st.floor.includes(u.id)?"On display":u.av==="O"?"Online only":"Order in store")}</tbody></table></div>
+  <p class="note">Green marks the best in each row.</p></section>`;}
+function beforeBuy(us,sp){const L=[],cov=coverage();
+ cov.miss.forEach(r=>{if(r.k==="water"){if(us.some(hasIce))L.push(`Check for a water line behind your current fridge. Ice and water in the door need one`);return}
+  if(r.k==="cab")return;L.push(`<button class="linkbtn" data-go="measure" data-focus="${r.k}">${r.req?"Measure":"Answer"}: ${r.l.toLowerCase()}</button>`);});
+ us.forEach((u,i)=>{const f=fit(u,sp);f.checks.filter(c=>c.s!=="ok"&&c.k!=="Water").forEach(c=>L.push(`Option ${i+1} (${u.brand}): ${c.t}`));});
+ L.push("Clear a path from the front door to the kitchen for delivery day");
+ L.push("Ask about haul-away for your old fridge when you order");
+ return `<section class="panel"><p class="eyebrow">Before you buy</p><ul class="todo">${[...new Set(L)].map(x=>`<li>${x}</li>`).join("")}</ul></section>`;}
+function renderPicks(){const us=picks(),sp=st.sp;
  if(!us.length)return `<div class="empty"><b>No fridges on your list yet.</b><span>${measured()?"Your measurements are saved. See which fridges fit.":"Start by measuring your space, then pick up to 3 fridges that fit."}</span><div class="row" style="justify-content:center">${measured()?"":`<button class="btn" data-go="measure">Measure my kitchen</button>`}<button class="btn ${measured()?"":"ghost"}" data-go="find">Find fridges</button></div></div>`+ctaHTML();
- const k=[];if(sp.ow)k.push(`Opening ${inch(sp.ow)} wide`);if(sp.oh)k.push(`${inch(sp.oh)} tall`);if(sp.cab)k.push(`Counters ${inch(sp.cab)} deep`);if(sp.island)k.push(`${inch(sp.island)} to the island`);if(sp.hinge!=null)k.push(`${inch(sp.hinge)} beside the hinge`);if(sp.door)k.push(`Doorway ${inch(sp.door)}`);
- const hab=Object.values(HL).filter(([key])=>st.habits[key]).map(x=>x[1]);
- let html=`<section class="panel matched"><p class="eyebrow">What we matched on</p><div class="tags"><span class="tag">${n.people} ${n.people===1?"person":"people"} · ${n.lo}–${n.hi} cu ft</span>${st.budget?`<span class="tag">Under ${fmt(st.budget)}</span>`:""}${hab.map(x=>`<span class="tag">${x}</span>`).join("")}${k.map(x=>`<span class="tag">${x}</span>`).join("")}</div>
-  ${measured()?`<button class="linkbtn" data-go="measure" style="align-self:flex-start">Change measurements or answers</button>`:`<div class="tipbox"><b>Didn't measure yet?</b>Fit can't be checked until you do. It takes about 5 minutes with a tape measure.<button class="btn" data-go="measure" style="align-self:flex-start;margin-top:6px">Measure my kitchen</button></div>`}</section>`;
- if(us.length>1)html+=`<div class="pickbar" role="tablist" aria-label="Your picks">${us.map((u,i)=>`<button role="tab" data-pj="${i}" aria-selected="${i===0}"><b>${i+1}</b>${u.brand}</button>`).join("")}</div><p class="note swipehint">Swipe sideways to compare</p>`;
- html+=`<div class="pickrail${us.length===1?" one":""}" id="pickrail">`;
- us.forEach((u,i)=>{const f=fit(u,sp),p=promo(u);
-  const g=gtkList(u,f,sp).map(x=>x.replace(/^Ask if there's a water line behind the old fridge$/,"Check that there's a water line behind your current fridge").replace(/ Look at zero-clearance models$/," Zero-clearance models avoid this (search them in Find more)."));
-  html+=`<article class="pick">
-   <div class="top">${miniSil(u)}<div><div class="num">Option ${i+1} of ${us.length}</div><div class="brand">${u.brand}</div><h2>${shortLabel(u)}</h2><div class="model">Model ${u.model}</div></div></div>
-   ${st.floor.includes(u.id)?`<div class="floor">See it in person: this one is on display at the Cumberland store.</div>`:""}
-   <div class="pricebox"><div><small>Price on ${DATA_DATE.toLocaleDateString("en-US",{month:"short",day:"numeric"})}</small>${priceHTML(u.price)}${p&&p.save?`<div class="eff">${fmt(p.eff)} with the current promotion</div>`:""}</div>
-    <a class="btn" href="https://www.homedepot.com/p/${u.id}" rel="noopener">See today's price</a></div>
-   ${verdictHTML(f).replace("Add your measurements to check","Measure your kitchen to check")}
-   <ul class="facts"><li><small>Room for</small>${people(u)}</li><li><small>Inside</small>${u.cap} cu ft</li><li><small>Style</small>${STYLE[u.type]}${u.counter?", counter depth":""}</li><li><small>Owners rate it</small>${u.reviews?`★ ${u.rating.toFixed(1)} (${u.reviews.toLocaleString()})`:"No reviews yet"}</li><li><small>Size</small>${inch(u.w)} W × ${inch(u.h)} H × ${inch(u.d)} D</li><li><small>Ice & water</small>${u.disp==="None"?"None in the door":u.disp==="Both"?"Ice and water":u.disp}</li></ul>
-   <h3>Why this one</h3><ul class="why">${(whyList(u,us).map(x=>`<li>${x}</li>`).join(""))||"<li>Solid all-around pick in your size</li>"}</ul>
-   ${g.length?`<h3>Good to know</h3><ul class="gtk">${g.map(x=>`<li>${x}</li>`).join("")}</ul>`:""}
-   ${(sp.ow||sp.island||sp.hinge!=null)?`<details class="kdraw"><summary>See it in your kitchen</summary><div class="drawings"><div class="drawing"><span class="cap">Front · in your opening</span>${frontDrawing(u,sp)}${frontLegend(u,sp)}</div><div class="drawing"><span class="cap">From above · door swing</span>${planDrawing(u,sp)}${planLegend(u,sp)}</div></div></details>`:""}
-   <button class="linkbtn" data-rm="${u.id}" style="align-self:flex-start;margin-top:auto">Remove from my picks</button>
-  </article>`;});
- html+=`</div>`;
- if(us.length>1){const R=(label,fn,best)=>{let bi=-1;if(best){const v=us.map(best),t=Math.min(...v);if(isFinite(t)&&v.filter(x=>x===t).length===1)bi=v.indexOf(t)}return `<tr><th scope="row">${label}</th>${us.map((u,i)=>`<td class="${i===bi?"best":""}">${fn(u)}</td>`).join("")}</tr>`};
-  html+=`<section class="panel"><p class="eyebrow">Side by side</p><div class="tablewrap"><table><thead><tr><th scope="row"></th>${us.map((u,i)=>`<th>Option ${i+1}<div class="model">${u.brand}</div></th>`).join("")}</tr></thead><tbody>
-   ${R("Price",u=>fmt(u.price),u=>u.price??Infinity)}${R("Inside",u=>u.cap+" cu ft",u=>-u.cap)}${R("$ per cu ft",u=>"$"+Math.round(effPrice(u)/u.cap),u=>effPrice(u)/u.cap)}
-   ${R("Fit",u=>({ok:"Fits",chk:"Fits, with a note",no:"Won't fit",na:"Not checked"})[fit(u,sp).verdict])}
-   ${R("Width",u=>inch(u.w),null)}${R("Doors open",u=>inch(u.d90)+" from wall",u=>u.d90||99)}${R("Ice & water",u=>u.disp)}
-   ${R("Rating",u=>u.reviews?`★ ${u.rating.toFixed(1)}`:"–",u=>-BAYES(u))}${R("Returns",u=>u.returnable?"90 days":"Issues covered 2 days after delivery")}</tbody></table></div><p class="note">Green marks the best in each row.</p></section>`;}
- html+=`<p class="disc">Fit check is a guide based on the measurements you entered. Confirm with the model’s installation guide before buying.</p>`;
+ let html=checkedHTML();
+ if(us.length>1)html+=`<div class="seg" role="tablist" aria-label="View"><button role="tab" data-cv="cards" aria-selected="${cv==="cards"}">Cards</button><button role="tab" data-cv="compare" aria-selected="${cv==="compare"}">Compare</button></div>`;
+ if(us.length>1&&cv==="compare")html+=compareHTML(us,sp);
+ else{if(us.length>1)html+=`<div class="pickbar" role="tablist" aria-label="Your picks">${us.map((u,i)=>`<button role="tab" data-pj="${i}" aria-selected="${i===0}"><b>${i+1}</b><span>${u.brand.length>12?u.brand.split(" ")[0]:u.brand}</span></button>`).join("")}</div>`;
+  html+=`<div class="pickrail${us.length===1?" one":""}" id="pickrail">${us.map((u,i)=>cardHTML(u,i,us,sp)).join("")}</div>`;}
+ html+=`<p class="disc">The fit check is a guide based on the measurements entered. Confirm with the model's installation guide before buying.</p>`;
  if(us.length<MAXP)html+=`<button class="btn ghost" data-go="find">Add another fridge to compare</button>`;
- return html+ctaHTML()+glossHTML();}
-function ctaHTML(){return `<section class="cta"><b>Ready to buy, or have questions?</b><p>Come back and ask for ${nm()||"the appliance team"} in Appliances at ${STORE}. Show this page and we'll pick up right where you left off. Your list and measurements are saved on this phone and in this page's link.</p><div class="row"><button class="btn ghost" id="copyLink">Copy my link</button></div></section>`;}
+ return html+beforeBuy(us,sp)+ctaHTML()+glossHTML();}
+function ctaHTML(){return `<section class="cta"><b>Ready to buy, or have questions?</b><p>Come back and ask for ${nm()||"the appliance team"} in Appliances at ${STORE}. Show this page and we'll pick up where you left off. Your list and measurements are saved on this phone and in this page's link.</p><div class="row"><button class="btn ghost" id="copyLink">Copy my link</button></div></section>`;}
 function glossHTML(){return `<details class="panel"><summary>What these terms mean</summary><dl>
   <dt>Cubic feet (cu ft)</dt><dd>How much fits inside. A rough rule is 4 to 5 cu ft per person, more if you cook a lot or buy in bulk.</dd>
-  <dt>Counter depth</dt><dd>Shallower so it sits closer to flush with your cabinets. Looks built in, but holds less than a standard-depth fridge of the same width.</dd>
+  <dt>Counter depth</dt><dd>Shallower so it lines up closer to your counters. Looks built in, but holds less than a standard-depth fridge of the same width.</dd>
+  <dt>Tight, double check</dt><dd>It fits your numbers with very little room to spare. Measure again and check the model's installation guide before you buy.</dd>
   <dt>French door</dt><dd>Two fridge doors on top and a freezer drawer below. Fresh food sits at eye level, and each door needs less room to swing.</dd>
   <dt>Zero-clearance hinges</dt><dd>The doors stay inside the fridge's width when they open, so it can sit right against a wall and the drawers still slide out.</dd>
-  <dt>Door swing</dt><dd>How far the doors reach into the room when open. It matters if you have an island or a narrow walkway.</dd>
   <dt>Garage ready</dt><dd>Built to keep food at safe temperatures in a hot or cold garage.</dd>
   <dt>Energy Star</dt><dd>Certified to use less electricity than the federal standard.</dd>
  </dl></details><p class="note">Prices and promotions change. "See today's price" shows the current price on homedepot.com. Nothing about you is sent anywhere; your list lives in this page's link and on this phone.</p>`;}
 
 /* ---------- MEASURE ---------- */
+const A=(x1,y1,x2,y2)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--signal)" stroke-width="3"/>`;
 const DIA={
- ow:`<svg viewBox="0 0 96 80"><rect x="2" y="10" width="20" height="66" fill="var(--sunk)" stroke="var(--muted)"/><rect x="74" y="10" width="20" height="66" fill="var(--sunk)" stroke="var(--muted)"/><line x1="22" y1="44" x2="74" y2="44" stroke="var(--signal)" stroke-width="3"/><path d="M22 44l7-5v10zM74 44l-7-5v10z" fill="var(--signal)"/><line x1="0" y1="76" x2="96" y2="76" stroke="var(--muted)"/></svg>`,
- oh:`<svg viewBox="0 0 96 80"><rect x="14" y="2" width="68" height="14" fill="var(--sunk)" stroke="var(--muted)"/><line x1="48" y1="16" x2="48" y2="76" stroke="var(--signal)" stroke-width="3"/><path d="M48 16l-5 7h10zM48 76l-5-7h10z" fill="var(--signal)"/><line x1="0" y1="76" x2="96" y2="76" stroke="var(--muted)"/></svg>`,
- cab:`<svg viewBox="0 0 96 80"><rect x="2" y="4" width="8" height="72" fill="var(--muted)" opacity=".5"/><rect x="10" y="40" width="62" height="36" fill="var(--sunk)" stroke="var(--muted)"/><rect x="10" y="36" width="66" height="5" fill="var(--muted)"/><line x1="10" y1="26" x2="76" y2="26" stroke="var(--signal)" stroke-width="3"/><path d="M10 26l7-5v10zM76 26l-7-5v10z" fill="var(--signal)"/></svg>`,
- island:`<svg viewBox="0 0 96 80"><rect x="2" y="2" width="92" height="8" fill="var(--muted)" opacity=".5"/><rect x="26" y="10" width="44" height="22" fill="var(--card)" stroke="var(--ink)"/><rect x="10" y="64" width="76" height="12" fill="var(--sunk)" stroke="var(--muted)"/><line x1="82" y1="10" x2="82" y2="64" stroke="var(--signal)" stroke-width="3"/><path d="M82 10l-5 7h10zM82 64l-5-7h10z" fill="var(--signal)"/></svg>`,
- hinge:`<svg viewBox="0 0 96 80"><rect x="2" y="2" width="10" height="76" fill="var(--muted)" opacity=".5"/><rect x="32" y="8" width="56" height="66" fill="var(--card)" stroke="var(--ink)"/><line x1="12" y1="40" x2="32" y2="40" stroke="var(--signal)" stroke-width="3"/><path d="M12 40l6-5v10zM32 40l-6-5v10z" fill="var(--signal)"/></svg>`,
- door:`<svg viewBox="0 0 96 80"><rect x="2" y="4" width="16" height="72" fill="var(--sunk)" stroke="var(--muted)"/><rect x="78" y="4" width="16" height="72" fill="var(--sunk)" stroke="var(--muted)"/><path d="M18 4h60" stroke="var(--muted)"/><line x1="18" y1="50" x2="78" y2="50" stroke="var(--signal)" stroke-width="3"/><path d="M18 50l7-5v10zM78 50l-7-5v10z" fill="var(--signal)"/></svg>`};
-const MF=[
- ["ow","Width of the space","Wall to wall, or cabinet to cabinet, where the fridge goes. Measure at the top, middle and bottom and use the smallest."],
- ["oh","Height of the space","Floor to the bottom of the cabinet above. If there's no cabinet, leave this blank."],
- ["cab","Counter depth","Back wall to the front edge of the counter. Usually about 24 to 25 inches. This shows how far the fridge will stick out."],
- ["island","Back wall to island","Back wall to the island or the counter across from the fridge. Leave blank if it's open. This checks the doors can open all the way."],
- ["hinge","Space beside the hinge side","Only if the fridge sits next to a wall or tall pantry: the gap from that wall to where the fridge's side will be. Leave blank if that side is open."],
- ["door","Narrowest doorway on the way in","Front door, hallways and the kitchen doorway. Measure the narrowest one, inside the door frame with the door open."]];
+ ow:`<svg viewBox="0 0 96 80"><rect x="2" y="10" width="20" height="66" fill="var(--sunk)" stroke="var(--muted)"/><rect x="74" y="10" width="20" height="66" fill="var(--sunk)" stroke="var(--muted)"/>${A(22,44,74,44)}<path d="M22 44l7-5v10zM74 44l-7-5v10z" fill="var(--signal)"/><line x1="0" y1="76" x2="96" y2="76" stroke="var(--muted)"/></svg>`,
+ oh:`<svg viewBox="0 0 96 80"><rect x="14" y="2" width="68" height="14" fill="var(--sunk)" stroke="var(--muted)"/>${A(48,16,48,76)}<path d="M48 16l-5 7h10zM48 76l-5-7h10z" fill="var(--signal)"/><line x1="0" y1="76" x2="96" y2="76" stroke="var(--muted)"/></svg>`,
+ door:`<svg viewBox="0 0 96 80"><rect x="2" y="4" width="16" height="72" fill="var(--sunk)" stroke="var(--muted)"/><rect x="78" y="4" width="16" height="72" fill="var(--sunk)" stroke="var(--muted)"/><path d="M18 4h60" stroke="var(--muted)"/>${A(18,50,78,50)}<path d="M18 50l7-5v10zM78 50l-7-5v10z" fill="var(--signal)"/></svg>`,
+ island:`<svg viewBox="0 0 96 80"><rect x="2" y="2" width="92" height="8" fill="var(--muted)" opacity=".5"/><rect x="26" y="10" width="44" height="22" fill="var(--card)" stroke="var(--ink)"/><rect x="10" y="64" width="76" height="12" fill="var(--sunk)" stroke="var(--muted)"/>${A(82,10,82,64)}<path d="M82 10l-5 7h10zM82 64l-5-7h10z" fill="var(--signal)"/></svg>`,
+ hinge:`<svg viewBox="0 0 96 80"><rect x="2" y="2" width="92" height="8" fill="var(--muted)" opacity=".5"/><rect x="4" y="10" width="14" height="60" fill="var(--sunk)" stroke="var(--muted)"/><rect x="34" y="10" width="50" height="34" fill="var(--card)" stroke="var(--ink)"/>${A(18,28,34,28)}<path d="M18 28l6-5v10zM34 28l-6-5v10z" fill="var(--signal)"/></svg>`,
+ nook:`<svg viewBox="0 0 96 80"><rect x="2" y="2" width="92" height="8" fill="var(--muted)" opacity=".5"/><rect x="6" y="10" width="16" height="44" fill="var(--sunk)" stroke="var(--muted)"/><rect x="74" y="10" width="16" height="44" fill="var(--sunk)" stroke="var(--muted)"/><rect x="28" y="12" width="40" height="30" fill="var(--card)" stroke="var(--ink)" stroke-dasharray="3 2"/>${A(48,10,48,54)}<path d="M48 10l-5 7h10zM48 54l-5-7h10z" fill="var(--signal)"/><line x1="2" y1="54" x2="94" y2="54" stroke="var(--muted)" stroke-dasharray="2 3"/></svg>`,
+ cab:`<svg viewBox="0 0 96 80"><rect x="2" y="4" width="8" height="72" fill="var(--muted)" opacity=".5"/><rect x="10" y="40" width="62" height="36" fill="var(--sunk)" stroke="var(--muted)"/><rect x="10" y="35" width="68" height="6" fill="var(--muted)"/>${A(10,24,78,24)}<path d="M10 24l7-5v10zM78 24l-7-5v10z" fill="var(--signal)"/><line x1="78" y1="18" x2="78" y2="36" stroke="var(--signal)" stroke-dasharray="2 2"/></svg>`};
+const VIEW={ow:"Front view",oh:"Front view",door:"Front view",island:"From above",hinge:"From above",nook:"From above",cab:"From the side"};
+const MF={
+ ow:["Width of the space","Wall to wall, or cabinet to cabinet, where the fridge goes. Measure at the top, middle and bottom and use the smallest.","e.g. 36"],
+ oh:["Height of the space","Floor to the bottom of the cabinet above it.","e.g. 70 1/2"],
+ door:["Narrowest doorway on the way in","Front door, hallways and the kitchen doorway. Measure the narrowest one, inside the frame with the door open.","e.g. 32"],
+ island:["Wall to island","From the wall behind the fridge straight out to the island or counter across from it. We check the doors can open all the way.","e.g. 66"],
+ hinge:["Gap to that wall","From that wall to where the side of the fridge will be. We check the doors open far enough for the drawers to slide out.","e.g. 2"],
+ nook:["Nook depth","From the wall behind the fridge to the front edge of the side walls or cabinets. We work out how far forward the fridge sits so its doors open.","e.g. 26"],
+ cab:["Wall to counter edge","From the wall behind the fridge to the front edge of your countertop. Usually about 25 inches.","e.g. 25"]};
+const QS=[
+ ["island","Is there an island or counter across from the fridge?"],
+ ["nook","Are there walls or tall cabinets on both sides of the fridge, like a nook?"],
+ ["hinge","Is there a wall or tall cabinet right next to the fridge on one side?"],
+ ["cab","Want to see how far it will stick out past your counters?"]];
+function mfieldHTML(k){const sp=st.sp,[l,h,ph]=MF[k];
+ return `<div class="mfield" id="mf-${k}"><figure>${DIA[k]}<figcaption>${VIEW[k]}</figcaption></figure><div class="mbody"><label>${l}<input class="meas" id="m-${k}" data-k="${k}" inputmode="decimal" autocomplete="off" placeholder="${ph}" value="${sp[k]!=null?showIn(sp[k]):""}"></label><p>${h}</p>
+  ${k==="oh"?`<button class="linkbtn" data-na="oh">${sp.na.oh?"✓ No cabinet above (tap to undo)":"No cabinet above? Tap here"}</button>`:""}</div></div>`;}
+function qHTML([k,q]){const sp=st.sp,yes=st.yes[k]||sp[k]!=null,no=!!sp.na[k];
+ if(k==="hinge"&&(sp.nook!=null||st.yes.nook))return "";
+ return `<div class="q"><p class="qt">${q}</p><div class="yn" role="group" aria-label="${q}"><button data-yn="${k}" data-v="y" aria-pressed="${yes}">Yes</button><button data-yn="${k}" data-v="n" aria-pressed="${no}">No</button></div>${yes?mfieldHTML(k):""}</div>`;}
+function measureStatus(){const us=picks(),cv=coverage(),left=cv.miss.length;
+ if(!us.length)return `${left?`${left} left to answer`:"All set"} · <button class="linkbtn" data-go="find">See fridges that fit</button>`;
+ const ok=us.filter(u=>fit(u,st.sp).verdict!=="no").length;
+ return `<b>${ok} of ${us.length} pick${us.length>1?"s":""} fit so far</b> · ${left?`${left} left to answer`:"all covered"}`;}
 function renderMeasure(){const sp=st.sp;
- return `<section class="panel"><h2 class="sec">Measure your kitchen</h2><p class="lede">Grab a tape measure. Everything updates as you type, and it's all saved on this phone. Fractions work: type 35 3/4 or tap a fraction.</p>
-  <div class="tipbox"><b>Measure the space, not your old fridge.</b>Your new fridge needs to fit the opening, the doorways, and room for the doors to open.</div></section>
- <section class="panel"><p class="eyebrow">Who it's for</p>
+ return `<section class="panel"><h2 class="sec">Measure your kitchen</h2><p class="lede">About 5 minutes with a tape measure. Everything saves as you type. Fractions work: type 35 3/4 or tap a fraction.</p>
+  <div class="tipbox"><b>Measure the space, not your old fridge.</b>Your new fridge has to fit the opening, get through the doorways, and have room for its doors to open.</div></section>
+ <section class="panel"><p class="eyebrow">Step 1 · Always measure</p>${["ow","oh","door"].map(mfieldHTML).join("")}
+  <div class="mfield"><div></div><div class="mbody"><label>Getting it inside<select id="m-path"><option value="straight"${sp.path==="straight"?" selected":""}>Straight shot to the kitchen</option><option value="turn"${sp.path==="turn"?" selected":""}>Tight turn on the way</option><option value="stairs"${sp.path==="stairs"?" selected":""}>Stairs on the way</option></select></label></div></div></section>
+ <section class="panel"><p class="eyebrow">Step 2 · Only if it applies</p><p class="lede">Answer each one. "No" counts too, so we know it's covered.</p>
+  ${QS.map(qHTML).join("")}
+  <div class="q"><p class="qt">Is there a water line behind your current fridge?</p><div class="yn three" role="group" aria-label="Water line"><button data-water="yes" aria-pressed="${sp.water==="yes"}">Yes</button><button data-water="no" aria-pressed="${sp.water==="no"}">No</button><button data-water="unsure" aria-pressed="${sp.water==="unsure"}">Not sure</button></div><p class="hint">Look behind it for a thin tube going into the wall. You need one for ice and water in the door.</p></div></section>
+ <section class="panel"><p class="eyebrow">Step 3 · Your household</p>
   <div class="hh"><div>Adults<div class="stepper"><button data-step="adults" data-d="-1" aria-label="Fewer adults">−</button><output>${st.adults}</output><button data-step="adults" data-d="1" aria-label="More adults">+</button></div></div>
    <div>Kids<div class="stepper"><button data-step="kids" data-d="-1" aria-label="Fewer kids">−</button><output>${st.kids}</output><button data-step="kids" data-d="1" aria-label="More kids">+</button></div></div>
    <div><label for="m-budget" style="font-weight:700">Budget</label><input class="sel" id="m-budget" inputmode="numeric" placeholder="No limit" value="${st.budget??""}"></div></div>
   <div class="chips">${Object.values(HL).map(([k,l])=>`<button class="chip" data-hab="${k}" aria-pressed="${!!st.habits[k]}">${l}</button>`).join("")}</div>
   <p class="note" id="sizeNote">Right size for you: ${needs().lo}–${needs().hi} cu ft</p></section>
- <section class="panel"><p class="eyebrow">Your space · inches</p>
-  ${MF.map(([k,l,h])=>`<div class="mfield">${DIA[k]}<div><label>${l}<input class="meas" id="m-${k}" data-k="${k}" inputmode="decimal" autocomplete="off" placeholder="${k==="ow"?"e.g. 36":k==="oh"?"e.g. 70 1/2":k==="cab"?"e.g. 25":"leave blank if open"}" value="${sp[k]!=null?showIn(sp[k]):""}"></label>
-   <div class="fracs" data-for="m-${k}">${["⅛","¼","⅜","½","⅝","¾","⅞"].map((f,i)=>`<button data-frac="${(i+1)/8}" aria-label="Add ${f}">${f}</button>`).join("")}</div><p>${h}</p></div></div>`).join("")}
-  <div class="mfield"><div></div><div><label>Getting it inside<select id="m-path"><option value="straight"${sp.path==="straight"?" selected":""}>Straight shot to the kitchen</option><option value="turn"${sp.path==="turn"?" selected":""}>Tight turn on the way</option><option value="stairs"${sp.path==="stairs"?" selected":""}>Stairs on the way</option></select></label></div></div>
-  <div class="mfield"><div></div><div><label>Is there a water line behind the fridge?<select id="m-water"><option value="unsure"${sp.water==="unsure"?" selected":""}>Not sure</option><option value="yes"${sp.water==="yes"?" selected":""}>Yes</option><option value="no"${sp.water==="no"?" selected":""}>No</option></select></label><p>Look behind your current fridge for a thin tube going into the wall. You need one for ice and water in the door.</p></div></div>
- </section>
- <div class="row"><button class="btn" data-go="${st.ids.length?"picks":"find"}">${st.ids.length?"Check my picks":"See fridges that fit"}</button>${st.ids.length?`<button class="btn ghost" data-go="find">Find more that fit</button>`:""}</div>`;}
-function bindMeasure(){let last=null;
- document.querySelectorAll(".meas").forEach(i=>{i.addEventListener("focus",()=>last=i);
-  i.addEventListener("input",()=>{const v=parseIn(i.value);st.sp[i.dataset.k]=v;save();updMeasureNote();});
-  i.addEventListener("blur",()=>{const v=parseIn(i.value);if(v!=null)i.value=showIn(v);});});
- document.querySelectorAll(".fracs button").forEach(b=>{b.addEventListener("mousedown",e=>e.preventDefault());b.onclick=()=>{const i=$(b.parentElement.dataset.for);const base=Math.floor(parseIn(i.value)||0);const v=base+ +b.dataset.frac;i.value=showIn(v);st.sp[i.dataset.k]=v;save();};});
- $("m-path").onchange=e=>{st.sp.path=e.target.value;save()};$("m-water").onchange=e=>{st.sp.water=e.target.value;save()};
+ <div class="mstatus" id="mstatus" aria-live="polite">${measureStatus()}</div>
+ <div class="row"><button class="btn" data-go="${st.ids.length?"picks":"find"}">${st.ids.length?"Check my picks":"See fridges that fit"}</button>${st.ids.length?`<button class="btn ghost" data-go="find">Find more that fit</button>`:""}</div>
+ <div class="fracs" id="fracbar" hidden>${["⅛","¼","⅜","½","⅝","¾","⅞"].map((f,i)=>`<button data-frac="${(i+1)/8}" aria-label="Add ${f}">${f}</button>`).join("")}</div>`;}
+function rerenderMeasure(){const y=scrollY;render();scrollTo(0,y);}
+function updStatus(){const el=$("mstatus");if(el){el.innerHTML=measureStatus();el.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));}}
+function bindMeasure(){let last=null;const fb=$("fracbar");
+ document.querySelectorAll(".meas").forEach(i=>{i.addEventListener("focus",()=>{last=i;i.closest(".mbody").querySelector("label").after(fb);fb.hidden=false;});
+  i.addEventListener("input",()=>{const k=i.dataset.k,v=parseIn(i.value);st.sp[k]=v;if(v!=null)delete st.sp.na[k];save();updStatus();});
+  i.addEventListener("blur",()=>{const v=parseIn(i.value);if(v!=null)i.value=showIn(v);setTimeout(()=>{if(!document.activeElement||!document.activeElement.classList.contains("meas"))fb.hidden=true},150);});});
+ fb.querySelectorAll("button").forEach(b=>{b.addEventListener("mousedown",e=>e.preventDefault());b.onclick=()=>{const i=last;if(!i)return;const base=Math.floor(parseIn(i.value)||0);const v=base+ +b.dataset.frac;i.value=showIn(v);st.sp[i.dataset.k]=v;delete st.sp.na[i.dataset.k];save();updStatus();i.focus();};});
+ document.querySelectorAll("[data-yn]").forEach(b=>b.onclick=()=>{const k=b.dataset.yn;
+  if(b.dataset.v==="y"){st.yes[k]=1;delete st.sp.na[k];}else{delete st.yes[k];st.sp.na[k]=1;st.sp[k]=null;}
+  if(k==="nook"&&b.dataset.v==="y"){st.sp.hinge=null;delete st.sp.na.hinge;delete st.yes.hinge;}
+  save();rerenderMeasure();if(b.dataset.v==="y"){const i=$("m-"+k);if(i)i.focus({preventScroll:false});}});
+ document.querySelectorAll("[data-na]").forEach(b=>b.onclick=()=>{const k=b.dataset.na;if(st.sp.na[k])delete st.sp.na[k];else{st.sp.na[k]=1;st.sp[k]=null;}save();rerenderMeasure();});
+ document.querySelectorAll("[data-water]").forEach(b=>b.onclick=()=>{st.sp.water=b.dataset.water;save();rerenderMeasure();});
+ $("m-path").onchange=e=>{st.sp.path=e.target.value;save();updStatus();};
  $("m-budget").oninput=e=>{const v=parseFloat(String(e.target.value).replace(/[^\d.]/g,""));st.budget=isFinite(v)&&v>0?v:null;save();};
  document.querySelectorAll("[data-step]").forEach(b=>b.onclick=()=>{const k=b.dataset.step;st[k]=Math.max(k==="adults"?1:0,Math.min(12,st[k]+ +b.dataset.d));b.parentElement.querySelector("output").textContent=st[k];sync();save();updMeasureNote();});
  document.querySelectorAll("[data-hab]").forEach(c=>c.onclick=()=>{const k=c.dataset.hab;st.habits[k]=!st.habits[k];if(!st.habits[k])delete st.habits[k];c.setAttribute("aria-pressed",!!st.habits[k]);sync();save();updMeasureNote();});}
-function updMeasureNote(){const n=needs(),el=$("sizeNote");if(el)el.textContent=`Right size for you: ${n.lo}–${n.hi} cu ft`;}
+function updMeasureNote(){const n=needs(),el=$("sizeNote");if(el)el.textContent=`Right size for you: ${n.lo}–${n.hi} cu ft`;updStatus();}
 
 /* ---------- FIND ---------- */
-function score(u,f){const n=needs(),h=st.habits;let s=0;if(f.verdict==="ok")s+=3;if(f.verdict==="chk")s+=1;if(u.cap>=n.lo&&u.cap<=n.hi+4)s+=3;else if(u.cap>=n.lo-2)s+=1;
+function score(u,f){const n=needs(),h=st.habits,fk=fitKey(f);let s=0;if(fk==="ok")s+=3;else if(fk==="chk")s+=2.5;else if(fk==="tight")s+=0.5;if(!u.returnable)s-=0.75;if(u.av==="O")s-=1.25;
+ if(u.cap>=n.lo&&u.cap<=n.hi+4)s+=3;else if(u.cap>=n.lo-2)s+=1;
  s+=BAYES(u)*1.2;if(h.reliable&&u.disp==="None")s+=1.5;if(h.dispenser&&u.disp!=="None")s+=1.5;if(h.flush&&u.counter)s+=2;if(h.garage&&u.garage)s+=2;if(st.budget&&effPrice(u)>st.budget)s-=4;
- if(st.sp.ow!=null){const g=st.sp.ow-u.w;if(g>=0&&g<=2)s+=2;else if(g>4)s-=1.5;}if(u.price==null)s-=3;return s;}
+ if(st.sp.ow!=null){const g=st.sp.ow-u.w;if(g>=0.25&&g<=2)s+=2;else if(g>4)s-=1.5;}if(u.price==null)s-=3;return s;}
 function results(){const n=needs(),sp=st.sp,max=parseFloat(F.max)||st.budget||null;
  let r=CAT.map(u=>({u,f:fit(u,sp)}));
  if(F.fits&&measured())r=r.filter(x=>x.f.verdict!=="no");
@@ -1236,28 +1380,31 @@ const COLORS=[[/black stainless|black stai\b|black ss\b/i,"Black stainless"],[/m
 const finish=u=>{for(const [re,n] of COLORS)if(re.test(u.label))return n;return "Model "+u.model};
 const FIN={};
 function hiddenBySize(){if(!F.size)return 0;F.size=false;const n=results().length;F.size=true;return n-results().length;}
-function renderFind(){const n=needs(),r=results(),brands=[...new Set(CAT.map(u=>u.brand))].sort();
- const chip=(k,v,l)=>`<button class="chip" data-f="${k}" data-v="${v}" aria-pressed="${F[k]===v||(v===true&&F[k]===true)}">${l}</button>`;
+function activeFilters(){let n=0;if(F.ice)n++;if(F.counter)n++;if(F.brand)n++;if(F.max)n++;if(F.sort!=="best")n++;if(!F.size)n++;if(measured()&&!F.fits)n++;return n;}
+function renderFind(){const n=needs(),r=results(),brands=[...new Set(CAT.map(u=>u.brand).filter(Boolean))].sort(),af=activeFilters();
+ const chip=(k,v,l)=>`<button class="chip" data-f="${k}" data-v="${v}" aria-pressed="${F[k]===v}">${l}</button>`;
  return `<section class="panel"><h2 class="sec">Find fridges that fit</h2><p class="lede">${measured()?"Showing fridges that fit the measurements you entered.":"You haven't measured yet, so fit isn't checked. <button class=\"linkbtn\" data-go=\"measure\">Measure first</button>"} Sized for ${n.people} ${n.people===1?"person":"people"} (${n.lo}–${n.hi} cu ft).</p>
-  <div class="filters">
-   <div class="frow">${chip("style","all","All styles")}${chip("style","FD","French door")}${chip("style","SS","Side by side")}${chip("style","BF","Bottom freezer")}${chip("style","TF","Top freezer")}</div>
-   <div class="frow"><button class="chip" data-tg="fits" aria-pressed="${F.fits&&measured()}" ${measured()?"":"disabled"}>Fits my space</button><button class="chip" data-tg="size" aria-pressed="${F.size}">Right size for us</button><button class="chip" data-tg="ice" aria-pressed="${F.ice}">Ice & water in door</button><button class="chip" data-tg="counter" aria-pressed="${F.counter}">Counter depth</button></div>
+  <div class="frow">${chip("style","all","All styles")}${chip("style","FD","French door")}${chip("style","SS","Side by side")}${chip("style","BF","Bottom freezer")}${chip("style","TF","Top freezer")}</div>
+  <button class="btn ghost sm" id="filtBtn" aria-expanded="${filtOpen}">${filtOpen?"Hide filters":"Filters and sort"}${af?` (${af})`:""}</button>
+  ${filtOpen?`<div class="filters">
+   <div class="chips"><button class="chip" data-tg="fits" aria-pressed="${F.fits&&measured()}" ${measured()?"":"disabled"}>Fits my space</button><button class="chip" data-tg="size" aria-pressed="${F.size}">Right size for us</button><button class="chip" data-tg="ice" aria-pressed="${F.ice}">Ice & water in door</button><button class="chip" data-tg="counter" aria-pressed="${F.counter}">Counter depth</button></div>
    <div class="fgrid"><label>Brand<select class="sel" id="f-brand"><option value="">Any brand</option>${brands.map(b=>`<option${F.brand===b?" selected":""}>${b}</option>`).join("")}</select></label>
     <label>Max price<input class="sel" id="f-max" inputmode="numeric" placeholder="${st.budget?fmt(st.budget):"No limit"}" value="${F.max}"></label>
-    <label style="grid-column:1/-1">Sort by<select class="sel" id="f-sort"><option value="best"${F.sort==="best"?" selected":""}>Best match for us</option><option value="price"${F.sort==="price"?" selected":""}>Lowest price</option><option value="cap"${F.sort==="cap"?" selected":""}>Most space</option><option value="rated"${F.sort==="rated"?" selected":""}>Top rated</option></select></label></div>
-  </div><p class="disc">Prices come from homedepot.com and are updated every Sunday. Fit check is a guide based on the measurements you entered. Confirm with the model’s installation guide before buying.</p></section>
-  <p class="note" aria-live="polite">${r.length} fridge${r.length===1?"":"s"}${(()=>{const v=r.reduce((a,x)=>a+x.alts.length,0);return v?` (plus ${v} color option${v===1?"":"s"} shown inside each card)`:""})()} · ${st.ids.length} of ${MAXP} on your list · prices as of ${DATA_DATE.toLocaleDateString("en-US",{month:"short",day:"numeric"})}${(()=>{const h=hiddenBySize();return h?` · <button class="linkbtn" data-tg="size">Show ${h} more outside your size range</button>`:""})()}</p>
-  <div class="list">${r.length?r.slice(0,lim).map(({u:u0,f,alts})=>{const all=[u0,...alts],gk=gkey(u0),u=all.find(x=>x.id===FIN[gk])||all.find(x=>st.ids.includes(x.id))||u0,p=promo(u),on=st.ids.includes(u.id);
+    <label style="grid-column:1/-1">Sort by<select class="sel" id="f-sort"><option value="best"${F.sort==="best"?" selected":""}>Best match for us</option><option value="price"${F.sort==="price"?" selected":""}>Lowest price</option><option value="cap"${F.sort==="cap"?" selected":""}>Most space</option><option value="rated"${F.sort==="rated"?" selected":""}>Top rated</option></select></label></div></div>`:""}
+  <p class="disc">Prices come from homedepot.com and update every Sunday. The fit check is a guide; confirm with the model's installation guide before buying.</p></section>
+  <p class="note" aria-live="polite">${r.length} fridge${r.length===1?"":"s"} · ${st.ids.length} of ${MAXP} on your list · prices as of ${dShort()}${(()=>{const h=hiddenBySize();return h?` · <button class="linkbtn" data-tg="size">Show ${h} more outside your size range</button>`:""})()}</p>
+  <div class="list">${r.length?r.slice(0,lim).map(({u:u0,f:f0,alts})=>{const all=[u0,...alts],gk=gkey(u0),u=all.find(x=>x.id===FIN[gk])||all.find(x=>st.ids.includes(x.id))||u0,f=u===u0?f0:fit(u,st.sp),p=promo(u),on=st.ids.includes(u.id);
    return `<article class="item">${miniSil(u)}<div class="meta"><div class="brand">${u.brand}</div><p class="ttl">${shortLabel(u)}</p>
     <div class="row" style="gap:8px">${priceHTML(u.price)}${p&&p.save?`<span class="eff" style="margin:0">${fmt(p.eff)} with promo</span>`:""}</div>
     <div class="sub">${u.cap} cu ft · ${inch(u.w)} wide · ${STYLE[u.type]}${u.reviews?` · ★ ${u.rating.toFixed(1)} (${u.reviews.toLocaleString()})`:""}</div>
-    <div class="tags">${fitTag(measured()?f.verdict:"na")}${u.disp!=="None"?`<span class="tag">${u.disp==="Both"?"Ice + water":u.disp}</span>`:""}${u.zero?`<span class="tag fit">Zero clearance</span>`:""}</div>
+    <div class="tags">${measured()?fitTag(f):""}${u.disp!=="None"?`<span class="tag">${u.disp==="Both"?"Ice + water":u.disp}</span>`:""}${u.zero?`<span class="tag">Zero clearance</span>`:""}${u.av==="O"?`<span class="tag">Online only</span>`:""}</div>
     ${alts.length?`<div class="fins" role="group" aria-label="Color"><span>Color:</span>${all.map(x=>{const nm=finish(x),dup=all.filter(y=>finish(y)===nm).length>1;return `<button class="fin" data-fin="${x.id}" data-gk="${gk}" aria-pressed="${x.id===u.id}">${dup?nm+" · "+x.model:nm}</button>`}).join("")}</div>`:""}
-    <div class="acts"><button class="add ${on?"on":""}" data-pick="${u.id}">${on?"✓ On my list":"Add to my list"}</button><a class="linkbtn" href="https://www.homedepot.com/p/${u.id}" rel="noopener">Today's price</a></div></div></article>`}).join("")+(r.length>lim?`<button class="btn ghost" id="more">Show more (${r.length-lim} left)</button>`:""):`<div class="empty">Nothing matches. Turn off a filter above${measured()?", or double-check your measurements":""}.</div>`}</div>`;}
+    <div class="acts"><button class="add ${on?"on":""}" data-pick="${u.id}">${on?"✓ On my list":"Add to my list"}</button><a class="linkbtn" href="https://www.homedepot.com/p/${u.id}" rel="noopener">Today's price</a></div></div></article>`}).join("")+(r.length>lim?`<button class="btn ghost" id="more">Show more (${r.length-lim} left)</button>`:""):`<div class="empty">Nothing matches. Turn off a filter${measured()?", or double-check your measurements":""}.</div>`}</div>`;}
 function bindFind(){document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{F[b.dataset.f]=b.dataset.v;lim=20;render();});
- document.querySelectorAll("[data-tg]").forEach(b=>b.onclick=()=>{F[b.dataset.tg]=!F[b.dataset.tg];lim=20;render();});
- $("f-brand").onchange=e=>{F.brand=e.target.value;lim=20;render();};$("f-sort").onchange=e=>{F.sort=e.target.value;render();};
- $("f-max").onchange=e=>{F.max=String(e.target.value).replace(/[^\d.]/g,"");lim=20;render();};
+ document.querySelectorAll("[data-tg]").forEach(b=>b.onclick=()=>{F[b.dataset.tg]=!F[b.dataset.tg];lim=20;const y=scrollY;render();scrollTo(0,y);});
+ $("filtBtn").onclick=()=>{filtOpen=!filtOpen;const y=scrollY;render();scrollTo(0,y);};
+ if($("f-brand")){$("f-brand").onchange=e=>{F.brand=e.target.value;lim=20;render();};$("f-sort").onchange=e=>{F.sort=e.target.value;render();};
+  $("f-max").onchange=e=>{F.max=String(e.target.value).replace(/[^\d.]/g,"");lim=20;render();};}
  document.querySelectorAll("[data-fin]").forEach(b=>b.onclick=()=>{FIN[b.dataset.gk]=b.dataset.fin;const y=scrollY;render();scrollTo(0,y);});
  if($("more"))$("more").onclick=()=>{lim+=20;const y=scrollY;render();scrollTo(0,y);};}
 
@@ -1268,15 +1415,19 @@ function render(){sync();const n=st.ids.length;$("pickCt").hidden=!n;$("pickCt")
  $("h1").textContent=tab==="measure"?"Measure your kitchen":tab==="find"?"Find more fridges":n?`Your ${n} fridge pick${n>1?"s":""}`:"Your fridge plan";
  $("main").innerHTML=tab==="measure"?renderMeasure():tab==="find"?renderFind():renderPicks();
  if(tab==="measure")bindMeasure();if(tab==="find")bindFind();
- document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
+ document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{const f=b.dataset.focus;go(b.dataset.go);if(f)focusField(f);});
  document.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>togglePick(b.dataset.rm));
  document.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{const y=scrollY;togglePick(b.dataset.pick);scrollTo(0,y);});
+ document.querySelectorAll("[data-cv]").forEach(b=>b.onclick=()=>{cv=b.dataset.cv;const y=scrollY;render();scrollTo(0,y);});
  if($("copyLink"))$("copyLink").onclick=copyLink;
  const rail=$("pickrail");if(rail&&document.querySelector(".pickbar")){const bs=[...document.querySelectorAll("[data-pj]")];
   const cur=()=>{const cards=[...rail.children];let best=0,dist=1e9;cards.forEach((c,i)=>{const d=Math.abs(c.offsetLeft-rail.offsetLeft-rail.scrollLeft-parseFloat(getComputedStyle(rail).paddingLeft));if(d<dist){dist=d;best=i}});return best};
   rail.addEventListener("scroll",()=>{const i=cur();bs.forEach((b,j)=>b.setAttribute("aria-selected",j===i))},{passive:true});
   bs.forEach(b=>b.onclick=()=>{const c=rail.children[+b.dataset.pj];if(getComputedStyle(rail).display==="grid"){c.scrollIntoView({behavior:"smooth",block:"start"});return}
    rail.scrollTo({left:c.offsetLeft-rail.offsetLeft-parseFloat(getComputedStyle(rail).paddingLeft),behavior:"smooth"});bs.forEach(x=>x.setAttribute("aria-selected",x===b));});}}
+function focusField(k){if(k==="water"){const q=document.querySelector("[data-water]");if(q)q.closest(".q").scrollIntoView({block:"center"});return}
+ if(["island","hinge","nook","cab"].includes(k)&&st.sp[k]==null&&!st.yes[k]){const q=document.querySelector(`[data-yn="${k}"]`);if(q){q.closest(".q").scrollIntoView({block:"center"});q.closest(".q").classList.add("flash");}return}
+ const i=$("m-"+k);if(i){i.scrollIntoView({block:"center"});i.focus({preventScroll:true});}}
 function go(t){tab=t;render();scrollTo(0,0);}
 document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>go(b.dataset.t));
 function boot(){let ok=decode(location.hash);if(!ok){try{const h=localStorage.getItem("fp_state");if(h)ok=decode(h)}catch(e){}}

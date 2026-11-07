@@ -51,9 +51,21 @@ A Claude scheduled task ("Floor Copilot weekly price refresh", Sundays 9:13 PM E
 
 ## Customer link format (QR)
 
-`index.html#q1-<itemId>-<itemId>-...-w<width×100>-h<height×100>-c<cabinet depth×100>-i<to island×100>-g<hinge gap×100>-d<doorway×100>-p<s|t|x path>-r<y|n|u water>-a<adults>-k<kids>-b<budget>-f<habit letters c,b,o,d,f,r,g>-o<1-based indexes of picks on our floor>-n<associate name>`
+`index.html#q1-<itemId>-<itemId>-...-w<width×100>-h<height×100>-c<wall to counter edge×100>-i<wall to island×100>-g<gap to side wall×100>-e<nook depth×100>-d<doorway×100>-z<letters of measurements that don't apply: h,c,i,g,e>-p<s|t|x path>-r<y|n|u water>-a<adults>-k<kids>-b<budget>-f<habit letters c,b,o,d,f,r,g>-o<1-based indexes of picks on our floor>-n<associate name>`
 
-Only letters, digits and hyphens. Nothing personal about the customer goes in the link.
+Only letters, digits and hyphens. Nothing personal about the customer goes in the link. Old links without `e`/`z` still work.
+
+## Measurements and fit
+
+- Fields (floor ids / customer keys): `ow` width, `oh` height, `door` narrowest doorway + `path`, `cab` wall to counter edge, `island` wall to island, `hinge` gap to side wall (one wall), `nook` nook depth (walls on both sides), `water` yes/no/unsure.
+- In the floor tool, typing or tapping **None** in oh/cab/island/hinge/nook marks it "doesn't apply" (`sp.na`), which the customer page shows as covered.
+- Nook: the fridge is pulled forward so its body front lines up with the side walls (`pull = nook - (depth without doors + 1)`). The island and counter checks use that real position; the one-wall hinge check is skipped when a nook depth is given.
+- `fit()` checks carry `kind`: `fit` (how it fits the space), `todo` (sort out before delivery: handles/doors off, water line), `pref` (flush look). Labels come from `fitKey/fitWord/fitCls`: Fits / Fits, check N things / Tight, double check (a `fit`-kind check is close) / Won't fit / Not checked.
+- Ranking (`sorter` best, customer `score`, `autoPicks`): tight fits score low and are left out of auto picks when 3 roomier ones exist; non-returnable and online-only models lose points.
+
+## Customer page layout
+
+Your picks: What we checked box (8 items: covered, doesn't apply, or not yet), Cards or Compare view, verdict-first cards with "Checked / Not checked yet", details folded under More details, Before you buy checklist, come-back box. Measure: Step 1 always measure (width, height, doorway), Step 2 yes/no questions that reveal optional fields (No counts as covered), Step 3 household; one fraction bar follows the focused field; sticky status shows how many picks fit. Find more: style chips plus a Filters and sort button, 20 at a time.
 
 ## Local-only data (lives on Julian's phone, not in the repo)
 

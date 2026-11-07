@@ -220,6 +220,7 @@ label.f .unit{font-weight:500}
 .verdict.no{background:var(--bad-bg);color:var(--bad)}.verdict.no .ic{background:var(--bad)}
 .verdict.na{background:var(--sunk);color:var(--muted)}.verdict.na .ic{background:var(--muted)}
 .verdict b{display:block;color:inherit}
+.mhelp{font-size:13.5px;color:var(--muted)}.mhelp summary{font-weight:700;color:var(--blue);cursor:pointer}.mhelp ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
 .facts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;font-size:14px}
 .facts li{display:flex;flex-direction:column;gap:1px;min-width:0}
 .facts small{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
@@ -330,16 +331,24 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
     <div class="fields">
       <label class="f">Opening width<input class="meas" id="ow" type="text" inputmode="decimal" placeholder="e.g. 35 3/4" autocomplete="off"></label>
       <label class="f">Opening height<input class="meas" id="oh" type="text" inputmode="decimal" placeholder="to cabinet" autocomplete="off"></label>
-      <label class="f">Cabinet depth<input class="meas" id="cab" type="text" inputmode="decimal" placeholder="usually 24–25" autocomplete="off"></label>
-      <label class="f">Back wall to island<input class="meas" id="island" type="text" inputmode="decimal" placeholder="optional" autocomplete="off"></label>
-      <label class="f">Space beside hinge side<input class="meas" id="hinge" type="text" inputmode="decimal" placeholder="blank = open" autocomplete="off"></label>
+      <label class="f">Wall to counter edge<input class="meas" id="cab" type="text" inputmode="decimal" placeholder="about 25" autocomplete="off"></label>
+      <label class="f">Wall to island<input class="meas" id="island" type="text" inputmode="decimal" placeholder="none" autocomplete="off"></label>
+      <label class="f">Gap to side wall<input class="meas" id="hinge" type="text" inputmode="decimal" placeholder="none" autocomplete="off"></label>
+      <label class="f">Nook depth<input class="meas" id="nook" type="text" inputmode="decimal" placeholder="walls both sides?" autocomplete="off"></label>
       <label class="f">Narrowest door / hall<input class="meas" id="door" type="text" inputmode="decimal" placeholder="e.g. 32" autocomplete="off"></label>
       <label class="f">Delivery path<select id="path"><option value="straight">Straight shot</option><option value="turn">Tight turn</option><option value="stairs">Stairs</option></select></label>
       <label class="f">Water line there?<select id="water"><option value="unsure">Not sure</option><option value="yes">Yes</option><option value="no">No</option></select></label>
     </div>
     <div class="fracs" id="fracs" aria-label="Add a fraction to the selected measurement"><span>Add to field</span>
       <button data-frac="0.125">⅛</button><button data-frac="0.25">¼</button><button data-frac="0.375">⅜</button><button data-frac="0.5">½</button><button data-frac="0.625">⅝</button><button data-frac="0.75">¾</button><button data-frac="0.875">⅞</button></div>
-    <p class="note">Fractions work: type 35 3/4, 35-3/4, or tap a fraction. Hinge side: if the fridge goes against a wall or tall pantry, measure the gap on that side.</p>
+    <div class="fracs" id="nonebar" hidden><span>Doesn't apply</span><button type="button" id="setNone">None</button></div>
+    <details class="mhelp"><summary>What each one means</summary><ul>
+      <li><b>Wall to counter edge:</b> back wall to the front edge of the countertop (about 25"). Shows how far it sticks out.</li>
+      <li><b>Wall to island:</b> back wall to the island or counter across. Checks the doors open all the way.</li>
+      <li><b>Gap to side wall:</b> only a wall or tall pantry on one side: gap from it to the fridge's side.</li>
+      <li><b>Nook depth:</b> walls or tall cabinets on both sides: back wall to their front edge. The fridge sits forward so its doors clear them.</li>
+      <li>Tap <b>None</b> when something doesn't apply, so the customer's page shows it as covered.</li></ul></details>
+    <p class="note">Fractions work: type 35 3/4, 35-3/4, or tap a fraction.</p>
   </div>
   <div class="callout" id="walkto"></div>
   <button class="btn y" id="goFind">See the fridges that fit</button>
@@ -3498,7 +3507,7 @@ const $=id=>document.getElementById(id);
 const num=v=>{const x=parseFloat(v);return isFinite(x)?x:null};
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const priceHTML=n=>{if(n==null)return `<span class="price na">See price online</span>`;const d=Math.floor(n),c=Math.round((n-d)*100);return `<span class="price"><sup>$</sup>${d.toLocaleString()}<sup>${String(c).padStart(2,"0")}</sup></span>`};
-const fmt=n=>n==null?"See price online":"$"+(Math.round(n*100)%100?n.toFixed(2):Math.round(n).toLocaleString());
+const fmt=n=>n==null?"See price online":"$"+(Math.round(n*100)%100?n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):Math.round(n).toLocaleString());
 const inch=n=>n==null?"–":(+n.toFixed(2))+'"';
 
 /* ---------- promo ---------- */
@@ -3536,30 +3545,38 @@ function needs(){const h=S.habits,people=S.adults+S.kids;
  return {lo,hi,style,say,people};}
 
 /* ---------- fit ---------- */
-function space(){const g=id=>parseIn($(id).value);return {ow:g("ow"),oh:g("oh"),cab:g("cab"),island:g("island"),hinge:g("hinge"),door:g("door"),path:$("path").value,water:$("water").value}}
+function space(){const g=id=>parseIn($(id).value);const na={};["oh","cab","island","hinge","nook"].forEach(id=>{if(/^\s*(none|n\/a|na|no)\s*$/i.test($(id).value))na[id]=1});
+ return {ow:g("ow"),oh:g("oh"),cab:g("cab"),island:g("island"),hinge:g("hinge"),nook:g("nook"),door:g("door"),path:$("path").value,water:$("water").value,na}}
 function fit(u,sp=space()){const c=[];
- if(sp.ow!=null){const m=sp.ow-u.w;c.push({k:"Width",s:m<0?"no":m<0.25?"chk":"ok",t:m<0?`${inch(-m)} too wide for the ${inch(sp.ow)} opening`:m<0.25?`Only ${inch(m)} to spare. Very tight`:`${inch(m)} to spare`});}
- if(sp.oh!=null){const m=sp.oh-u.h;c.push({k:"Height",s:m<0?"no":m<1?"chk":"ok",t:m<0?`${inch(-m)} too tall for the opening`:m<1?`${inch(m)} on top. 1" is recommended for air`:`${inch(m)} to spare on top`});}
+ /* kind: "fit" = how it fits the space (tight here means double check), "todo" = something to sort out before delivery */
+ if(sp.ow!=null){const m=sp.ow-u.w;c.push({k:"Width",kind:"fit",s:m<0?"no":m<0.25?"chk":"ok",t:m<0?`${inch(-m)} too wide for the ${inch(sp.ow)} opening`:m<0.25?`Only ${inch(m)} to spare in width. Tight, so check the install guide`:`${inch(m)} to spare in width`});}
+ if(sp.oh!=null){const m=sp.oh-u.h;c.push({k:"Height",kind:"fit",s:m<0?"no":m<1?"chk":"ok",t:m<0?`${inch(-m)} too tall for the opening`:m<1?`Only ${inch(m)} above it. 1" is recommended for air`:`${inch(m)} to spare on top`});}
  if(sp.door!=null){const M={straight:.5,turn:1.5,stairs:2}[sp.path]||.5,why={straight:"",turn:" with a tight turn",stairs:" on stairs"}[sp.path]||"";
    const on=Math.min(u.w,u.d),noH=Math.min(u.w,u.dx||u.d),off=Math.min(u.w,u.dnd??u.d);
-   if(on+M<=sp.door)c.push({k:"Delivery",s:"ok",t:`Fits through the ${inch(sp.door)} doorway ${{straight:"as is",turn:"with room to make the turn",stairs:"with room for the stairs"}[sp.path]||"as is"}`});
-   else if(noH+M<=sp.door)c.push({k:"Delivery",s:"chk",t:`Handles come off to get through ${inch(sp.door)}${why}. Note it on the order`});
-   else if(off+M<=sp.door)c.push({k:"Delivery",s:"chk",t:`Doors come off to get through ${inch(sp.door)}${why} (${inch(off)} without doors). Note it on the order`});
-   else c.push({k:"Delivery",s:"no",t:`Won't make it through a ${inch(sp.door)} doorway${why}, even with doors off`});}
- if(sp.island!=null&&u.d90){const need=u.d90+1,m=sp.island-need;c.push({k:"Doors",s:m<0?"no":m<6?"chk":"ok",t:m<0?`Doors open 90° need ${inch(need)} from the wall (incl. 1" behind); the island is at ${inch(sp.island)}`:m<6?`Doors clear the island by only ${inch(m)}`:`Doors open fully with ${inch(m)} to the island`});}
- if(sp.hinge!=null){const need=hingeNeed(u);
-   if(u.zero)c.push({k:"Hinge",s:"ok",t:"Zero-clearance hinges. Opens fully right against a wall"});
-   else if(sp.hinge>=need)c.push({k:"Hinge",s:"ok",t:`Needs about ${inch(need)} beside the hinge; they have ${inch(sp.hinge)}`});
-   else if(u.rev&&(u.type==="TF"||u.type==="BF"))c.push({k:"Hinge",s:"chk",t:`Only ${inch(sp.hinge)} beside the hinge (needs about ${inch(need)}). Door is reversible, so hinge it on the open side`});
-   else c.push({k:"Hinge",s:"chk",t:`Only ${inch(sp.hinge)} beside the hinge; needs about ${inch(need)}. The door stops short of 90°, so ${u.type==="TF"?"door bins":"crisper drawers"} may not slide out. Look at zero-clearance models`});}
- if(sp.cab!=null){const cs=(u.dnd??u.d)+1-sp.cab,dr=(u.dx||u.d)+1-sp.cab;
-   c.push({k:"Depth",s:S.habits.flush&&cs>1.5?"chk":"ok",t:cs<=0.5?`Case sits flush with the ${inch(sp.cab)} counters; doors stick out ${inch(Math.max(0,dr))}`:`Case sticks out ${inch(cs)} past the counters, doors ${inch(dr)} (includes 1" behind for the water line and air)`});}
- const hasIce=u.disp!=="None"||/ice/i.test(u.label);
+   if(on+M<=sp.door)c.push({k:"Delivery",kind:"todo",s:"ok",t:`Fits through the ${inch(sp.door)} doorway ${{straight:"as is",turn:"with room to make the turn",stairs:"with room for the stairs"}[sp.path]||"as is"}`});
+   else if(noH+M<=sp.door)c.push({k:"Delivery",kind:"todo",s:"chk",t:`Handles come off to get through ${inch(sp.door)}${why}. Note it on the order`});
+   else if(off+M<=sp.door)c.push({k:"Delivery",kind:"todo",s:"chk",t:`Doors come off to get through ${inch(sp.door)}${why} (${inch(off)} without doors). Note it on the order`});
+   else c.push({k:"Delivery",kind:"fit",s:"no",t:`Won't make it through a ${inch(sp.door)} doorway${why}, even with doors off`});}
+ const P0=(u.dnd??u.d)+1,pull=sp.nook!=null?Math.max(0,sp.nook-P0):0,P=P0+pull;
+ if(sp.nook!=null)c.push({k:"Nook",kind:"fit",s:"ok",t:pull>0.25?`Sits ${inch(pull)} out from the back wall so its front lines up with the side walls and the doors open fully`:`Front sits past the side walls, so the doors open fully`});
+ if(sp.island!=null&&u.d90){const need=u.d90+1+pull,m=sp.island-need;c.push({k:"Doors",kind:"fit",s:m<0?"no":m<6?"chk":"ok",t:m<0?`Open doors reach ${inch(need)} from the wall${pull>0.25?" (it sits forward in the nook)":""}; the island is at ${inch(sp.island)}`:m<6?`Open doors clear the island by only ${inch(m)}`:`Doors open fully with ${inch(m)} to the island`});}
+ if(sp.hinge!=null&&sp.nook==null){const need=hingeNeed(u);
+   if(u.zero)c.push({k:"Hinge",kind:"fit",s:"ok",t:"Zero-clearance hinges. Opens fully right against a wall"});
+   else if(sp.hinge>=need)c.push({k:"Hinge",kind:"fit",s:"ok",t:`Needs about ${inch(need)} beside the wall; there's ${inch(sp.hinge)}`});
+   else if(u.rev&&(u.type==="TF"||u.type==="BF"))c.push({k:"Hinge",kind:"todo",s:"chk",t:`Only ${inch(sp.hinge)} beside the wall (needs about ${inch(need)}). The door is reversible, so hinge it on the open side`});
+   else c.push({k:"Hinge",kind:"fit",s:"chk",t:`Only ${inch(sp.hinge)} beside the wall; needs about ${inch(need)}. The door stops short of fully open, so ${u.type==="TF"?"door bins":"crisper drawers"} may not slide out. Zero-clearance models avoid this`});}
+ if(sp.cab!=null){const cs=P-sp.cab,dr=P+((u.dx||u.d)-(u.dnd??u.d))-sp.cab;
+   c.push({k:"Depth",kind:"pref",s:S.habits.flush&&cs>1.5?"chk":"ok",t:cs<=0.5?`Body lines up with the ${inch(sp.cab)} counters; doors stick out ${inch(Math.max(0,dr))}`:`Body sticks out ${inch(cs)} past the counters, doors ${inch(dr)} (includes 1" behind for the water line and air)`});}
  if(u.disp!=="None"&&u.disp!=="Beverage Center"||/ice maker|ice &|dual ice|craft ice|sphere ice/i.test(u.label)){
-   if(sp.water==="no")c.push({k:"Water",s:"no",t:"Needs a water line run before ice and water work"});
-   else if(sp.water==="unsure")c.push({k:"Water",s:"chk",t:"Ask if there's a water line behind the old fridge"});}
- const bad=c.some(x=>x.s==="no"&&x.k!=="Water"), warn=c.some(x=>x.s==="chk"||x.s==="no");
- return {checks:c,verdict:!c.length?"na":bad?"no":warn?"chk":"ok"};}
+   if(sp.water==="no")c.push({k:"Water",kind:"todo",s:"no",t:"Needs a water line run before ice and water work"});
+   else if(sp.water==="unsure")c.push({k:"Water",kind:"todo",s:"chk",t:"Check for a water line behind your current fridge"});}
+ const bad=c.some(x=>x.s==="no"&&x.k!=="Water"), warn=c.some(x=>x.s==="chk"||x.s==="no"), tight=!bad&&c.some(x=>x.s==="chk"&&x.kind==="fit");
+ return {checks:c,verdict:!c.length?"na":bad?"no":warn?"chk":"ok",tight,pull,todo:c.filter(x=>x.s!=="ok").length};}
+/* fit labels: ok = Fits, chk = Fits with something to check, tight = double check, no = won't fit */
+const fitKey=f=>f.verdict==="chk"&&f.tight?"tight":f.verdict;
+const FITW={ok:"Fits",chk:"Fits, check 1 thing",tight:"Tight, double check",no:"Won't fit",na:"Not checked"};
+const fitWord=f=>{const k=fitKey(f);return k==="chk"&&f.todo>1?`Fits, check ${f.todo} things`:FITW[k]};
+const fitCls=f=>({ok:"fit",chk:"fit",tight:"chk",no:"no",na:""})[fitKey(f)];
 
 /* ---------- drawings ---------- */
 function silhouette(u,x,y,w,h,stroke="currentColor",fill="none",sw=1.5){
@@ -3579,33 +3596,36 @@ function frontDrawing(u,sp){const pad=6,W=Math.max(u.w,sp.ow||0)+pad*2,H=Math.ma
  s+=`<line x1="0" y1="${base*k}" x2="${W*k}" y2="${base*k}" stroke="var(--muted)" stroke-width="3"/>`;
  for(let i=0;i<W;i+=4)s+=`<line x1="${i*k}" y1="${base*k}" x2="${(i-3)*k}" y2="${(base+3)*k}" stroke="var(--line)" stroke-width="2"/>`;
  if(sp.ow&&sp.oh){const x=(W-sp.ow)/2;s+=`<rect x="${x*k}" y="${(base-sp.oh)*k}" width="${sp.ow*k}" height="${sp.oh*k}" fill="var(--blue-soft)" stroke="var(--blue)" stroke-width="3" stroke-dasharray="12 7"/>`;}
- const fx=(W-u.w)/2,fy=base-u.h;const v=fit(u,sp).verdict;const col=v==="no"?"var(--bad)":v==="chk"?"var(--warn)":"var(--ink)";
+ const fx=(W-u.w)/2,fy=base-u.h;const v=fitKey(fit(u,sp));const col=v==="no"?"var(--bad)":v==="tight"?"var(--warn)":"var(--ink)";
  s+=silhouette(u,fx*k,fy*k,u.w*k,u.h*k,col,"var(--card)",3.5);
  return s+`</svg>`;}
 function frontLegend(u,sp){const r=[`<span class="dim"><i class="sw ink"></i>Fridge ${inch(u.w)} × ${inch(u.h)}</span>`];
  if(sp.ow)r.push(`<span class="dim"><i class="sw blue"></i>Opening ${inch(sp.ow)}${sp.oh?` × ${inch(sp.oh)}`:""}</span>`);
  const g=[];if(sp.ow){const x=(sp.ow-u.w)/2;g.push(`${x<0?"":"+"}${+x.toFixed(2)}" each side`)}if(sp.oh){const t=sp.oh-u.h;g.push(`${t<0?"":"+"}${+t.toFixed(2)}" on top`)}
  if(g.length)r.push(`<span class="dim strong">${g.join(" · ")}</span>`);return `<div class="legend">${r.join("")}</div>`;}
-function planDrawing(u,sp){const lp=sp.hinge!=null?Math.max(6,sp.hinge+6):6;const reach=Math.max(u.d90||u.d,sp.island?sp.island+5:0)+4,W=u.w+lp+6,k=4;
+function planDrawing(u,sp){const lp=sp.hinge!=null?Math.max(6,sp.hinge+6):6;const pl=sp.nook!=null?Math.max(0,sp.nook-(u.dnd??u.d)-1):0;const reach=Math.max((u.d90||u.d)+pl,sp.island?sp.island+5:0)+4,W=u.w+lp+6,k=4;
  let s=`<svg viewBox="0 0 ${W*k} ${(reach+3)*k}" role="img" aria-label="Top view showing door swing">`;
  s+=`<rect x="0" y="0" width="${W*k}" height="${3*k}" fill="var(--line)"/>`;
- const x=lp,y=4,dk=(u.dnd??u.d);
+ const pull=sp.nook!=null?Math.max(0,sp.nook-(u.dnd??u.d)-1):0;
+ const x=lp,y=4+pull,dk=(u.dnd??u.d);
  const doorY=(y+dk)*k, sw=u.d90?(u.d90-dk):u.w/2;
  const arc=(hx,dir,len)=>`<path d="M ${hx*k} ${doorY} L ${(hx+dir*len)*k} ${doorY} A ${len*k} ${len*k} 0 0 ${dir>0?1:0} ${hx*k} ${doorY+len*k} Z" fill="var(--blue-soft)" stroke="var(--blue)" stroke-width="2.5"/><line x1="${hx*k}" y1="${doorY}" x2="${hx*k}" y2="${doorY+len*k}" stroke="var(--blue)" stroke-width="4" stroke-linecap="round"/>`;
  if(u.type==="FD")s+=arc(x,1,Math.min(u.w/2,sw))+arc(x+u.w,-1,Math.min(u.w/2,sw));
  else if(u.type==="SS")s+=arc(x,1,Math.min(u.w*.42,sw))+arc(x+u.w,-1,Math.min(u.w*.58,sw));
  else s+=arc(x,1,Math.min(u.w,sw));
  s+=`<rect x="${x*k}" y="${y*k}" width="${u.w*k}" height="${dk*k}" fill="var(--card)" stroke="var(--ink)" stroke-width="3.5"/>`;
- if(sp.hinge!=null){const need=hingeNeed(u),bad=!u.zero&&sp.hinge<need,wx=x-sp.hinge;
+ if(sp.nook!=null){const gl=sp.ow!=null?Math.max(0.25,(sp.ow-u.w)/2):0.5;s+=`<rect x="${(x-gl-3)*k}" y="0" width="${3*k}" height="${sp.nook*k}" fill="var(--muted)" opacity=".55"/><rect x="${(x+u.w+gl)*k}" y="0" width="${3*k}" height="${sp.nook*k}" fill="var(--muted)" opacity=".55"/>`;}
+ if(sp.hinge!=null&&sp.nook==null){const need=hingeNeed(u),bad=!u.zero&&sp.hinge<need,wx=x-sp.hinge;
    s+=`<rect x="${(wx-4)*k}" y="0" width="${4*k}" height="${(y+dk+10)*k}" fill="${bad?"var(--bad)":"var(--muted)"}" opacity="${bad?.75:.55}"/>`;
    if(!u.zero)s+=`<rect x="${(x-need)*k}" y="${(y+dk-0.5)*k}" width="${need*k}" height="${3*k}" fill="none" stroke="${bad?"var(--bad)":"var(--good)"}" stroke-width="2.5" stroke-dasharray="6 4"/>`;}
- if(sp.island){const iy=(y+sp.island)*k;const m=sp.island-(u.d90||0)-1;s+=`<rect x="0" y="${iy}" width="${W*k}" height="${5*k}" fill="${m<0?"var(--bad)":"var(--muted)"}" opacity=".6"/>`;}
+ if(sp.island){const iy=(4+sp.island)*k;const m=sp.island-(u.d90||0)-1-pull;s+=`<rect x="0" y="${iy}" width="${W*k}" height="${5*k}" fill="${m<0?"var(--bad)":"var(--muted)"}" opacity=".6"/>`;}
  return s+`</svg>`;}
-function planLegend(u,sp){const r=[];if(u.d90)r.push(`<span class="dim"><i class="sw blue"></i>Doors open: ${inch(u.d90+1)} from wall</span>`);
- if(sp.island&&u.d90){const m=sp.island-u.d90-1;r.push(`<span class="dim strong ${m<0?"bad":""}">${m<0?`Hits island by ${inch(-m)}`:`${inch(m)} to island`}</span>`)}
- else r.push(`<span class="dim">Add "back wall to island" to check</span>`);
+function planLegend(u,sp){const r=[],pull=sp.nook!=null?Math.max(0,sp.nook-(u.dnd??u.d)-1):0;if(u.d90)r.push(`<span class="dim"><i class="sw blue"></i>Doors open: ${inch(u.d90+1+pull)} from wall</span>`);
+ if(pull>0.25)r.push(`<span class="dim">Sits ${inch(pull)} forward in the nook</span>`);
+ if(sp.island&&u.d90){const m=sp.island-u.d90-1-pull;r.push(`<span class="dim strong ${m<0?"bad":""}">${m<0?`Hits island by ${inch(-m)}`:`${inch(m)} to island`}</span>`)}
+ else r.push(`<span class="dim">Add "wall to island" to check</span>`);
  const need=hingeNeed(u);
- if(sp.hinge!=null)r.push(`<span class="dim strong ${!u.zero&&sp.hinge<need?"bad":""}">${u.zero?"Zero-clearance hinge":`Hinge side needs ~${inch(need)}, has ${inch(sp.hinge)}`}</span>`);
+if(sp.nook!=null){}else if(sp.hinge!=null)r.push(`<span class="dim strong ${!u.zero&&sp.hinge<need?"bad":""}">${u.zero?"Zero-clearance hinge":`Hinge side needs ~${inch(need)}, has ${inch(sp.hinge)}`}</span>`);
  else r.push(`<span class="dim">Hinge side needs ~${inch(need)}${u.zero?" (zero-clearance)":""}</span>`);
  return `<div class="legend">${r.join("")}</div>`;}
 /* ---------- list: filters + sorts ---------- */
@@ -3669,9 +3689,9 @@ const SORTS=[
   ["reviewed","Most reviewed","Most proven in real kitchens",u=>u.reviews?`${u.reviews.toLocaleString()} reviews`:null]]]];
 const SORTMAP={};SORTS.forEach(([,opts])=>opts.forEach(o=>SORTMAP[o[0]]=o));
 function sorter(key,c){const n=c.n,b=c.b,sp=c.sp;const P=u=>u.price==null?Infinity:effPrice(u);
- const score=({u,f})=>{let s=0;if(f.verdict==="ok")s+=3;if(f.verdict==="chk")s+=1;if(u.cap>=n.lo&&u.cap<=n.hi+4)s+=3;else if(u.cap>=n.lo-2)s+=1;
+ const score=({u,f})=>{let s=0;const fk=fitKey(f);if(fk==="ok")s+=3;else if(fk==="chk")s+=2.5;else if(fk==="tight")s+=0.5;if(!u.returnable)s-=0.75;if(u.av==="O")s-=1.25;if(u.cap>=n.lo&&u.cap<=n.hi+4)s+=3;else if(u.cap>=n.lo-2)s+=1;
    s+=BAYES(u)*1.2;if(S.habits.reliable&&u.disp==="None")s+=1.5;if(S.habits.dispenser&&u.disp!=="None")s+=1.5;if(S.habits.flush&&u.counter)s+=2;if(b&&P(u)>b)s-=4;
-   if(sp.ow!=null){const g=sp.ow-u.w;if(g>=0&&g<=2)s+=2;else if(g>4)s-=1.5;}if(u.price==null)s-=3;return s};
+   if(sp.ow!=null){const g=sp.ow-u.w;if(g>=0.25&&g<=2)s+=2;else if(g>4)s-=1.5;}if(u.price==null)s-=3;return s};
  const by=fn=>(a,b2)=>fn(a)-fn(b2);
  return {best:(a,b2)=>score(b2)-score(a),eff:by(x=>P(x.u)),effd:by(x=>x.u.price==null?Infinity:-P(x.u)),
   off:by(x=>x.u.price&&x.u.orig>x.u.price?-(x.u.orig-x.u.price):0),pct:by(x=>x.u.price&&x.u.orig>x.u.price?-(1-x.u.price/x.u.orig):0),
@@ -3686,7 +3706,7 @@ function filtered(){const c=ctx(),q=$("q").value.trim().toLowerCase();
  r.sort(sorter(S.sort,c));return r;}
 function cardHTML({u,f},c){const p=promo(u);const save=u.price&&u.orig&&u.orig>u.price?u.orig-u.price:0;
  const mfn=SORTMAP[S.sort][3];const m=mfn?mfn(u,f,c):null;
- const tags=[`<span class="tag ${f.verdict==="ok"?"fit":f.verdict==="chk"?"chk":f.verdict==="no"?"no":""}">${{ok:"Fits",chk:"Check fit",no:"Won't fit",na:STYLE[u.type]}[f.verdict]}</span>`];
+ const tags=[`<span class="tag ${fitCls(f)}">${f.verdict==="na"?STYLE[u.type]:fitWord(f)}</span>`];
  if(f.verdict!=="na")tags.push(`<span class="tag">${STYLE[u.type]}</span>`);
  if(onFloor(u))tags.unshift(`<span class="tag floor">${floorTxt(u)}</span>`);
  if(u.counter)tags.push(`<span class="tag">Counter depth</span>`);if(u.garage)tags.push(`<span class="tag">Garage ready</span>`);if(u.disp!=="None")tags.push(`<span class="tag">${u.disp==="Both"?"Ice + water":u.disp}</span>`);tags.push(`<span class="tag ${u.av==="O"?"chk":""}">${AV[u.av]}</span>`);if(u.zero)tags.push(`<span class="tag fit">Zero clearance</span>`);if(u.returnable)tags.push(`<span class="tag fit">90-day returns</span>`);
@@ -3865,8 +3885,9 @@ function autoPicks(){const c=ctx(),n=c.n,h=S.habits;
  if(h.flush)C.push(["counter depth",x=>x.u.counter]);
  if(h.dispenser)C.push(["ice/water in the door",x=>x.u.disp!=="None"]);
  if(c.b)C.push(["their budget",x=>effPrice(x.u)<=c.b]);
- let act=C.slice(),dropped=[],r=base.filter(x=>act.every(([,fn])=>fn(x)));
- while(r.length<3&&act.length){dropped.push(act.shift()[0]);r=base.filter(x=>act.every(([,fn])=>fn(x)));}
+ const roomy=base.filter(x=>fitKey(x.f)!=="tight"),pool=roomy.length>=3?roomy:base;
+ let act=C.slice(),dropped=[],r=pool.filter(x=>act.every(([,fn])=>fn(x)));
+ while(r.length<3&&act.length){dropped.push(act.shift()[0]);r=pool.filter(x=>act.every(([,fn])=>fn(x)));}
  const relaxed=dropped.length?dropped:null;
  const mid=(n.lo+n.hi)/2,cmp=sorter("best",c);
  if(S.sort==="best")r.sort((a,b)=>cmp(a,b)||Math.abs(a.u.cap-mid)-Math.abs(b.u.cap-mid));
@@ -3908,9 +3929,9 @@ function gtkList(u,f,sp){const g=[];
  if(!u.returnable)g.push("No change-of-mind returns. Issues are covered for 2 days after delivery");
  if(u.av==="O")g.push("Online only, ships to your home");
  return [...new Set(g)].slice(0,4);}
-function verdictHTML(f){const first=f.checks.find(c=>c.s==="no")||f.checks.find(c=>c.s==="chk");
- const m={ok:["✓","Fits your kitchen","Checked against your measurements"],chk:["!","Fits, with a note",first?first.t:""],no:["✕","Won't fit as measured",first?first.t:""],na:["?","Fit not checked yet","Add your measurements to check"]}[f.verdict];
- return `<div class="verdict ${f.verdict}"><span class="ic" aria-hidden="true">${m[0]}</span><span><b>${m[1]}</b>${m[2]}</span></div>`;}
+function verdictHTML(f){const k=fitKey(f),first=f.checks.find(c=>c.s==="no"&&c.k!=="Water")||f.checks.find(c=>c.s==="chk"&&c.kind==="fit")||f.checks.find(c=>c.s!=="ok");
+ const m={ok:["✓","Fits","Checked against the measurements entered"],chk:["✓",fitWord(f),first?first.t:""],tight:["!","Tight, double check",first?first.t:""],no:["✕","Won't fit as measured",first?first.t:""],na:["?","Fit not checked yet","Add measurements to check"]}[k];
+ return `<div class="verdict ${k==="chk"?"ok":k==="tight"?"chk":k}"><span class="ic" aria-hidden="true">${m[0]}</span><span><b>${m[1]}</b>${m[2]}</span></div>`;}
 function shortLabel(u){return u.label.replace(/\s+(in|with)\s+(Fingerprint|Smudge|PrintProof|Print|Stainless|White|Black|Slate|Panel|Matte|Bespoke|P$|Pr)[\s\S]*$/i,"").replace(/[\s,]+$/,"").trim()}
 function optCard(u,i,us,auto,sp){const f=fit(u,sp),p=promo(u),kwh=S.kwh[u.id]??u.kwh;
  const short=shortLabel(u);
@@ -3944,7 +3965,7 @@ function renderCmp(){const {us,auto}=optSet(),sp=space();
   ${R("$ per cu ft",u=>"$"+(effPrice(u)/u.cap).toFixed(0),u=>effPrice(u)/u.cap)}${R("Capacity",u=>u.cap+" cu ft",u=>-u.cap)}
   ${R("Room for",people)}${R("Style",u=>STYLE[u.type]+(u.counter?", counter depth":""))}${R("W × H × D",u=>`${inch(u.w)} × ${inch(u.h)} × ${inch(u.d)}`)}
   ${R("Doors off depth",u=>inch(u.dnd),u=>u.dnd)}${R("Doors open 90°",u=>inch(u.d90),u=>u.d90||99)}
-  ${R("Fit",u=>{const f=fit(u,sp);return `<span class="tag ${f.verdict==="ok"?"fit":f.verdict==="chk"?"chk":f.verdict==="no"?"no":""}">${{ok:"Fits",chk:"Check",no:"Won't fit",na:"Add space"}[f.verdict]}</span>`})}
+  ${R("Fit",u=>{const f=fit(u,sp);return `<span class="tag ${fitCls(f)}">${fitWord(f)}</span>`})}
   ${R("Ice / water",u=>u.disp)}${R("Energy Star",u=>u.estar?"Yes":"No")}${R("Rating",u=>u.reviews?`★ ${u.rating?.toFixed(1)} (${u.reviews.toLocaleString()})`:"–",u=>-BAYES(u))}
   ${R("Hinge side needs",u=>u.zero?"0\" zero clearance":"~"+inch(hingeNeed(u)),u=>hingeNeed(u))}${R("Warranty",u=>u.warranty)}${R("Returns",u=>u.returnable?"90-day":"2-day issue window")}
   ${auto?"":R("",u=>`<button class="rm" data-rm="${u.id}">Remove</button>`)}</tbody></table></div>
@@ -3966,7 +3987,7 @@ function renderSum(){const n=needs(),sp=space(),me=$("me").value.trim()||"your a
  let s=`${c?`Hi ${c}, here`:"Here"} are the fridges we looked at today at Home Depot Cumberland.\n\nRight size for your household: ${n.lo}–${n.hi} cu ft\n`;
  if(sp.ow)s+=`Your opening: ${inch(sp.ow)} wide${sp.oh?` × ${inch(sp.oh)} tall`:""}\n`;
  us.forEach((u,i)=>{const f=fit(u,sp),p=promo(u);const issues=f.checks.filter(x=>x.s!=="ok").map(x=>`   • ${x.t}`);
-  s+=`\n${i+1}. ${u.brand} ${u.model}\n   ${shortLabel(u)}\n   ${fmt(u.price)}${p&&p.save?` (${fmt(p.eff)} with Spend More Save More through 12/2)`:""} · ${u.cap} cu ft\n   ${f.verdict==="ok"?"Fits your space":f.verdict==="no"?"Does NOT fit your space":f.verdict==="chk"?"Fits, with notes:":"Bring your measurements to confirm fit"}\n${issues.join("\n")}${issues.length?"\n":""}   homedepot.com/p/${u.id}\n`;});
+  s+=`\n${i+1}. ${u.brand} ${u.model}\n   ${shortLabel(u)}\n   ${fmt(u.price)}${p&&p.save?` (${fmt(p.eff)} with Spend More Save More through 12/2)`:""} · ${u.cap} cu ft\n   ${({ok:"Fits your space",chk:"Fits, with something to check:",tight:"Tight fit, double check:",no:"Does NOT fit your space",na:"Bring your measurements to confirm fit"})[fitKey(f)]}\n${issues.join("\n")}${issues.length?"\n":""}   homedepot.com/p/${u.id}\n`;});
  s+=`\nBefore delivery\n• Measure the path one more time, front door to kitchen\n• Moving the old fridge to the garage? Georgia Power will pick up a working spare for free and pay you a rebate: georgiapower.com/refrigerator\n\nReady to order or have questions? Ask for ${me} in Appliances.`;
  $("sum").textContent=s;}
 
@@ -3984,7 +4005,7 @@ $$("#styleChips .chip").forEach(c=>c.onclick=()=>{const v=c.dataset.style;if(v==
 $("toggles").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const sl=$("toggles").scrollLeft;
  if(b.dataset.t)S.t[b.dataset.t]=!S.t[b.dataset.t];else if(b.dataset.clearR)delete S.f.r[b.dataset.clearR];else if(b.dataset.clearB)S.f.brands.delete(b.dataset.clearB);else if(b.dataset.clearD)S.f.disp.delete(b.dataset.clearD);
  renderList();$("toggles").scrollLeft=sl;});
-["ow","oh","cab","island","hinge","door","path","water","budget"].forEach(id=>{$(id).addEventListener("input",all);$(id).addEventListener("change",all)});
+["ow","oh","cab","island","hinge","nook","door","path","water","budget"].forEach(id=>{$(id).addEventListener("input",all);$(id).addEventListener("change",all)});
 ["me","cust"].forEach(id=>$(id).addEventListener("input",renderSum));
 $("q").addEventListener("input",()=>{$("qclear").hidden=!$("q").value;if(S.view!=="find")show("find");else renderList();
  const q=$("q").value.trim().replace(/[\s-]/g,"").toLowerCase();const exact=CAT.find(u=>[u.model,u.sku,u.id].some(v=>v.toLowerCase()===q));if(exact&&q.length>=6)openSheet(exact.id);});
@@ -3993,17 +4014,19 @@ $("list").addEventListener("click",e=>{if(e.target.id==="more"){S.lim+=40;render
 function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,1700);}
 function copy(text,msg){navigator.clipboard.writeText(text).then(()=>toast(msg||"Copied")).catch(()=>toast("Copy blocked here. Press and hold to select"));}
 $("copySum").onclick=()=>copy($("sum").textContent,"Summary copied");
-function resetCustomer(){["ow","oh","cab","island","hinge","door","budget","cust","q"].forEach(id=>$(id).value="");$("path").value="straight";$("water").value="unsure";S.adults=2;S.kids=1;$("adults").textContent=2;$("kids").textContent=1;S.habits={};S.cmp=[];S.kwh={};
+function resetCustomer(){["ow","oh","cab","island","hinge","nook","door","budget","cust","q"].forEach(id=>$(id).value="");$("path").value="straight";$("water").value="unsure";S.adults=2;S.kids=1;$("adults").textContent=2;$("kids").textContent=1;S.habits={};S.cmp=[];S.kwh={};
  $$("#habits .chip").forEach(c=>c.setAttribute("aria-pressed","false"));S.t={fits:true};S.f={styles:new Set(),brands:new Set(),disp:new Set(),r:{}};S.sort="best";renderBadge();all();show("customer");toast("Ready for the next customer");}
 
 /* ---------- fractions ---------- */
-let lastMeas=null;$$(".meas").forEach(i=>{i.addEventListener("focus",()=>lastMeas=i);i.addEventListener("blur",()=>{const v=parseIn(i.value);if(v!=null)i.value=showIn(v);all();});});
+let lastMeas=null;const NONEOK=["oh","cab","island","hinge","nook"];$$(".meas").forEach(i=>{i.addEventListener("focus",()=>{lastMeas=i;$("nonebar").hidden=!NONEOK.includes(i.id);});i.addEventListener("blur",()=>{const v=parseIn(i.value);if(v!=null)i.value=showIn(v);all();});});
+$("setNone").addEventListener("mousedown",e=>e.preventDefault());$("setNone").onclick=()=>{const i=lastMeas;if(!i||!NONEOK.includes(i.id))return;i.value="None";all();i.focus();};
 $$("#fracs button").forEach(b=>{b.addEventListener("mousedown",e=>e.preventDefault());b.onclick=()=>{const i=lastMeas||$("ow");const base=Math.floor(parseIn(i.value)||0);i.value=showIn(base+ +b.dataset.frac);all();i.focus();};});
 
 /* ---------- QR handoff ---------- */
 const CUST_URL="https://odthakang-kai.github.io/fridge-picks/";
 function custLink(){const us=optSet().us,sp=space(),t=["q1",...us.map(u=>u.id)];
- const M={ow:"w",oh:"h",cab:"c",island:"i",hinge:"g",door:"d"};for(const k in M)if(sp[k]!=null)t.push(M[k]+Math.round(sp[k]*100));
+ const M={ow:"w",oh:"h",cab:"c",island:"i",hinge:"g",nook:"e",door:"d"};for(const k in M)if(sp[k]!=null)t.push(M[k]+Math.round(sp[k]*100));
+ const z=Object.keys(sp.na).map(k=>M[k]).join("");if(z)t.push("z"+z);
  t.push("p"+({straight:"s",turn:"t",stairs:"x"}[sp.path]||"s"),"r"+({yes:"y",no:"n",unsure:"u"}[sp.water]||"u"),"a"+S.adults,"k"+S.kids);
  const bud=num($("budget").value);if(bud)t.push("b"+Math.round(bud));
  const fl=us.map((u,i)=>onFloor(u)?i+1:"").join("");if(fl)t.push("o"+fl);
@@ -4101,6 +4124,6 @@ $("priceNote").textContent=`Prices from homedepot.com for the Cumberland store, 
 
 $("reset").onclick=()=>resetCustomer();
 
-$("loadEx").onclick=()=>{$("ow").value="36";$("oh").value="70 ½";$("cab").value="25";$("door").value="32";$("island").value="66";all();toast("Example kitchen loaded");};
+$("loadEx").onclick=()=>{$("ow").value="36";$("oh").value="70 ½";$("cab").value="25";$("door").value="32";$("island").value="66";$("hinge").value="None";$("nook").value="None";all();toast("Example kitchen loaded");};
 $("catCount").textContent=CAT.length+" fridges";all();renderBadge();
 </script>
