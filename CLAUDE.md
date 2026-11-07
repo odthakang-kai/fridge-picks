@@ -16,14 +16,19 @@ Julian's personal tool for selling refrigerators as an appliance associate at th
 | `index.html` | Built customer page, served by GitHub Pages. **Also the single source of truth for the catalog and price date.** |
 | `build/floor-copilot.html` | Built floor tool, published as a Claude artifact. |
 | `build/customer-artifact.html` | Backup copy of the customer page as a Claude artifact. |
+| `app/` | Built Floor Copilot home-screen web app (GitHub Pages `/app/`): `index.html`, `sw.js`, manifest, icons, `vendor/` decoder. Never hand-edit. |
+| `src/app/` | Web app sources: `pwa.js` (inlined into `app/index.html`), `sw.template.js`, `manifest.webmanifest`, icons. |
+| `src/vendor/zxing/` | zxing-wasm 3.1.6 reader (MIT; ZXing-C++ Apache 2.0). Barcode fallback for phones without `BarcodeDetector` (iPhone). Copied to `app/vendor/`. |
+| `tools/make_icons.py` | Redraws the app icons (needs Pillow). Original art, no store logos. |
 
 ## Where things are published
 
 - Customer page (QR codes point here): https://odthakang-kai.github.io/fridge-picks/
+- Floor Copilot home-screen app (offline, barcode scanning): https://odthakang-kai.github.io/fridge-picks/app/
 - Floor Copilot (Claude artifact, private): https://claude.ai/artifact/LhFmDEy4Hphdtb9vsrbE35
 - Customer page backup (Claude artifact): https://claude.ai/artifact/5xKymLy1PVZZWDDUAsejFz
 
-To ship a change: edit a template, run `python3 tools/build.py`, commit and push (GitHub Pages updates `index.html` in about a minute), then publish `build/floor-copilot.html` and `build/customer-artifact.html` to their artifact URLs with the Artifact tool (pass `url`, never create a new artifact).
+To ship a change: edit a template, run `python3 tools/build.py`, commit and push (GitHub Pages updates `index.html` in about a minute), (this also ships `app/`), then publish `build/floor-copilot.html` and `build/customer-artifact.html` to their artifact URLs with the Artifact tool (pass `url`, never create a new artifact).
 
 ## Build rules
 
@@ -42,7 +47,7 @@ Inches for all dimensions. Prices are for store 121.
 
 ## Weekly price refresh
 
-A Claude scheduled task ("Floor Copilot weekly price refresh", Sundays 9:13 PM ET, runs on Julian's computer) uses the built-in browser to run `tools/harvest.js` on homedepot.com, then `tools/apply_refresh.py` on the two artifacts and this repo's `index.html`, and pushes. It never touches templates. If Home Depot changes its page structure, `harvest.js` is the file to fix.
+A Claude scheduled task ("Floor Copilot weekly price refresh", Sundays 9:13 PM ET, runs on Julian's computer) uses the built-in browser to run `tools/harvest.js` on homedepot.com, then `tools/apply_refresh.py` on the two artifacts and this repo's `index.html`, and pushes. `apply_refresh.py` automatically updates `app/index.html` too whenever the repo's `index.html` is in the list, so the task does not need to name it. The service worker loads the page network-first, so the installed app picks up new prices the next time it opens online. It never touches templates. If Home Depot changes its page structure, `harvest.js` is the file to fix.
 
 ## Customer link format (QR)
 
@@ -54,3 +59,9 @@ Only letters, digits and hyphens. Nothing personal about the customer goes in th
 
 - Floor list: `localStorage["fc_floor_v1"]` = `{itemId: "aisle note"}`
 - Text size: `localStorage["fc_z"]`
+- Linked barcodes: `localStorage["fc_codes_v1"]` = `{codeKey: itemId}` (codes Julian linked by hand, e.g. box UPCs; numeric keys drop leading zeros)
+- The artifact and the home-screen app are different origins, so their storage is separate. The Take-home tab's "Saved on this phone" panel copies and restores a backup (`FC1:` + base64 JSON) to move the floor list and linked codes between them.
+
+## Barcode scanning
+
+Search bar scan button. Uses native `BarcodeDetector` when present (Android Chrome), otherwise the vendored zxing-wasm reader (home-screen app only; the artifact falls back to typing). Matching order in `matchCode()`: homedepot.com product URL in a QR (9-digit itemId), linked codes, exact itemId / store SKU / model, digit windows inside longer numbers, model inside the text. Unmatched codes can be linked to a fridge from its detail sheet. The catalog has no UPCs, so box barcodes only work after linking.

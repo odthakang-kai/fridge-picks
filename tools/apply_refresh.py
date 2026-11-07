@@ -6,7 +6,15 @@ ROWS_FILE has one fridge per line, 31 pipe-separated fields (see CLAUDE.md).
 Changes nothing and exits non-zero if the data looks wrong."""
 import re, sys
 
+import os
 rows_f, day, files = sys.argv[1], sys.argv[2], sys.argv[3:]
+# The home-screen app (app/index.html) rides along whenever this repo's index.html is refreshed,
+# so the weekly task does not need to list it.
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+app_page = os.path.join(ROOT, "app", "index.html")
+if any(os.path.abspath(f) == os.path.join(ROOT, "index.html") for f in files) and os.path.exists(app_page) \
+        and all(os.path.abspath(f) != app_page for f in files):
+    files.append(app_page)
 rows = [l.strip() for l in open(rows_f, encoding="utf-8") if l.strip()]
 bad = [r for r in rows if r.count("|") != 30]
 ids = [r.split("|")[0] for r in rows]
