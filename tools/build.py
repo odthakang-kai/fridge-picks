@@ -47,8 +47,15 @@ def set_date(text):
         sys.exit("template is missing const DATA_DATE")
     return out
 
+# ---- shared look (src/theme.css), inlined at the end of each page's first <style> ----
+theme = read(P("src", "theme.css"))
+def with_theme(text, name):
+    if text.count("/*__THEME__*/") != 1:
+        sys.exit(f"{name} needs exactly one /*__THEME__*/ placeholder inside its <style>")
+    return text.replace("/*__THEME__*/", theme)
+
 # ---- Floor Copilot ----
-app_t = read(P("src", "floor-copilot.template.html"))
+app_t = with_theme(read(P("src", "floor-copilot.template.html")), "floor-copilot.template.html")
 qrlib = read(P("src", "vendor", "qrcode-generator.js")).replace("</script", "<\\/script")
 app = set_date(app_t.replace("__CATALOG__", catalog).replace("__QRLIB__", qrlib))
 write(P("build", "floor-copilot.html"), app)
@@ -60,7 +67,7 @@ shared = (between(app_t, "const STYLE=", "function space(){")
           + between(app_t, "function fit(", "/* ---------- list")
           + between(app_t, "const BAYES=", "const DISP=")
           + between(app_t, "const people=", "function optCard("))
-cust = set_date(read(P("src", "customer.template.html")).replace("__SHARED__", shared).replace("__CATALOG__", catalog))
+cust = set_date(with_theme(read(P("src", "customer.template.html")), "customer.template.html").replace("__SHARED__", shared).replace("__CATALOG__", catalog))
 write(P("build", "customer-artifact.html"), cust)
 
 body = cust.replace('<meta name="claude:viewport-fit-sides" content="cover">\n', "")
@@ -87,7 +94,7 @@ def wrap(body, head_extra, tail_script=""):
             + body[cut:] + tail_script + "\n</body>\n</html>\n")
 
 APP_HEAD = ('<link rel="manifest" href="manifest.webmanifest">\n'
-            '<meta name="theme-color" content="#F96302">\n'
+            '<meta name="theme-color" content="#232527">\n'
             '<meta name="mobile-web-app-capable" content="yes">\n'
             '<meta name="apple-mobile-web-app-capable" content="yes">\n'
             '<meta name="apple-mobile-web-app-status-bar-style" content="default">\n'

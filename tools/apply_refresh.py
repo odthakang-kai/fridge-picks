@@ -40,3 +40,11 @@ for f in files:
 for f, s2 in out.items():
     open(f, "w", encoding="utf-8", newline="\n").write(s2)
 print(f"OK: {len(rows)} fridges, prices dated {day}, {len(files)} files updated")
+
+# Warn (do not abort) when fridges on data/watchlist.txt are still not in the catalog.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from check_catalog import read_watchlist, finder
+find = finder([r.split("|") for r in rows])
+still = [w for w in read_watchlist() if not find(w)]
+if still:
+    print(f"WARNING: {len(still)} watchlist fridge(s) still missing: {', '.join(still)}")

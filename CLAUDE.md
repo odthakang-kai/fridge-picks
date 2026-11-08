@@ -10,9 +10,13 @@ Julian's personal tool for selling refrigerators as an appliance associate at th
 |---|---|
 | `src/floor-copilot.template.html` | Julian's floor tool (phone-first). Tabs: Customer, Fridges, Options, Take-home. |
 | `src/customer.template.html` | The customer's take-home planner (Your picks / Measure / Find more). Opened by QR code. |
+| `src/theme.css` | Shared look for both pages (colors, type, buttons, chips, tags, verdicts, prices, the tape-measure meter). Inlined by the build at the `/*__THEME__*/` placeholder at the end of each template's `<style>`, so it wins over page rules of equal specificity. Templates keep layout only. |
 | `src/vendor/qrcode-generator.js` | QR library (MIT), inlined into the floor tool at build time. |
 | `tools/build.py` | Builds all pages. Run after any template change. |
 | `tools/harvest.js` | Runs inside a browser tab on homedepot.com and builds catalog rows. |
+| `tools/check_catalog.py` | Cross-reference: checks `data/watchlist.txt`, typed models, and (with `--backup FC1:...`) the phone's floor list and "Not in the catalog" scans against the catalog in `index.html`. `--add` appends missing models to the watchlist, `--js` prints the `window.HV_WATCH=` line for the harvest. |
+| `data/watchlist.txt` | Models or Internet #s that must be in the catalog (one per line, `#` comments). The harvest looks up any the category listings miss. |
+| `tools/receive_rows.py` | Saves harvested rows straight to a file: run it, then navigate the harvest tab to `http://127.0.0.1:8766/#` + the rows (see its docstring). homedepot.com blocks fetch to other hosts, so the rows ride in the URL fragment. Read `HV.reportText()` first; leaving the page loses the harvest. |
 | `tools/collect_rows.py` | Pulls harvested rows out of saved tool outputs. |
 | `tools/apply_refresh.py` | Swaps a new catalog + price date into built pages. |
 | `index.html` | Built customer page, served by GitHub Pages. **Also the single source of truth for the catalog and price date.** |
@@ -35,10 +39,10 @@ To ship a change: edit a template, run `python3 tools/build.py`, commit and push
 
 ## Build rules
 
-- Templates contain placeholders the build fills: `__CATALOG__`, `__QRLIB__` (floor tool) and `__CATALOG__`, `__SHARED__` (customer page). `const DATA_DATE=new Date("YYYY-MM-DDT12:00:00")` is overwritten from `index.html`.
+- Templates contain placeholders the build fills: `__CATALOG__`, `__QRLIB__` (floor tool) and `__CATALOG__`, `__SHARED__` (customer page), plus `/*__THEME__*/` (both, exactly once, last thing inside the first `<style>`). `const DATA_DATE=new Date("YYYY-MM-DDT12:00:00")` is overwritten from `index.html`.
 - `__SHARED__` is cut from the floor-tool template between these markers, so keep them intact and keep shared functions inside them: `const STYLE=` … `function space(){`, `function fit(` … `/* ---------- list`, `const BAYES=` … `const DISP=`, `const people=` … `function optCard(`. Anything the customer page needs (fit, drawings, needs(), why/good-to-know lists, price helpers) must live in those ranges.
 - Pages are single self-contained files. No external scripts, fonts or images. Artifact pages must not contain their own `<html>/<head>/<body>`; the build wraps the GitHub Pages copy.
-- Copy style: plain words, no em dashes, no Home Depot branding. Fit results always pair an icon with words. Keep the fit disclaimer and the price-date notes on both pages.
+- Look: charcoal bars, white work surfaces, orange only for actions, deals and the current place; selected choices are solid charcoal. Section labels are sentence case (no tracked all-caps). Change colors and shared components in `src/theme.css`, not in the templates. Copy style: plain words, no em dashes, no Home Depot branding. Fit results always pair an icon with words. Keep the fit disclaimer and the price-date notes on both pages.
 
 ## Catalog format
 
@@ -50,7 +54,7 @@ Inches for all dimensions. Prices are for store 121.
 
 ## Weekly price refresh
 
-A Claude scheduled task ("Floor Copilot weekly price refresh", Sundays 9:13 PM ET, runs on Julian's computer) uses the built-in browser to run `tools/harvest.js` on homedepot.com, then `tools/apply_refresh.py` on the two artifacts and this repo's `index.html`, and pushes. `apply_refresh.py` automatically updates `app/index.html` too whenever the repo's `index.html` is in the list, so the task does not need to name it. The service worker loads the page network-first, so the installed app picks up new prices the next time it opens online. It never touches templates. If Home Depot changes its page structure, `harvest.js` is the file to fix.
+A Claude scheduled task ("Floor Copilot weekly price refresh", Sundays 9:13 PM ET, runs on Julian's computer) uses the built-in browser to run `tools/harvest.js` on homedepot.com (first set `window.HV_WATCH` from `python tools/check_catalog.py --js`; afterwards read `HV.reportText()` for what was skipped and why); save the rows with `tools/receive_rows.py`), then `tools/apply_refresh.py` on the two artifacts and this repo's `index.html`, and pushes. `apply_refresh.py` automatically updates `app/index.html` too whenever the repo's `index.html` is in the list, so the task does not need to name it. The service worker loads the page network-first, so the installed app picks up new prices the next time it opens online. It never touches templates. If Home Depot changes its page structure, `harvest.js` is the file to fix.
 
 ## Customer link format (QR)
 
@@ -83,8 +87,9 @@ Customer page: Your picks: What we checked box (8 items: covered, doesn't apply,
 
 - Floor list: `localStorage["fc_floor_v2"]` = `{itemId: {a: "aisle note", s: "YYYY-MM-DD last seen" or null}}`. `fc_floor_v1` (`{itemId: "aisle note"}`) is still written alongside on every save, and on load any v1 entries missing from v2 are migrated in (last seen unknown), so nothing is lost and an older cached app still sees the list. Use `floorSet(id, aisle)` / `floorDel(id)` / `floorAisle(u)`.
 - Text size: `localStorage["fc_z"]`
+- Not in the catalog: `localStorage["fc_missing_v1"]` = `{codeKey: {raw, a: aisle note, d: date}}`. Every scan or typed code that matches no fridge (and "Save as missing" on an empty search) lands here; entries drop off once a refresh brings the fridge in or the code is linked by hand. Shown under Take-home > Not in the catalog with Copy list.
 - Linked barcodes: `localStorage["fc_codes_v1"]` = `{codeKey: itemId}` (codes Julian linked by hand, e.g. box UPCs; numeric keys drop leading zeros)
-- The artifact and the home-screen app are different origins, so their storage is separate. The Take-home tab's "Saved on this phone" panel copies and restores a backup (`FC1:` + base64 JSON of `{f: {itemId: "aisle"}, f2: {itemId: {a, s}}, c: {code: itemId}}`) to move the floor list and linked codes between them. Restore reads old backups (only `f`) and new ones, adds to what's there, and keeps the newer last-seen date.
+- The artifact and the home-screen app are different origins, so their storage is separate. The Take-home tab's "Saved on this phone" panel copies and restores a backup (`FC1:` + base64 JSON of `{f: {itemId: "aisle"}, f2: {itemId: {a, s}}, c: {code: itemId}, m: {codeKey: {raw, a, d}}}`) to move the floor list and linked codes between them. Restore reads old backups (only `f`) and new ones, adds to what's there, and keeps the newer last-seen date.
 
 ## Barcode scanning
 
