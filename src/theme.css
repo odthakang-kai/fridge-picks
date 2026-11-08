@@ -1,0 +1,159 @@
+/* Shared look for Floor Copilot and the customer page. tools/build.py inlines this file at the end of
+   each page's <style> (placeholder: the __THEME__ comment), so it wins over page rules of equal specificity.
+   Pages keep layout; this file owns color, type, shape and the shared components.
+   Direction: a pro floor tool in store colors. Charcoal bars, white work surfaces, orange only for
+   actions, deals and the current place. The one loud element is the tape-measure meter. */
+:root{
+  --paper:#F1F2F3; --card:#FFFFFF; --sunk:#E9EBED; --ink:#1E2124; --muted:#5E656C; --line:#D9DCE0; --line-2:#C4C9CE;
+  --band:#232527; --band-2:#FFFFFF; --band-ink:#FFFFFF; --band-muted:#A9AFB5; --deep:#232527;
+  --signal:#F96302; --signal-ink:#FFFFFF; --signal-soft:#FFF1E7; --signal-deep:#C94F00;
+  --blue:#2F6A8F; --blue-soft:#E3EEF5;
+  --good:#0B7A3B; --good-bg:#E4F3EA; --warn:#A64E00; --warn-bg:#FCEFE2; --bad:#BE1E2D; --bad-bg:#FBE6E8;
+  --body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; --display:var(--body);
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;
+  --r-s:5px; --r:8px; --r-l:12px; --z:1;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#131416; --card:#1C1E21; --sunk:#26292D; --ink:#ECEEF0; --muted:#A0A7AE; --line:#30343A; --line-2:#444A51;
+  --band:#0C0D0E; --band-2:#26292D; --band-muted:#8E959C; --deep:#26292D;
+  --signal:#FF7419; --signal-soft:#36210F; --signal-deep:#FF9A55; --blue:#86B8D8; --blue-soft:#1A2A35;
+  --good:#53C985; --good-bg:#10281B; --warn:#F2A55E; --warn-bg:#2E1F10; --bad:#FF7E89; --bad-bg:#3A171C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#131416; --card:#1C1E21; --sunk:#26292D; --ink:#ECEEF0; --muted:#A0A7AE; --line:#30343A; --line-2:#444A51;
+  --band:#0C0D0E; --band-2:#26292D; --band-muted:#8E959C; --deep:#26292D;
+  --signal:#FF7419; --signal-soft:#36210F; --signal-deep:#FF9A55; --blue:#86B8D8; --blue-soft:#1A2A35;
+  --good:#53C985; --good-bg:#10281B; --warn:#F2A55E; --warn-bg:#2E1F10; --bad:#FF7E89; --bad-bg:#3A171C; color-scheme:dark}
+
+/* base */
+body{font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 0}
+h1,h2,h3,h4{text-wrap:balance}
+h2,.sec,.ps-head h3,.quickres h3,.floorv>summary h3{font-weight:760;letter-spacing:-.018em}
+:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+a{color:var(--blue);text-underline-offset:2px}
+.price,.rv,.stats .big,.money .v,.callout .num,.specs,.metric,.kv dd,table,.stepper output,label.f input,.fitbar b{font-variant-numeric:tabular-nums}
+
+/* Section labels: sentence case, no tracked caps. */
+.eyebrow,.grp h4,.opt h4,.facts small,.cap,.drawing .cap,.stats h5,.money .k,.fgroup h4{
+  text-transform:none;letter-spacing:0;font-size:13px;font-weight:650;color:var(--muted)}
+.fgroup h4{color:var(--ink);font-size:14px;font-weight:700}
+.facts small{font-size:12px;font-weight:600}
+
+/* surfaces */
+.panel,.card,.drawing,.cmpwrap,.empty,.kdraw,.qpicks,.frows,.stats{border-radius:var(--r);border-color:var(--line)}
+.panel{box-shadow:none}
+.empty{border-style:dashed;border-color:var(--line-2)}
+.note{color:var(--muted)}
+.disc{color:var(--muted)}
+
+/* header band */
+.band,header{background:var(--band);color:var(--band-ink);border-bottom:1px solid #000}
+.logo b{font-weight:800;letter-spacing:-.02em;font-size:20px}
+.logo i{background:var(--signal);border-radius:3px;box-shadow:none;position:relative}
+.logo i::after{content:"";position:absolute;left:4px;right:4px;bottom:4px;height:2px;background:var(--band);box-shadow:0 -5px 0 var(--band)}
+.brandrow .aa{background:transparent;border:1px solid rgba(255,255,255,.28);border-radius:var(--r-s)}
+.search{border-radius:var(--r);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.search .scan{border-left-color:var(--line)}
+header .kick{text-transform:none;letter-spacing:0;font-size:13.5px;font-weight:650;color:var(--signal);opacity:1}
+
+/* The tape: the measuring-progress meter reads like a tape measure (ticks every eighth, longer every half). */
+.fitbar .meter{position:relative;height:14px;border-radius:2px;background:#3A3D40;box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
+.fitbar .meter::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(90deg,rgba(20,20,20,.55) 0 1px,transparent 1px 32px),repeating-linear-gradient(90deg,rgba(20,20,20,.35) 0 1px,transparent 1px 8px);
+  background-size:auto 70%,auto 38%;background-repeat:repeat-x;background-position:0 0,0 0}
+.fitbar .meter span{background:var(--signal);border-radius:2px 0 0 2px;box-shadow:1px 0 0 #fff}
+.fitbar{color:var(--band-muted)}
+.fitbar b{color:#fff}
+
+/* buttons */
+.btn{border-radius:var(--r-s);min-height:44px;font-weight:700;letter-spacing:-.005em}
+.btn.y{background:var(--signal);color:var(--signal-ink)}
+.btn.y:active{background:var(--signal-deep)}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line-2)}
+.btn.dark{background:var(--band);color:#fff}
+.linkbtn,.rm{color:var(--blue)}
+
+/* choices: selected = solid charcoal, so orange keeps meaning "do this" */
+.chip{border-radius:var(--r-s);border-color:var(--line-2);background:var(--card);color:var(--ink);min-height:40px;font-weight:550}
+.chip[aria-pressed="true"],.chip.on{background:var(--ink);color:var(--card);border-color:var(--ink);box-shadow:none}
+.chip.on .ct,.chip[aria-pressed="true"] .ct{opacity:.75}
+.nonebtn{border-radius:var(--r-s)}
+.seg{border-color:var(--line-2);border-radius:var(--r-s)}
+.seg button{color:var(--muted)}
+.seg button[aria-selected="true"]{background:var(--ink);color:var(--card)}
+.stepper{border-radius:var(--r-s);background:var(--card);border-color:var(--line-2)}
+.stepper button{width:46px;height:44px;color:var(--ink)}
+label.f{color:var(--muted);font-weight:600}
+label.f input,label.f select{background:var(--card);border-color:var(--line-2);border-radius:var(--r-s);min-height:44px}
+label.f input:focus{border-color:var(--ink);outline:none;box-shadow:0 0 0 1px var(--ink)}
+.tool,.listhead select,.pickbar button{border-radius:var(--r-s)}
+.tool .fc{border-radius:3px}
+
+/* tags and pills: sentence case labels, square-ish, color only when it means something */
+.tag{text-transform:none;letter-spacing:0;font-size:12px;font-weight:650;border-radius:4px;padding:3px 7px}
+.tag.floor{background:var(--ink);color:var(--card)}
+.pill{text-transform:none;letter-spacing:0;font-size:12px;font-weight:700;border-radius:4px;padding:4px 0}
+.metric{border-radius:4px}
+.win{text-transform:none;letter-spacing:0;font-size:11.5px;border-radius:3px}
+
+/* prices: retail shelf style, dollars heavy, cents raised */
+.price{font-weight:800;letter-spacing:-.03em}
+.price sup{font-weight:700}
+.was{color:var(--muted)}
+.save,.eff{color:var(--signal-deep)}
+.eff{background:var(--signal-soft);border-color:transparent;border-radius:4px}
+.model{font-family:var(--body);font-size:12.5px;font-weight:500;color:var(--muted);letter-spacing:.01em}
+.brand{font-weight:750}
+
+/* Fit verdict as a shelf tag: colored edge, square mark, plain card behind. */
+.verdict{--vc:var(--muted);background:var(--card);color:var(--ink);border:1px solid var(--line);border-left:5px solid var(--vc);border-radius:var(--r-s)}
+.verdict.ok{--vc:var(--good)}.verdict.chk{--vc:var(--warn)}.verdict.no{--vc:var(--bad)}.verdict.na{--vc:var(--muted)}
+.verdict.ok,.verdict.chk,.verdict.no,.verdict.na{background:var(--card);color:var(--ink)}
+.verdict .ic,.verdict.ok .ic,.verdict.chk .ic,.verdict.no .ic,.verdict.na .ic{background:var(--vc);border-radius:4px;width:24px;height:24px}
+.verdict b{color:var(--vc)}
+
+/* fridge cards and picks */
+.card{padding:12px 12px 12px 10px;gap:12px}
+.card:active{background:var(--sunk)}
+.opt,.pick{border-top:1px solid var(--line);border-radius:var(--r-l)}
+.opt .rank,.pick .num{text-transform:none;letter-spacing:0;font-size:13px;font-weight:750;color:var(--signal-deep)}
+.qpick .n{color:var(--ink);font-weight:800}
+.qpick .where{color:var(--signal-deep)}
+.callout{background:var(--deep);border-radius:var(--r)}
+.callout .num{color:var(--signal)}
+.money{border-radius:var(--r-s);border:1px solid var(--line)}
+.money>div{background:var(--card);color:var(--ink)}
+.money>div+div{border-left:1px solid var(--line)}
+.money>div:first-child{background:var(--ink);color:var(--card)}
+.money>div:first-child .k{color:var(--band-muted)}
+.floor{background:var(--ink);color:var(--card);border-radius:var(--r-s)}
+.cta{background:var(--band);border-radius:var(--r)}
+.why li::before{color:var(--good)}
+
+/* sheets */
+.sheet .body{border-radius:var(--r-l) var(--r-l) 0 0}
+.sheet .head{background:var(--band)}
+.x{border-radius:var(--r-s)}
+
+/* bottom dock and tabs */
+nav.dock{background:var(--card);border-top:1px solid var(--line)}
+nav.dock button{letter-spacing:0;font-weight:650;font-size:11.5px}
+nav.dock button[aria-current="page"]{color:var(--ink)}
+nav.dock button[aria-current="page"]::before{left:30%;right:30%;height:3px;border-radius:0 0 2px 2px}
+nav.dock button[aria-current="page"] svg{color:var(--signal)}
+nav.tabs{background:var(--card)}
+nav.tabs button{letter-spacing:0}
+.badge,nav.tabs .ct{border-radius:4px}
+.toast{background:var(--ink);color:var(--card);border-radius:var(--r-s);box-shadow:0 6px 24px rgba(0,0,0,.25)}
+
+/* scanner */
+.scanframe{border-radius:var(--r);border-color:#fff}
+.walkbar{background:var(--signal-soft);color:var(--ink);border-radius:var(--r-s)}
+.misslist li b{font-family:var(--body);font-weight:700;letter-spacing:.02em}
+
+/* deal box in the fridge sheet: a tag edge, not a flood of orange */
+.promobox{border-left:5px solid var(--signal);background:var(--signal-soft)}
+.promobox .eyebrow{color:var(--signal-deep)}
+.promobox b{color:var(--ink)}
+.pickbar button[aria-selected="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);background:var(--card)}
+.pickbar button[aria-selected="true"] b{background:var(--ink);color:var(--card)}

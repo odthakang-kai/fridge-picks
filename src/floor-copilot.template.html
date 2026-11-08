@@ -2,23 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Layout: phone-first floor tool in the store's retail look: orange header bar, white cards on light gray, Helvetica, square corners, bold black prices with superscript dollars and cents. Orange = action and deals, blue = fit drawings. */
-:root{
-  --paper:#F5F5F5; --card:#FFFFFF; --sunk:#EEEEEE; --ink:#333333; --muted:#666666; --line:#D9D9D9;
-  --band:#F96302; --band-2:#FFFFFF; --band-ink:#FFFFFF; --band-muted:#FFE6D6; --deep:#333333;
-  --signal:#F96302; --signal-ink:#FFFFFF; --signal-soft:#FEEBDF;
-  --blue:#3E7697; --blue-soft:#E4EFF5;
-  --good:#00873C; --good-bg:#E2F3E8; --warn:#A35200; --warn-bg:#FDF0E3; --bad:#C8102E; --bad-bg:#FBE3E6;
-  --display:"Helvetica Neue",Helvetica,Arial,sans-serif; --body:"Helvetica Neue",Helvetica,Arial,sans-serif; --mono:ui-monospace,Menlo,Consolas,monospace;
-  --z:1;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --paper:#121212; --card:#1E1E1E; --sunk:#2A2A2A; --ink:#EDEDED; --muted:#A6A6A6; --line:#363636;
-  --band:#E35A00; --band-2:#1E1E1E; --deep:#2A2A2A; --signal-soft:#3A2414; --blue:#8DBAD6; --blue-soft:#1C2A33;
-  --good:#4CC27F; --good-bg:#12291C; --warn:#F2A45A; --warn-bg:#2E200F; --bad:#FF7A85; --bad-bg:#3A161B; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --paper:#121212; --card:#1E1E1E; --sunk:#2A2A2A; --ink:#EDEDED; --muted:#A6A6A6; --line:#363636;
-  --band:#E35A00; --band-2:#1E1E1E; --deep:#2A2A2A; --signal-soft:#3A2414; --blue:#8DBAD6; --blue-soft:#1C2A33;
-  --good:#4CC27F; --good-bg:#12291C; --warn:#F2A45A; --warn-bg:#2E200F; --bad:#FF7A85; --bad-bg:#3A161B; color-scheme:dark}
+/* Colors, type and shared components: src/theme.css (inlined at the end of this block). */
 *{box-sizing:border-box}
 html,body{background:var(--paper)}
 body{color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.4;-webkit-tap-highlight-color:transparent}
@@ -54,7 +38,7 @@ main{padding-block:16px 120px;zoom:var(--z)}
 h2{font-family:var(--display);font-weight:700;font-size:24px;line-height:1.05;margin:4px 0 0;text-wrap:balance;letter-spacing:.01em}
 .sub{color:var(--muted);margin:0;max-width:60ch}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:14px;display:flex;flex-direction:column;gap:12px}
-.eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0}
+.eyebrow{font-size:11px;font-weight:700;color:var(--muted);margin:0}
 .fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px 12px}
 label.f{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--muted);min-width:0}
 label.f input,label.f select{font:600 17px var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:9px 10px;width:100%;min-width:0;font-variant-numeric:tabular-nums}
@@ -119,7 +103,7 @@ label.f .unit{font-weight:500}
 .ps-inner{padding:6px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:0}
 .grp{padding:14px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
 .grp:last-child{border-bottom:0}
-.grp h4{margin:0;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:baseline}
+.grp h4{margin:0;font-size:12px;font-weight:700;color:var(--muted);display:flex;justify-content:space-between;align-items:baseline}
 .grp h4 button{background:none;border:0;color:var(--blue);font-size:12.5px;font-weight:600;letter-spacing:0;text-transform:none;cursor:pointer;padding:0}
 .wrapchips{display:flex;flex-wrap:wrap;gap:8px}
 .chip:disabled{opacity:.35;cursor:default}
@@ -132,7 +116,7 @@ label.f .unit{font-weight:500}
 .tick{display:flex;align-items:center;gap:10px;font-size:15px}.tick input{width:20px;height:20px;accent-color:var(--ink)}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:4px;overflow:hidden}
 .stats>div{padding:10px;border-left:1px solid var(--line);min-width:0}.stats>div:first-child{border-left:0}
-.stats h5{margin:0 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stats h5{margin:0 0 6px;font-size:11px;color:var(--muted)}
 .stats .big{font-family:var(--display);font-weight:800;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
 .stats p{margin:4px 0 0;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .deliv{color:var(--good);font-weight:600}
@@ -179,11 +163,12 @@ label.f .unit{font-weight:500}
 .eff{font-size:12px;font-weight:700;background:var(--signal-soft);color:var(--signal);border:1px solid var(--signal);padding:2px 6px;border-radius:4px;font-variant-numeric:tabular-nums}
 .specs{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .tags{display:flex;flex-wrap:wrap;gap:5px}
-.tag{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 6px;border-radius:4px;background:var(--sunk);color:var(--muted)}
+.tag{font-size:10.5px;font-weight:700;padding:3px 6px;border-radius:4px;background:var(--sunk);color:var(--muted)}
 .tag.floor{background:var(--signal-soft);color:var(--signal)}
 .tag.fit{background:var(--good-bg);color:var(--good)} .tag.chk{background:var(--warn-bg);color:var(--warn)} .tag.no{background:var(--bad-bg);color:var(--bad)}
 .stars{font-size:12px;color:var(--muted)}
 .stars b{color:var(--ink)}
+.misslist{list-style:none;margin:8px 0;padding:0}.misslist li{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.misslist li b{font-family:var(--mono);font-size:14px}.misslist li span{flex:1;color:var(--muted);font-size:13px}.misslist .x{background:none;border:0;font-size:20px;width:40px;height:40px;cursor:pointer;color:var(--muted)}
 .empty{padding:28px 16px;text-align:center;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:4px}
 
 /* sheet */
@@ -198,17 +183,17 @@ label.f .unit{font-weight:500}
 .money{display:grid;grid-template-columns:repeat(3,1fr);border-radius:4px;overflow:hidden;border:0}
 .money>div{background:var(--signal);color:var(--signal-ink);padding:9px 10px;min-width:0}
 .money>div+div{border-left:1px solid rgba(255,255,255,.35)}
-.money .k{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.money .k{font-size:10px;font-weight:700;}
 .money .v{font-family:var(--display);font-weight:800;font-size:25px;line-height:1.05;font-variant-numeric:tabular-nums}
 .note{font-size:13px;color:var(--muted);margin:0}
 .checks{display:flex;flex-direction:column;gap:8px}
 .ck{display:grid;grid-template-columns:60px 1fr;gap:10px;align-items:start;font-size:14px}
-.pill{font:700 10.5px var(--body);letter-spacing:.07em;text-transform:uppercase;border-radius:5px;padding:4px 0;text-align:center}
+.pill{font:700 10.5px var(--body);border-radius:5px;padding:4px 0;text-align:center}
 .pill.ok{background:var(--good-bg);color:var(--good)} .pill.chk{background:var(--warn-bg);color:var(--warn)} .pill.no{background:var(--bad-bg);color:var(--bad)} .pill.na{background:var(--sunk);color:var(--muted)}
 .drawings{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .drawing{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:8px;display:flex;flex-direction:column;gap:4px;min-width:0}
 .drawing svg{width:100%;height:auto;display:block}
-.drawing .cap{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.drawing .cap{font-size:11px;font-weight:700;color:var(--muted)}
 .addons{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
 .addons li{display:flex;justify-content:space-between;gap:10px;font-size:14px;border-bottom:1px solid var(--line);padding-bottom:8px}
 .addons li:last-child{border-bottom:0;padding-bottom:0}
@@ -228,7 +213,7 @@ label.f .unit{font-weight:500}
 .opt-top{display:grid;grid-template-columns:70px 1fr;gap:12px;align-items:start}
 .opt-top .sil{width:70px}
 .opt h3{margin:2px 0 0;font-size:17px;line-height:1.3;font-weight:600}
-.opt .rank{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--signal)}
+.opt .rank{font-size:12px;font-weight:700;color:var(--signal)}
 .verdict{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:4px;font-size:15px;line-height:1.35}
 .verdict .ic{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px;color:#fff}
 .verdict.ok{background:var(--good-bg);color:var(--good)}.verdict.ok .ic{background:var(--good)}
@@ -239,8 +224,8 @@ label.f .unit{font-weight:500}
 .mhelp{font-size:13.5px;color:var(--muted)}.mhelp summary{font-weight:700;color:var(--blue);cursor:pointer}.mhelp ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
 .facts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;font-size:14px}
 .facts li{display:flex;flex-direction:column;gap:1px;min-width:0}
-.facts small{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
-.opt h4{margin:0;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.facts small{font-size:11px;font-weight:700;color:var(--muted)}
+.opt h4{margin:0;font-size:12px;font-weight:700;color:var(--muted)}
 .why,.gtk{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;font-size:15px;line-height:1.35}
 .why li,.gtk li{display:grid;grid-template-columns:18px 1fr;gap:8px}
 .why li::before{content:"✓";color:var(--good);font-weight:800}
@@ -258,7 +243,7 @@ table.cmp th,table.cmp td{padding:9px 10px;border-bottom:1px solid var(--line);t
 table.cmp th[scope=row]{color:var(--muted);font-weight:600;width:120px;position:sticky;left:0;background:var(--card)}
 table.cmp thead th{font-weight:700}
 table.cmp tr:last-child td,table.cmp tr:last-child th{border-bottom:0}
-.win{display:inline-block;margin-top:4px;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--signal);color:var(--signal-ink);padding:3px 6px;border-radius:4px}
+.win{display:inline-block;margin-top:4px;font-size:10.5px;font-weight:800;background:var(--signal);color:var(--signal-ink);padding:3px 6px;border-radius:4px}
 .rm{background:none;border:0;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer;padding:0}
 pre.sum{white-space:pre-wrap;font:14px/1.5 var(--body);margin:0}
 ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14px}
@@ -314,7 +299,7 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
 .floorv>summary .ct{font-size:12.5px;color:var(--muted);font-weight:600}
 .floorv>summary .chev{color:var(--muted);transition:transform .2s}.floorv[open]>summary .chev{transform:rotate(180deg)}
 .floorin{padding:0 14px 14px;display:flex;flex-direction:column;gap:12px}
-.fgroup h4{margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--signal)}
+.fgroup h4{margin:0 0 6px;font-size:12px;color:var(--signal)}
 .frows{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:4px}
 .frow2{display:flex;flex-direction:column;gap:6px;padding:10px;border-top:1px solid var(--line)}.frow2:first-child{border-top:0}
 .frow2.dim{opacity:.62}
@@ -324,6 +309,7 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
 .fact{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12px;color:var(--muted)}
 .fact .rm{font-size:12.5px}
 .bk textarea{width:100%;min-height:90px;font:13px var(--mono);padding:10px;border:1px solid var(--line);border-radius:4px;box-sizing:border-box}
+/*__THEME__*/
 </style>
 
 <header class="band"><div class="gut">
@@ -461,6 +447,13 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
     <p class="note" id="bkStat"></p>
     <div class="row"><button class="btn ghost" id="bkCopy">Copy backup</button><button class="btn ghost" id="bkPaste">Restore backup</button></div>
     <p class="note">Your floor list and linked barcodes live on this phone only. Copy a backup to move them to the home-screen app or a new phone.</p>
+  </div>
+  <div class="panel miss" id="missPanel">
+    <p class="eyebrow">Not in the catalog</p>
+    <p class="note" id="missStat"></p>
+    <ul class="misslist" id="missList"></ul>
+    <div class="row" id="missBtns"><button class="btn ghost" id="missCopy">Copy list</button><button class="btn ghost" id="missClear">Clear list</button></div>
+    <p class="note">Codes you scanned or searched that matched no fridge. Send the list to the price refresh (add the models to <b>data/watchlist.txt</b>) so it looks them up. Box barcodes can't be looked up: link those by hand instead.</p>
   </div>
 </section>
 </main>
@@ -818,7 +811,7 @@ function renderList(keep){if(!keep)S.lim=40;const c=ctx();const r=filtered();con
  renderToggles();renderFloor();
  $("resultCount").textContent=q?`${r.length} match${r.length===1?"":"es"} for "${q}"`:`${r.length} of ${CAT.length} fridges`;
  $("sortWhy").textContent="";
- S.lim=S.lim||40;$("list").innerHTML=r.length?r.slice(0,S.lim).map(x=>cardHTML(x,c)).join("")+(r.length>S.lim?`<button class="btn ghost" id="more">Show ${Math.min(40,r.length-S.lim)} more of ${r.length-S.lim}</button>`:""):`<div class="empty">Nothing matches. ${q?"Check the model or SKU, or clear the search.":"Remove a filter above, or recheck the measurements."}</div>`;}
+ S.lim=S.lim||40;$("list").innerHTML=r.length?r.slice(0,S.lim).map(x=>cardHTML(x,c)).join("")+(r.length>S.lim?`<button class="btn ghost" id="more">Show ${Math.min(40,r.length-S.lim)} more of ${r.length-S.lim}</button>`:""):`<div class="empty">Nothing matches. ${q?"Check the model or SKU, or clear the search.":"Remove a filter above, or recheck the measurements."}${q&&looksCode(q)?(MISS[codeKey(q)]?`<p class="note">On the missing list. The next price refresh looks it up.</p>`:`<p class="note">On display but not here? Save it so the next price refresh looks it up.</p><button class="btn ghost" id="missAdd">Save "${escH(q.slice(0,40))}" as missing</button>`):""}</div>`;}
 
 /* ---------- rails: swipe, drag, arrows, edge fades ---------- */
 function updRail(rail){const el=rail.querySelector(".filters,.optrail");if(!el)return;const l=el.scrollLeft>4,r=el.scrollLeft+el.clientWidth<el.scrollWidth-4;
@@ -916,7 +909,7 @@ function openSheet(id){const u=CAT.find(x=>x.id===id),sp=space(),f=fit(u,sp),p=p
  <div class="inner">
   ${S.pendingCode?`<div class="panel linkpanel"><p class="note" style="margin:0">Scanned code <b>${S.pendingCode}</b> is not linked to a fridge yet. Is this the one?</p><div class="row"><button class="btn y" id="linkCode">Link code to this fridge</button><button class="rm" id="linkStop">Stop linking</button></div></div>`:""}
   <div class="note">Price as of ${priceDay()}</div><div class="pricerow" style="font-size:1.25em">${priceHTML(u.price)}${save?`<span class="was">${fmt(u.orig)}</span><span class="save">Save ${fmt(save)}</span>`:""}</div>
-  ${p?`<div class="panel" style="background:var(--signal);color:var(--signal-ink);border-color:var(--signal)"><p class="eyebrow" style="color:inherit;opacity:.75">Spend More Save More · through Dec 2</p>
+  ${p?`<div class="panel promobox"><p class="eyebrow">Spend More Save More, through Dec 2</p>
      <div style="font-size:15px">${p.save?`Qualifies for <b>${fmt(p.save)} off</b>. Effective price <b>${fmt(p.eff)}</b>.`:"Under the first tier."}${p.next?` Next tier at ${fmt(p.next.at)} saves ${fmt(p.next.save)}${p.next.at-u.price<=200?`. Only <b>${fmt(p.next.at-u.price)}</b> away, so a step-up model may net out cheaper`:""}.`:""}</div></div>`
    :`<p class="note">${u.promo==="S"?"Special Buy pricing. Not tagged for Spend More Save More.":"Check the tag for Spend More Save More eligibility."}</p>`}
   <div class="row"><button class="btn ${inCmp?"ghost":"y"}" id="addCmp">${inCmp?"Remove from compare":"Compare"}</button><a class="btn ghost" href="https://www.homedepot.com/p/${u.id}" target="_blank" rel="noopener">Open on homedepot.com</a></div>
@@ -944,7 +937,7 @@ function openSheet(id){const u=CAT.find(x=>x.id===id),sp=space(),f=fit(u,sp),p=p
  </div>`;
  $("sheet").hidden=false;document.body.style.overflow="hidden";
  $("closeSheet").onclick=closeSheet;
- if($("linkCode")){$("linkCode").onclick=()=>{CODES[S.pendingCode]=u.id;saveCodes();S.pendingCode=null;
+ if($("linkCode")){$("linkCode").onclick=()=>{CODES[S.pendingCode]=u.id;saveCodes();delete MISS[S.pendingCode];saveMiss();S.pendingCode=null;
    if(S.walk){floorSet(u.id,S.walk.a);S.walk.n++;closeSheet();toast(`Linked and added to ${S.walk.a||"the floor list"}`);startScan();return}
    toast("Linked. Scanning it now opens this fridge");openSheet(u.id);};
   $("linkStop").onclick=()=>{S.pendingCode=null;openSheet(u.id);};}
@@ -1124,7 +1117,8 @@ $("toggles").addEventListener("click",e=>{const b=e.target.closest("button");if(
 $("q").addEventListener("input",()=>{$("qclear").hidden=!$("q").value;if(S.view!=="find")show("find");else renderList();
  const q=$("q").value.trim().replace(/[\s-]/g,"").toLowerCase();const exact=CAT.find(u=>[u.model,u.sku,u.id].some(v=>v.toLowerCase()===q));if(exact&&q.length>=6)openSheet(exact.id);});
 $("qclear").onclick=()=>{$("q").value="";$("qclear").hidden=true;renderList();$("q").focus();};
-$("list").addEventListener("click",e=>{if(e.target.id==="more"){S.lim+=40;renderList(true);return}const c=e.target.closest(".card");if(c)openSheet(c.dataset.id)});
+$("list").addEventListener("click",e=>{if(e.target.id==="more"){S.lim+=40;renderList(true);return}
+ if(e.target.id==="missAdd"){noteMissing($("q").value);toast("Saved to the missing list (Take-home)");renderList(true);return}const c=e.target.closest(".card");if(c)openSheet(c.dataset.id)});
 function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,1700);}
 function copy(text,msg){navigator.clipboard.writeText(text).then(()=>toast(msg||"Copied")).catch(()=>toast("Copy blocked here. Press and hold to select"));}
 $("copySum").onclick=()=>copy($("sum").textContent,"Summary copied");
@@ -1168,6 +1162,14 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("qrwrap").hidden
 const CODEK="fc_codes_v1";let CODES={};try{CODES=JSON.parse(localStorage.getItem(CODEK)||"{}")}catch(e){}
 function saveCodes(){try{localStorage.setItem(CODEK,JSON.stringify(CODES))}catch(e){}renderBk();}
 const normC=v=>String(v||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,64);
+/* Codes scanned or typed that matched no fridge: {codeKey: {raw, a: aisle note, d: date}}. Copied from Take-home so the next harvest can look them up. */
+const MISSK="fc_missing_v1";let MISS={};try{MISS=JSON.parse(localStorage.getItem(MISSK)||"{}")}catch(e){}
+function saveMiss(){try{localStorage.setItem(MISSK,JSON.stringify(MISS))}catch(e){}renderMiss();}
+const escH=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const looksCode=v=>{const n=normC(v);return n.length>=6&&(/\d{6,}/.test(n)||(/[A-Z]/.test(n)&&/\d/.test(n)))};
+function noteMissing(raw,a){raw=String(raw||"").trim().slice(0,80);if(!looksCode(raw))return;const k=codeKey(raw);const was=MISS[k];
+ MISS[k]={raw,a:String(a||(was&&was.a)||"").slice(0,40),d:today()};saveMiss();return !was;}
+function pruneMiss(){let n=0;for(const [k,v] of Object.entries(MISS))if(matchCode(v.raw)){delete MISS[k];n++}if(n)saveMiss();}
 const codeKey=v=>{const n=normC(v);return /^\d+$/.test(n)?(n.replace(/^0+/,"")||"0"):n};
 function matchCode(raw){const s=String(raw||"").trim();if(!s)return null;const byId=id=>CAT.find(u=>u.id===id);
  let m=s.match(/homedepot\.com\/p\/(?:[^?#\s]*\/)?(\d{9})(?=[\/?#\s]|$)/i);if(m&&byId(m[1]))return byId(m[1]);
@@ -1207,9 +1209,9 @@ function onCode(raw){raw=String(raw).trim();const u=matchCode(raw);
  if(S.walk){const w=S.walk,now=Date.now(),key=u?u.id:raw;if(w.lastK===key&&now-w.lastT<3000)return;w.lastK=key;w.lastT=now;
   if(u){const r=floorSet(u.id,w.a);w.n++;try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}$("scanlinkrow").hidden=true;SC.last="";
    scanMsg(`✓ ${r==="added"?"Added":r==="moved"?"Moved here":"Already here, marked seen"}: ${u.brand} ${u.model}`,false,true);walkHdr();return}
-  SC.last=raw;scanMsg(`Read ${raw.length>40?raw.slice(0,40)+"…":raw}. No fridge matches. Link it by hand, or scan the next tag.`,true);$("scanlinkrow").hidden=false;return}
+  SC.last=raw;noteMissing(raw,w.a);scanMsg(`Read ${raw.length>40?raw.slice(0,40)+"…":raw}. Not in the catalog yet, saved to the missing list. Link it by hand, or scan the next tag.`,true);$("scanlinkrow").hidden=false;return}
  if(u){try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}stopScan();openSheet(u.id);toast(`Found ${u.brand} ${u.model}`);return}
- if(raw===SC.last)return;SC.last=raw;scanMsg(`Read ${raw.length>40?raw.slice(0,40)+"…":raw}. No fridge in the list matches.`,true);$("scanlinkrow").hidden=false;}
+ if(raw===SC.last)return;SC.last=raw;noteMissing(raw);scanMsg(`Read ${raw.length>40?raw.slice(0,40)+"…":raw}. Not in the catalog yet, saved to the missing list.`,true);$("scanlinkrow").hidden=false;}
 $("scanBtn").onclick=e=>{e.preventDefault();S.walk=null;startScan();};
 $("scanclose").onclick=()=>{stopScan();if(S.walk){const w=S.walk;S.walk=null;toast(`${w.n} scanned into ${w.a||"the floor list"}`);if(S.view==="find")renderList(true);}};
 $("scantorch").onclick=async()=>{const tr=SC.stream&&SC.stream.getVideoTracks()[0];if(!tr)return;SC.torch=!SC.torch;try{await tr.applyConstraints({advanced:[{torch:SC.torch}]})}catch(e){SC.torch=false;toast("Light not available")}};
@@ -1217,7 +1219,7 @@ $("scanlink").onclick=()=>{S.pendingCode=codeKey(SC.last);stopScan();$("q").valu
 $("scanform").onsubmit=e=>{e.preventDefault();const v=$("scanman").value.trim();if(!v)return;
  if(S.walk){S.walk.lastK=null;onCode(v);$("scanman").value="";return}
  const u=matchCode(v);stopScan();
- if(u){openSheet(u.id);return}$("q").value=v;$("q").dispatchEvent(new Event("input"));};
+ if(u){openSheet(u.id);return}noteMissing(v);$("q").value=v;$("q").dispatchEvent(new Event("input"));};
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("scanwrap").hidden)stopScan()});
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&!$("scanwrap").hidden)stopScan()});
 
@@ -1225,8 +1227,15 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden&&!$("scanwr
 function netState(){$("offline").hidden=navigator.onLine!==false;}
 window.addEventListener("online",netState);window.addEventListener("offline",netState);netState();
 function renderBk(){const f=Object.keys(FLOOR).length,c=Object.keys(CODES).length;$("bkStat").textContent=`Floor list: ${f} fridge${f===1?"":"s"} · Linked barcodes: ${c}`;}
-/* FC1 backup: {f:{itemId:"aisle"} (old format, read by older copies), f2:{itemId:{a,s}}, c:{code:itemId}} */
-function bkCode(){return "FC1:"+btoa(unescape(encodeURIComponent(JSON.stringify({f:floorFlat(),f2:FLOOR,c:CODES}))));}
+function renderMiss(){const L=Object.entries(MISS).sort((a,b)=>b[1].d.localeCompare(a[1].d));
+ $("missStat").textContent=L.length?`${L.length} code${L.length===1?"":"s"} saved`:"Nothing saved. Scans and searches that match no fridge show up here.";
+ $("missList").innerHTML=L.map(([k,v])=>`<li><b>${escH(v.raw)}</b><span>${escH([v.a,v.d].filter(Boolean).join(" · "))}</span><button class="x" data-miss="${escH(k)}" aria-label="Remove ${escH(v.raw)}">×</button></li>`).join("");
+ $("missBtns").hidden=!L.length;}
+$("missList").addEventListener("click",e=>{const b=e.target.closest("[data-miss]");if(b){delete MISS[b.dataset.miss];saveMiss();}});
+$("missCopy").onclick=()=>copy(Object.values(MISS).map(v=>v.raw+(v.a?"  # "+v.a:"")).join("\n"),"Missing list copied");
+$("missClear").onclick=()=>{if(confirm("Clear the missing list?")){MISS={};saveMiss();}};
+/* FC1 backup: {f:{itemId:"aisle"} (old format, read by older copies), f2:{itemId:{a,s}}, c:{code:itemId}, m:{codeKey:{raw,a,d}}} */
+function bkCode(){return "FC1:"+btoa(unescape(encodeURIComponent(JSON.stringify({f:floorFlat(),f2:FLOOR,c:CODES,m:MISS}))));}
 $("bkCopy").onclick=()=>copy(bkCode(),"Backup copied. Paste it into the other app");
 $("bkPaste").onclick=()=>{openPS(`<div class="ps-head"><h3>Restore backup</h3><button class="x" data-close aria-label="Close">×</button></div><div class="ps-inner"><label class="f">Paste the backup text<textarea id="bkIn" autocomplete="off" spellcheck="false"></textarea></label><p class="note">Adds to what is already on this phone. Nothing is deleted.</p></div><div class="ps-foot"><button class="btn ghost" id="bkCancel">Cancel</button><button class="btn y" id="bkGo">Restore</button></div>`);
  $("bkCancel").onclick=closePS;
@@ -1235,9 +1244,10 @@ $("bkPaste").onclick=()=>{openPS(`<div class="ps-head"><h3>Restore backup</h3><b
    for(const [k,v] of Object.entries(inF)){const n=floorNorm(v);if(!n||!CAT.some(u=>u.id===k))continue;const cur=FLOOR[k];if(!cur)nf++;
     FLOOR[k]={a:n.a||(cur?cur.a:""),s:[n.s,cur&&cur.s].filter(Boolean).sort().pop()||null};}
    for(const [k,v] of Object.entries(o.c||{}))if(typeof v==="string"&&CAT.some(u=>u.id===v)){if(!CODES[codeKey(k)])nc++;CODES[codeKey(k)]=v;}
-   saveFloor();saveCodes();closePS();toast(`Restored: ${nf} new floor fridge${nf===1?"":"s"}, ${nc} new code${nc===1?"":"s"}`);}
+   for(const [k,v] of Object.entries(o.m||{}))if(v&&v.raw&&!MISS[k]&&!matchCode(v.raw))MISS[k]={raw:String(v.raw).slice(0,80),a:String(v.a||"").slice(0,40),d:String(v.d||today())};
+   saveFloor();saveCodes();saveMiss();closePS();toast(`Restored: ${nf} new floor fridge${nf===1?"":"s"}, ${nc} new code${nc===1?"":"s"}`);}
   catch(e){toast("That backup text didn't read. Copy it again");}};};
-renderBk();
+renderBk();pruneMiss();renderMiss();
 
 /* ---------- text size ---------- */
 const ZS=[1,1.15,1.3];let zi=0;try{zi=+(localStorage.getItem("fc_z")||0)}catch(e){}

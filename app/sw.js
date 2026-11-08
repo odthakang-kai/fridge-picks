@@ -1,7 +1,7 @@
 /* Floor Copilot service worker. Built by tools/build.py; do not edit app/sw.js by hand.
    The page itself is network-first (fresh prices when online, cached copy when not).
    Everything else is cache-first. */
-const VERSION = "2ac51b89de44";
+const VERSION = "7af93525f96c";
 const CACHE = "fc-" + VERSION;
 const SHELL = ["./", "manifest.webmanifest", "icon-192.png", "icon-512.png", "icon-maskable-512.png",
                "apple-touch-icon.png", "vendor/zxing-reader.js", "vendor/zxing_reader.wasm"];

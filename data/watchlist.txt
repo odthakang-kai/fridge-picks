@@ -1,0 +1,5 @@
+# Fridges that must be in the catalog. One model number or 9-digit Internet # per line.
+# The weekly harvest looks up anything here that the category listings missed
+# (paste these lines into window.HV_WATCH before running tools/harvest.js).
+# tools/check_catalog.py --add appends models it finds missing.
+LF30S8210S  # LG 4-door French door, on display Nov 2026, missing from Nov 5 harvest
