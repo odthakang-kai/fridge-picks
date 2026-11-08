@@ -25,7 +25,7 @@ def read(path):
 
 def write(path, text):
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
+    with open(path, "w", encoding="utf-8", newline="\n") as f:  # LF on Windows too
         f.write(text)
 
 # ---- catalog + price date from the deployed page ----

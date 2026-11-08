@@ -17,5 +17,5 @@ for f in files:
         text = json.loads(text)
     body = text.split("ROWS_START\n", 1)[1].split("\nROWS_END", 1)[0]
     rows += [l for l in body.split("\n") if l.strip()]
-open(out, "w", encoding="utf-8").write("\n".join(rows))
+open(out, "w", encoding="utf-8", newline="\n").write("\n".join(rows))
 print(f"{len(rows)} rows from {len(files)} file(s)")

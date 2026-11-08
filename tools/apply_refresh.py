@@ -38,5 +38,5 @@ for f in files:
         print(f"ABORT: could not find the catalog or date in {f}"); sys.exit(1)
     out[f] = s2
 for f, s2 in out.items():
-    open(f, "w", encoding="utf-8").write(s2)
+    open(f, "w", encoding="utf-8", newline="\n").write(s2)
 print(f"OK: {len(rows)} fridges, prices dated {day}, {len(files)} files updated")
