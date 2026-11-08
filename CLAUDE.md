@@ -2,6 +2,8 @@
 
 Julian's personal tool for selling refrigerators as an appliance associate at the Home Depot Cumberland store (Atlanta, store 121). This is a personal project, not an official Home Depot product: never add Home Depot logos or wordmarks, and keep the "prepared by an associate" framing.
 
+**Start here:** read `docs/HANDOFF.md` for current status, decisions so far and what's next. Update it at the end of any session that changes behavior or settles a decision.
+
 ## What's here
 
 | Path | What it is |
@@ -29,7 +31,7 @@ Julian's personal tool for selling refrigerators as an appliance associate at th
 - Floor Copilot (Claude artifact, private): https://claude.ai/artifact/LhFmDEy4Hphdtb9vsrbE35
 - Customer page backup (Claude artifact): https://claude.ai/artifact/5xKymLy1PVZZWDDUAsejFz
 
-To ship a change: edit a template, run `python3 tools/build.py`, commit and push (GitHub Pages updates `index.html` in about a minute), (this also ships `app/`), then publish `build/floor-copilot.html` and `build/customer-artifact.html` to their artifact URLs with the Artifact tool (pass `url`, never create a new artifact).
+To ship a change: edit a template, run `python3 tools/build.py`, commit and push (GitHub Pages updates `index.html` in about a minute), (this also ships `app/`). The Claude artifacts are optional backups: only when the Artifact tool is available (claude.ai sessions, not Claude Code), publish `build/floor-copilot.html` and `build/customer-artifact.html` to their artifact URLs (pass `url`, never create a new artifact).
 
 ## Build rules
 
