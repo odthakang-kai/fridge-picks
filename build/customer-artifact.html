@@ -1179,6 +1179,8 @@ const RAW=`204511021|1000026447|ABB2224BRW|Amana|22 cu. ft. Bottom Freezer Refri
 700452087|1016629052|BCD-213|BANGSON|BANGSON 7.7 Cu. Ft. 2-Door Freestanding Refrigerator with Top Freezer in Red|TF|475.99|475.99|0.0||21.46|55.91|21.26|21.26|42.72|7.7||None|C|0||N|0|0|1-Year||O|21.26|0|0|
 700452139|1016629049|BCD-210VX|BANGSON|BANGSON 7.5 Cu. Ft. Retro 2-Door Refrigerator with Top Freezer in Red|TF|569.99|569.99|0.0||21.46|57.88|23.04|23.04|44.5|7.5||None|C|0||N|0|0|1-Year||O|21.26|0|0|`;
 const STYLE={FD:"French door",SS:"Side by side",TF:"Top freezer",BF:"Bottom freezer",SP:"Specialty",FL:"All fridge, no freezer"};
+/* review count, short: 13308 -> "13k", 1582 -> "1.6k" (cards on both pages) */
+const kRev=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1).replace(/\.0$/,"")+"k":String(n);
 /* floor list: fc_floor_v2 = {itemId:{a:"aisle note",s:"YYYY-MM-DD last seen" or null}}. fc_floor_v1 ({itemId:"aisle note"})
    is still written alongside so an older cached copy of the app keeps working, and is migrated in on load. */
 const FLOORK="fc_floor_v1",FLOORK2="fc_floor_v2";let FLOOR={};
@@ -1385,7 +1387,6 @@ function verdictHTML(f){const k=fitKey(f),first=f.checks.find(c=>c.s==="no"&&c.k
 function shortLabel(u){return u.label.replace(/\s+(in|with)\s+(Fingerprint|Smudge|PrintProof|Print|Stainless|White|Black|Slate|Panel|Matte|Bespoke|P$|Pr)[\s\S]*$/i,"").replace(/[\s,]+$/,"").trim()}
 /* Shared top of a pick card, used by the floor tool's Options view and the customer page's Your picks so both look the same:
    drawing, "Brand style" name, model, optional floor tag, price with date and promo, then 3 key facts. o: {num, tag} */
-const kRev=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1).replace(/\.0$/,"")+"k":String(n);
 function pickTop(u,o={}){const p=promo(u),day=DATA_DATE.toLocaleDateString("en-US",{month:"short",day:"numeric"});
  return `<div class="phead">${miniSil(u)}<div class="ptext">${o.num?`<div class="num">${o.num}</div>`:""}<h2 class="pname">${u.brand} <span>${STYLE[u.type].toLowerCase()}${u.counter?", counter depth":""}</span></h2><div class="model">Model ${u.model}</div>${o.tag?`<span class="ondisp">${o.tag}</span>`:""}</div></div>
   <div class="pline"><div>${priceHTML(u.price)}<small>Price on ${day}</small></div>${p&&p.save?`<div class="eff">${fmt(p.eff)} with promotion</div>`:""}</div>
