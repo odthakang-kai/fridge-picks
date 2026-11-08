@@ -309,6 +309,38 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
 .fact{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12px;color:var(--muted)}
 .fact .rm{font-size:12.5px}
 .bk textarea{width:100%;min-height:90px;font:13px var(--mono);padding:10px;border:1px solid var(--line);border-radius:4px;box-sizing:border-box}
+/* v3 cleanup: calmer Customer tab, Options cards shared with the customer page, Show customer full screen */
+.quick{gap:10px}
+.quick .eyebrow{font-size:13px;color:var(--ink);font-weight:700;margin-top:6px}
+.quick .eyebrow:first-child{margin-top:0}
+.hintx{font-weight:500;color:var(--muted);margin-left:4px}
+#qBudNote{margin:-2px 0 0;font-weight:600;color:var(--ink)}
+.walkline{background:var(--band);color:#fff;border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.wl-top{display:flex;align-items:baseline;gap:12px}
+.wl-top b{font-size:26px;font-weight:800;color:var(--signal);white-space:nowrap;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.wl-top b small{font-size:14px;color:#CFCFCF;font-weight:600}
+.wl-top span{font-size:13.5px;color:#D6D6D6;line-height:1.35}
+.wl-say{font-size:13.5px;color:#D6D6D6}.wl-say summary{cursor:pointer;font-weight:700;color:#fff}
+.wl-say ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+.quickres{gap:10px}
+.qpick .qtop{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.qpick .qtop b{font-size:16px}.qpick .qtop b span{font-weight:500;color:var(--muted)}
+.qpick .qp{font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.qbtns .btn{flex:1 1 140px}
+.optbar{display:flex;align-items:center;gap:12px;font-size:13.5px;color:var(--muted)}
+.optbar>span{font-weight:700;color:var(--ink)}
+.optbar .btn{margin-left:auto}
+.btn.sm{min-height:36px;padding:7px 12px;font-size:14px;gap:6px}
+.opt.pick{gap:12px;padding:16px}
+.opt .why{font-size:14.5px;gap:6px}
+.gtkd{font-size:14px}.gtkd summary{cursor:pointer;font-weight:700;color:var(--warn)}.gtkd .gtk{margin-top:8px;font-size:14px}
+.basisd .basis{margin-top:8px}
+.presenthead{display:none}
+.presentx{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:12px;z-index:40;background:var(--band);color:#fff;border:0;border-radius:var(--r-s);padding:9px 16px;font:700 15px var(--body);cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+body.present .band,body.present nav.dock,body.present #v-compare .opthead,body.present #v-compare .seg,body.present .optbar,body.present .basisd,body.present .opt .row{display:none}
+body.present main{padding-top:20px}
+body.present .presenthead{display:flex;flex-direction:column;gap:4px;padding-right:80px}
+.presenthead b{font-size:24px;font-weight:800;letter-spacing:-.02em}.presenthead span{color:var(--muted);font-size:14px}
 /*__THEME__*/
 </style>
 
@@ -330,18 +362,18 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
 <main class="gut">
 <!-- CUSTOMER -->
 <section class="view" id="v-customer">
-  <div><h2>Size up the customer</h2><p class="sub">Three taps for a walk-in. Measurements can wait until they get home.</p></div>
   <div class="panel quick">
-    <p class="eyebrow">1 · Who lives there</p>
+    <p class="eyebrow">Who lives there</p>
     <div class="fields">
       <div class="f"><label class="f" for="adults">Adults</label><div class="stepper"><button data-step="adults" data-d="-1" aria-label="Fewer adults">−</button><output id="adults">2</output><button data-step="adults" data-d="1" aria-label="More adults">+</button></div></div>
       <div class="f"><label class="f" for="kids">Kids</label><div class="stepper"><button data-step="kids" data-d="-1" aria-label="Fewer kids">−</button><output id="kids">1</output><button data-step="kids" data-d="1" aria-label="More kids">+</button></div></div>
     </div>
-    <p class="eyebrow">2 · Style they want</p>
+    <p class="eyebrow">Style</p>
     <div class="chips" id="qStyle"><button class="chip" data-qs="FD" aria-pressed="false">French door</button><button class="chip" data-qs="SS" aria-pressed="false">Side by side</button><button class="chip" data-qs="BF" aria-pressed="false">Bottom freezer</button><button class="chip" data-qs="TF" aria-pressed="false">Top freezer</button><button class="chip" data-qs="" aria-pressed="true">Not sure</button></div>
-    <p class="eyebrow">3 · Budget</p>
+    <p class="eyebrow">Budget <span class="hintx">tap two to cover a range</span></p>
     <div class="chips" id="qBud"><button class="chip" data-qb="0-1000" aria-pressed="false">Under $1k</button><button class="chip" data-qb="1000-2000" aria-pressed="false">$1–2k</button><button class="chip" data-qb="2000-3000" aria-pressed="false">$2–3k</button><button class="chip" data-qb="3000-" aria-pressed="false">$3k+</button><button class="chip" data-qb="" aria-pressed="true">No limit</button></div>
-    <p class="eyebrow">Optional · What width are they replacing?</p>
+    <p class="note" id="qBudNote" hidden></p>
+    <p class="eyebrow">Width they're replacing <span class="hintx">optional</span></p>
     <div class="chips" id="qWidth"><button class="chip" data-qw="30" aria-pressed="false">30"</button><button class="chip" data-qw="33" aria-pressed="false">33"</button><button class="chip" data-qw="36" aria-pressed="false">36"</button><button class="chip" data-qw="" aria-pressed="true">Not sure</button></div>
     <p class="note" id="qWidthNote" hidden></p>
     <details class="mhelp"><summary>More about them</summary><div class="morebox">
@@ -357,6 +389,7 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
       <label class="f" style="max-width:220px">Exact budget $<input id="budget" type="number" inputmode="numeric" placeholder="No limit"></label>
     </div></details>
   </div>
+  <div class="walkline" id="walkto"></div>
   <div class="panel quickres" id="quickRes"></div>
   <details class="panel measdet" id="measDet"><summary><span>They have measurements</span><span class="ct" id="measCt"></span></summary>
     <div class="optnote"><p class="eyebrow">Their kitchen · inches</p><button class="rm" id="loadEx">Load example kitchen</button></div>
@@ -381,8 +414,6 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
       <li>Tap <b>None</b> next to a field when it doesn't apply (no cabinet above, no island, no wall beside it, not in a nook). The customer's page then shows it as covered. Tap again to undo.</li></ul></details>
     <p class="note">Fractions work: type 35 3/4, 35-3/4, or tap a fraction.</p>
   </details>
-  <div class="callout" id="walkto"></div>
-  <button class="btn y" id="goFind">See the fridges that fit</button>
 </section>
 
 <!-- FIND -->
@@ -465,6 +496,7 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
   <button data-v="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg>Take-home</button>
 </div></nav>
 
+<button class="presentx" id="presentX" hidden>Done</button>
 <div class="sheet" id="psheet" hidden><div class="body" role="dialog" aria-modal="true" id="psheetBody"></div></div>
 <div class="sheet" id="sheet" hidden><div class="body" role="dialog" aria-modal="true" id="sheetBody"></div></div>
 <div class="qrwrap" id="qrwrap" hidden role="dialog" aria-modal="true" aria-label="QR code for the customer">
@@ -1015,28 +1047,34 @@ function verdictHTML(f){const k=fitKey(f),first=f.checks.find(c=>c.s==="no"&&c.k
  const m={ok:["✓",f.est?fitWord(f):"Fits",f.est?"Based on the width they're replacing. Measure the space to confirm":"Checked against the measurements entered"],chk:["✓",fitWord(f),first?first.t:""],tight:["!","Tight, double check",first?first.t:""],no:["✕","Won't fit as measured",first?first.t:""],na:["?","Fit not checked yet","Add measurements to check"]}[k];
  return `<div class="verdict ${k==="chk"?"ok":k==="tight"?"chk":k}"><span class="ic" aria-hidden="true">${m[0]}</span><span><b>${m[1]}</b>${m[2]}</span></div>`;}
 function shortLabel(u){return u.label.replace(/\s+(in|with)\s+(Fingerprint|Smudge|PrintProof|Print|Stainless|White|Black|Slate|Panel|Matte|Bespoke|P$|Pr)[\s\S]*$/i,"").replace(/[\s,]+$/,"").trim()}
-function optCard(u,i,us,auto,sp){const f=fit(u,sp),p=promo(u),kwh=S.kwh[u.id]??u.kwh;
- const short=shortLabel(u);
- return `<article class="opt" aria-label="${u.brand} ${u.model}">
-  <div class="opt-top">${miniSil(u)}<div>${auto?`<div class="rank">Match #${i+1}</div>`:""}<div class="tag ${onFloor(u)?"floor":""}" style="display:inline-block;margin:4px 0">${floorPickTxt(u)}</div><div class="brand">${u.brand}</div><h3>${short}</h3><div class="model">Model ${u.model}</div></div></div>
-  <div class="pricerow">${priceHTML(u.price)}${p&&p.save?`<span class="eff">${fmt(p.eff)} after promo</span>`:""}</div>
+/* Shared top of a pick card, used by the floor tool's Options view and the customer page's Your picks so both look the same:
+   drawing, "Brand style" name, model, optional floor tag, price with date and promo, then 3 key facts. o: {num, tag} */
+const kRev=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1).replace(/\.0$/,"")+"k":String(n);
+function pickTop(u,o={}){const p=promo(u),day=DATA_DATE.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+ return `<div class="phead">${miniSil(u)}<div class="ptext">${o.num?`<div class="num">${o.num}</div>`:""}<h2 class="pname">${u.brand} <span>${STYLE[u.type].toLowerCase()}${u.counter?", counter depth":""}</span></h2><div class="model">Model ${u.model}</div>${o.tag?`<span class="ondisp">${o.tag}</span>`:""}</div></div>
+  <div class="pline"><div>${priceHTML(u.price)}<small>Price on ${day}</small></div>${p&&p.save?`<div class="eff">${fmt(p.eff)} with promotion</div>`:""}</div>
+  <ul class="kfacts"><li><b>${u.cap}</b> cu ft</li><li><b>${people(u).replace(" people","")}</b> people</li><li>${u.reviews?`<b>★ ${u.rating.toFixed(1)}</b> ${kRev(u.reviews)} reviews`:"No reviews yet"}</li></ul>`;}
+/* Customer-facing card (Options tab): same top as the customer page, then fit, 2 reasons, good-to-know folded. */
+function optCard(u,i,us,auto,sp){const f=fit(u,sp),why=whyList(u,us),g=gtkList(u,f,sp);
+ return `<article class="opt pick" aria-label="${u.brand} ${u.model}">
+  ${pickTop(u,{num:`Option ${i+1}${us.length>1?` of ${us.length}`:""}`,tag:onFloor(u)?floorPickTxt(u):""})}
   ${verdictHTML(f)}
-  <ul class="facts"><li><small>Room for</small>${people(u)}</li><li><small>Inside</small>${u.cap} cu ft</li>
-<li><small>Owners rate it</small>${u.reviews?`★ ${u.rating.toFixed(1)} (${u.reviews.toLocaleString()})`:"No reviews yet"}</li>
-   ${kwh?`<li><small>Power</small>about $${(kwh*RATE/12).toFixed(2)}/mo</li>`:""}<li><small>Style</small>${STYLE[u.type]}</li></ul>
-  <h4>Why this one</h4><ul class="why">${whyList(u,us).map(x=>`<li>${x}</li>`).join("")||"<li>Solid all-around pick in your size</li>"}</ul>
-  ${(()=>{const g=gtkList(u,f,sp);return g.length?`<h4>Good to know</h4><ul class="gtk">${g.map(x=>`<li>${x}</li>`).join("")}</ul>`:""})()}
+  <ul class="why">${why.slice(0,2).map(x=>`<li>${x}</li>`).join("")||"<li>Solid all-around pick in your size</li>"}</ul>
+  ${g.length?`<details class="gtkd"><summary>Good to know (${g.length})</summary><ul class="gtk">${g.map(x=>`<li>${x}</li>`).join("")}</ul></details>`:""}
   <div class="row"><button class="btn ghost" data-open="${u.id}">Full details</button>${auto?"":`<button class="rm" data-rm="${u.id}">Remove</button>`}</div>
  </article>`;}
 function renderCmp(){const {us,auto}=optSet(),sp=space();
  if(!us.length){$("cmp").innerHTML=`<div class="empty">Nothing fits with these filters and measurements. Remove a filter on the Fridges tab or double-check the opening on Customer.</div>`;return;}
  if(S.optMode==="cust"){
   const rel=optSet().relaxed;
-  $("cmp").innerHTML=`<div class="optnote"><span>${auto?"Top 3 matches. Updates as you change their answers.":"Your saved picks. These stay put until you change them."}</span>${auto?`<button class="rm" id="keepAuto">Keep these three</button>`:`<button class="rm" id="backAuto">Show top matches instead</button>`}</div>
-   ${auto?`<button class="btn y qrbtn" id="qrOpt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg>Send these home with a QR code</button>
-   <div class="tags basis"><b>Matched on</b>${basisChips()}</div><p class="note">Orange tags come from the Fridges tab. Change filters or sort there and these picks follow.</p>${rel?`<p class="note">Nothing matched everything they asked for, so these skip ${rel.join(" and ")}. Their kitchen measurements still apply.</p>`:""}`:""}
+  const me=$("me").value.trim();
+  $("cmp").innerHTML=`<div class="presenthead"><b>Your fridge options</b><span>${me?`Picked with ${me}, appliance associate`:"Picked for your home"} · ${needs().lo}–${needs().hi} cu ft for ${needs().people} ${needs().people===1?"person":"people"}</span></div>
+   <div class="optbar"><span>${auto?"Top 3 matches":"Your saved picks"}</span>${auto?`<button class="rm" id="keepAuto">Keep these</button>`:`<button class="rm" id="backAuto">Show top matches</button>`}<button class="btn dark sm" id="present"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>Show customer</button></div>
+   ${auto&&rel?`<p class="note">Nothing matched everything, so these skip ${rel.join(" and ")}. Kitchen measurements still apply.</p>`:""}
    <div class="rail"><div class="optrail">${us.map((u,i)=>optCard(u,i,us,auto,sp)).join("")}</div></div>
-   <p class="disc">Fit check is a guide based on the measurements entered. Confirm with the model’s installation guide before buying. Prices as of ${priceDay()}.</p>`;
+   <p class="disc">Fit check is a guide based on the measurements entered. Confirm with the model’s installation guide before buying. Prices as of ${priceDay()}.</p>
+   <button class="btn y qrbtn" id="qrOpt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg>Send these home with a QR code</button>
+   ${auto?`<details class="mhelp basisd"><summary>What these are matched on</summary><div class="tags basis">${basisChips()}</div><p class="note">Orange tags come from the Fridges tab. Change filters or sort there and these picks follow.</p></details>`:""}`;
  } else {
   const w=winner(us);S.diffOnly=S.diffOnly??true;
   const rows=[];const R=(label,fn,best)=>{const cells=us.map(fn);if(S.diffOnly&&label&&new Set(cells.map(c=>c.replace(/<[^>]+>/g,""))).size===1&&us.length>1)return "";
@@ -1053,7 +1091,8 @@ function renderCmp(){const {us,auto}=optSet(),sp=space();
   ${auto?"":R("",u=>`<button class="rm" data-rm="${u.id}">Remove</button>`)}</tbody></table></div>
   <p class="note">Green marks the best value in each row.</p>`;
   $("diffOnly").onchange=e=>{S.diffOnly=e.target.checked;renderCmp();};}
- $("optSub").textContent=S.optMode==="cust"?"Turn the phone around. This view is written for the customer.":"Side by side specs for you.";
+ $("optSub").textContent=S.optMode==="cust"?"Written for the customer. Tap Show customer to fill the screen.":"Side by side specs for you.";
+ if($("present"))$("present").onclick=()=>presentMode(true);
  if(!$("qrOpt")&&S.optMode==="cust"&&us.length){$("cmp").insertAdjacentHTML("afterbegin",`<button class="btn y qrbtn" id="qrOpt">Send these home with a QR code</button>`);}
  if($("qrOpt"))$("qrOpt").onclick=()=>showQR();
  if($("backAuto"))$("backAuto").onclick=()=>{S.cmp=[];renderBadge();renderCmp();toast("Showing top matches");};
@@ -1074,36 +1113,51 @@ function renderSum(){const n=needs(),sp=space(),me=$("me").value.trim()||"your a
  s+=`\nBefore delivery\n• Measure the path one more time, front door to kitchen\n• Moving the old fridge to the garage? Georgia Power will pick up a working spare for free and pay you a rebate: georgiapower.com/refrigerator\n\nReady to order or have questions? Ask for ${me} in Appliances.`;
  $("sum").textContent=s;}
 
+/* ---------- Show customer: Options cards full screen, no tool chrome, for turning the phone around ---------- */
+function presentMode(on){document.body.classList.toggle("present",on);$("presentX").hidden=!on;window.scrollTo(0,0);}
+$("presentX").onclick=()=>presentMode(false);
+
 /* ---------- plumbing ---------- */
-function show(v){S.view=v;if(v==="home")renderBk();["customer","find","compare","home"].forEach(k=>$("v-"+k).hidden=k!==v); $$("nav.dock button").forEach(b=>{if(b.dataset.v===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+function show(v){if(v!=="compare")presentMode(false);S.view=v;if(v==="home")renderBk();["customer","find","compare","home"].forEach(k=>$("v-"+k).hidden=k!==v); $$("nav.dock button").forEach(b=>{if(b.dataset.v===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
  if(v==="find")renderList();if(v==="compare")renderCmp();if(v==="home")renderSum();window.scrollTo(0,0);}
 $$("nav.dock button").forEach(b=>b.onclick=()=>show(b.dataset.v));
-$("goFind").onclick=()=>show("find");
-function renderWalk(){const n=needs();$("walkto").innerHTML=`<div class="num">${n.lo}–${n.hi}<small>cu ft</small></div><p><b>Walk them to this size.</b></p><p>${n.people} ${n.people===1?"person":"people"} in the home</p><ul>${n.style.map(s=>`<li>${s}</li>`).join("")}${n.say.map(s=>`<li><b>Say:</b> ${s}</li>`).join("")}</ul>`;}
+/* One strip between their answers and the picks: the size to walk to, the style hint, talking points folded. */
+function renderWalk(){const n=needs();$("walkto").innerHTML=`<div class="wl-top"><b>${n.lo}–${n.hi}<small> cu ft</small></b><span>${n.people} ${n.people===1?"person":"people"} · ${n.style[0]}</span></div>
+ ${n.style.length>1||n.say.length?`<details class="wl-say"><summary>${n.say.length?`What to say (${n.say.length})`:"More tips"}</summary><ul>${n.style.slice(1).map(s=>`<li>${s}</li>`).join("")}${n.say.map(s=>`<li>${s}</li>`).join("")}</ul></details>`:""}`;}
 /* ---------- quick path ---------- */
 function quickPicks(){const us=optSet().us.slice();return us.map((u,i)=>({u,i})).sort((a,b)=>(onFloor(b.u)-onFloor(a.u))||(a.i-b.i)).map(x=>x.u);}
 function renderQuick(){const el=$("quickRes");if(!el)return;const sp=space(),us=quickPicks(),saved=!!S.cmp.length;
  if(!us.length){el.innerHTML=`<h3>Walk them to these</h3><div class="empty">Nothing matches yet. Try "Not sure" on style or a wider budget.</div>`;return}
  el.innerHTML=`<div class="optnote"><h3>Walk them to these</h3>${saved?`<span class="note">Your saved picks</span>`:""}</div>
   <div class="qpicks">${us.map((u,i)=>{const f=fit(u,sp),p=promo(u);return `<button class="qpick" data-open="${u.id}"><span class="n">${i+1}</span><span class="t">
-   <span class="where ${onFloor(u)?"":"off"}">${floorPickTxt(u)}</span><b>${u.brand} ${u.model}</b>
-   <small>${STYLE[u.type]} · ${u.cap} cu ft · ${fmt(u.price)}${p&&p.save?` (${fmt(p.eff)} after promo)`:""}${u.reviews?` · ★ ${u.rating.toFixed(1)} (${u.reviews.toLocaleString()})`:""}</small>
-   <span class="ftags"><span class="tag ${fitCls(f)}">${f.verdict==="na"?"Fit not checked":fitWord(f)}</span></span></span></button>`}).join("")}</div>
-  <div class="row"><button class="btn y" id="qMeasure">Send home to measure</button><button class="btn ghost" id="qOpts">Show them the options</button></div>
-  <p class="note">${sp.est?`Width is an estimate from the ${sp.ow}" fridge they're replacing, not a measurement. `:""}The QR opens these on their phone with a guide to measure. Once they measure, the picks re-rank for their space.</p>`;
+   <span class="qtop"><b>${u.brand} <span>${STYLE[u.type].toLowerCase()}</span></b><span class="qp">${fmt(p&&p.save?p.eff:u.price)}</span></span>
+   <small>${u.cap} cu ft${u.reviews?` · ★ ${u.rating.toFixed(1)} (${kRev(u.reviews)})`:""} · ${u.model}</small>
+   <span class="ftags"><span class="tag ${onFloor(u)?"floor":""}">${floorPickTxt(u)}</span><span class="tag ${fitCls(f)}">${f.verdict==="na"?"Fit not checked":fitWord(f)}</span></span></span></button>`}).join("")}</div>
+  <div class="row qbtns"><button class="btn y" id="qMeasure">Send home to measure</button><button class="btn dark" id="qOpts">Show customer</button></div>
+  <p class="note">${sp.est?`Width is an estimate, not a measurement. `:""}The QR opens these on their phone with a measuring guide; the picks re-rank once they measure.</p>`;
  el.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openSheet(b.dataset.open));
- $("qMeasure").onclick=()=>showQR({us,measure:true});$("qOpts").onclick=()=>show("compare");}
+ $("qMeasure").onclick=()=>showQR({us,measure:true});$("qOpts").onclick=()=>{S.optMode="cust";$$(".seg button").forEach(x=>x.setAttribute("aria-selected",x.dataset.mode==="cust"));show("compare");presentMode(true);};}
 function syncQuick(){$$("#qStyle .chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.qs===(S.qstyle||"")));
- $$("#qBud .chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.qb===(S.qbud||"")));
+ const [blo,bhi]=S.qbr||[];$$("#qBud .chip").forEach((c,i)=>c.setAttribute("aria-pressed",c.dataset.qb===""?!S.qbr&&!S.qbud:!!S.qbr&&i>=blo&&i<=bhi));
+ const bn=$("qBudNote");bn.hidden=!S.qbr||blo===bhi;if(S.qbr)bn.textContent=S.bmin&&$("budget").value?`${fmt(S.bmin)} to ${fmt(+$("budget").value)}`:S.bmin?`${fmt(S.bmin)} and up`:`Under ${fmt(+$("budget").value)}`;
  $$("#qWidth .chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.qw===String(S.est||"")));
  const real=parseIn($("ow").value)!=null,wn=$("qWidthNote");wn.hidden=!S.est;
  wn.textContent=real?`They measured the width (${inch(parseIn($("ow").value))}), so the estimate is ignored.`:S.est?`Estimate only. Fit labels say "estimate" until they measure.`:"";
  const n=["ow","oh","cab","island","hinge","nook","door"].filter(id=>$(id).value.trim()).length;$("measCt").textContent=n?`${n} entered`:"";
  if(n&&!S.measAuto){$("measDet").open=true;S.measAuto=true;}if(!n)S.measAuto=false;}
 $$("#qStyle .chip").forEach(c=>c.onclick=()=>{S.qstyle=c.dataset.qs||null;all();});
-$$("#qBud .chip").forEach(c=>c.onclick=()=>{S.qbud=c.dataset.qb;const [lo,hi]=(c.dataset.qb||"-").split("-");S.bmin=+lo||null;$("budget").value=hi||"";all();});
+/* Budget chips cover a range: tap one, then tap another to stretch to it (e.g. Under $1k + $1–2k = under $2,000).
+   Tapping an end chip trims it, a middle chip starts over from that one, No limit clears. S.qbr = [first, last] chip index. */
+$$("#qBud .chip").forEach((c,i)=>c.onclick=()=>{const r=S.qbr;
+ if(c.dataset.qb==="")S.qbr=null;
+ else if(!r)S.qbr=[i,i];
+ else if(i<r[0]||i>r[1])S.qbr=[Math.min(i,r[0]),Math.max(i,r[1])];
+ else if(r[0]===r[1])S.qbr=null;
+ else if(i===r[0])S.qbr=[i+1,r[1]];else if(i===r[1])S.qbr=[r[0],i-1];else S.qbr=[i,i];
+ const ch=$$("#qBud .chip");let lo=null,hi="";if(S.qbr){lo=+ch[S.qbr[0]].dataset.qb.split("-")[0]||null;hi=ch[S.qbr[1]].dataset.qb.split("-")[1]||"";}
+ S.qbud=S.qbr?"r":"";S.bmin=lo;$("budget").value=hi;all();});
 $$("#qWidth .chip").forEach(c=>c.onclick=()=>{S.est=+c.dataset.qw||null;all();});
-$("budget").addEventListener("input",()=>{S.qbud=$("budget").value?"x":"";S.bmin=null;});
+$("budget").addEventListener("input",()=>{S.qbud=$("budget").value?"x":"";S.qbr=null;S.bmin=null;});
 function all(){syncQuick();renderQuick();renderWalk();renderFitbar();if(S.view==="find")renderList();if(S.view==="compare")renderCmp();if(S.view==="home")renderSum();}
 $$("[data-step]").forEach(b=>b.onclick=()=>{const k=b.dataset.step;S[k]=Math.max(k==="adults"?1:0,Math.min(12,S[k]+ +b.dataset.d));$(k).textContent=S[k];all();});
 $$("#habits .chip").forEach(c=>c.onclick=()=>{const on=c.getAttribute("aria-pressed")!=="true";c.setAttribute("aria-pressed",on);S.habits[c.dataset.k]=on;
@@ -1122,7 +1176,7 @@ $("list").addEventListener("click",e=>{if(e.target.id==="more"){S.lim+=40;render
 function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,1700);}
 function copy(text,msg){navigator.clipboard.writeText(text).then(()=>toast(msg||"Copied")).catch(()=>toast("Copy blocked here. Press and hold to select"));}
 $("copySum").onclick=()=>copy($("sum").textContent,"Summary copied");
-function resetCustomer(){setTimeout(syncNone);["ow","oh","cab","island","hinge","nook","door","budget","cust","q"].forEach(id=>$(id).value="");$("path").value="straight";$("water").value="unsure";S.adults=2;S.kids=1;$("adults").textContent=2;$("kids").textContent=1;S.habits={};S.cmp=[];S.kwh={};S.qstyle=null;S.qbud="";S.bmin=null;S.est=null;S.measAuto=false;$("measDet").open=false;
+function resetCustomer(){setTimeout(syncNone);["ow","oh","cab","island","hinge","nook","door","budget","cust","q"].forEach(id=>$(id).value="");$("path").value="straight";$("water").value="unsure";S.adults=2;S.kids=1;$("adults").textContent=2;$("kids").textContent=1;S.habits={};S.cmp=[];S.kwh={};S.qstyle=null;S.qbud="";S.qbr=null;S.bmin=null;S.est=null;S.measAuto=false;$("measDet").open=false;
  $$("#habits .chip").forEach(c=>c.setAttribute("aria-pressed","false"));S.t={fits:true};S.f={styles:new Set(),brands:new Set(),disp:new Set(),r:{}};S.sort="best";renderBadge();all();show("customer");toast("Ready for the next customer");}
 
 /* ---------- fractions ---------- */
