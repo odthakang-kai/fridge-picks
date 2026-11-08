@@ -18,6 +18,8 @@ Julian's personal fridge-selling tool (Home Depot Cumberland, store 121). Person
 4. Commit and push (GitHub Pages updates the customer page and `/app/` in about a minute).
 5. Update this file if anything changed.
 
+On Julian's Windows computer, `python3` is the Microsoft Store placeholder; run the tools with `python` (3.14). `check_picks.py` needs `pip install playwright` (installed Nov 8) and uses the installed Chrome. `.gitattributes` keeps every file LF and the tools write LF, so a build with no source changes leaves the tree clean (the `app/sw.js` version hash would otherwise change on every Windows build).
+
 ## Decisions so far
 - Sales tracking stays out of this app (Julian will build a separate tracker).
 - Delivery dates removed from the UI.

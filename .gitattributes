@@ -1,0 +1,6 @@
+# Keep LF line endings on every machine. tools/build.py hashes source files
+# to version the app's service worker, so CRLF checkouts on Windows would
+# change app/sw.js on every build even when nothing else changed.
+* text=auto eol=lf
+*.png binary
+*.wasm binary
