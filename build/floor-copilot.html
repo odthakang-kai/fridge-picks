@@ -309,6 +309,54 @@ nav.dock button[aria-current="page"]::before{content:"";position:absolute;top:0;
 .fact{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12px;color:var(--muted)}
 .fact .rm{font-size:12.5px}
 .bk textarea{width:100%;min-height:90px;font:13px var(--mono);padding:10px;border:1px solid var(--line);border-radius:4px;box-sizing:border-box}
+/* v3 cleanup: calmer Customer tab, Options cards shared with the customer page, Show customer full screen */
+.quick{gap:10px}
+.quick .eyebrow{font-size:13px;color:var(--ink);font-weight:700;margin-top:6px}
+.quick .eyebrow:first-child{margin-top:0}
+.hintx{font-weight:500;color:var(--muted);margin-left:4px}
+#qBudNote{margin:-2px 0 0;font-weight:600;color:var(--ink)}
+.walkline{background:var(--band);color:#fff;border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.wl-top{display:flex;align-items:baseline;gap:12px}
+.wl-top b{font-size:26px;font-weight:800;color:var(--signal);white-space:nowrap;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.wl-top b small{font-size:14px;color:#CFCFCF;font-weight:600}
+.wl-top span{font-size:13.5px;color:#D6D6D6;line-height:1.35}
+.wl-say{font-size:13.5px;color:#D6D6D6}.wl-say summary{cursor:pointer;font-weight:700;color:#fff}
+.wl-say ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+.quickres{gap:10px}
+.qpick .qtop{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.qpick .qtop b{font-size:16px}.qpick .qtop b span{font-weight:500;color:var(--muted)}
+.qpick .qp{font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.qbtns .btn{flex:1 1 140px}
+.optbar{display:flex;align-items:center;gap:12px;font-size:13.5px;color:var(--muted)}
+.optbar>span{font-weight:700;color:var(--ink)}
+.optbar .btn{margin-left:auto}
+.btn.sm{min-height:36px;padding:7px 12px;font-size:14px;gap:6px}
+.opt.pick{gap:12px;padding:16px}
+.opt .why{font-size:14.5px;gap:6px}
+.gtkd{font-size:14px}.gtkd summary{cursor:pointer;font-weight:700;color:var(--warn)}.gtkd .gtk{margin-top:8px;font-size:14px}
+.basisd .basis{margin-top:8px}
+.presenthead{display:none}
+.presentx{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:12px;z-index:40;background:var(--band);color:#fff;border:0;border-radius:var(--r-s);padding:9px 16px;font:700 15px var(--body);cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+body.present .band,body.present nav.dock,body.present #v-compare .opthead,body.present #v-compare .seg,body.present .optbar,body.present .basisd,body.present .opt .row{display:none}
+body.present main{padding-top:20px}
+body.present .presenthead{display:flex;flex-direction:column;gap:4px;padding-right:80px}
+.presenthead b{font-size:24px;font-weight:800;letter-spacing:-.02em}.presenthead span{color:var(--muted);font-size:14px}
+.fold>summary{cursor:pointer;font-weight:700;font-size:15px;color:var(--ink)}
+.fold>summary span{color:var(--muted);font-weight:600}
+.fold[open]>summary{margin-bottom:6px}
+.foldhead{margin-top:10px}
+.sheet .head h3{font-size:20px;font-weight:760}.sheet .head .hst{font-weight:500;color:var(--band-muted)}
+.sheet .inner>.ondisp{align-self:flex-start}
+.assoc>summary{cursor:pointer;font-weight:700;font-size:14.5px;color:var(--muted)}
+.assoc>summary span{font-weight:500;margin-left:4px}
+.associn{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.fedit{display:flex;justify-content:flex-end;align-items:center;gap:12px}
+.frow2 .qtop{display:flex;justify-content:space-between;align-items:baseline;gap:8px;width:100%}
+.frow2 .qtop b span{font-weight:500;color:var(--muted)}
+.frow2 .qp{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.fopen{width:100%}
+.card .ttl{font-size:16px;line-height:1.25;font-weight:500;color:var(--muted)}.card .ttl b{color:var(--ink);font-weight:760}
+.card .specs b{color:var(--ink)}
 /* Shared look for Floor Copilot and the customer page. tools/build.py inlines this file at the end of
    each page's <style> (placeholder: the __THEME__ comment), so it wins over page rules of equal specificity.
    Pages keep layout; this file owns color, type, shape and the shared components.
@@ -469,6 +517,27 @@ nav.tabs button{letter-spacing:0}
 .pickbar button[aria-selected="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);background:var(--card)}
 .pickbar button[aria-selected="true"] b{background:var(--ink);color:var(--card)}
 
+/* Shared pick card top (pickTop() in the floor template): drawing, name, price, 3 key facts. Same on both pages. */
+.phead{display:grid;grid-template-columns:68px 1fr;gap:14px;align-items:center}
+.phead .sil{width:68px;background:var(--sunk);border-radius:var(--r-s);padding:6px 4px}
+.ptext{display:flex;flex-direction:column;gap:2px;min-width:0}
+.phead .pname{margin:0;font-size:20px;line-height:1.2;font-weight:760}
+.phead .pname span{font-weight:500;color:var(--muted)}
+.ondisp{align-self:flex-start;margin-top:4px;font-size:12.5px;font-weight:700;padding:3px 8px;border-radius:4px;background:var(--ink);color:var(--card)}
+.pline{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:6px 10px}
+.pline .price{font-size:34px}
+.pline small{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+.pline .eff{font-size:13.5px;padding:4px 8px;margin:0}
+.kfacts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:var(--r-s)}
+.kfacts li{padding:8px 6px;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.25}
+.kfacts li+li{border-left:1px solid var(--line)}
+.kfacts b{display:block;font-size:16px;color:var(--ink);font-variant-numeric:tabular-nums}
+.verdict.slim{padding:10px 12px}
+.verdict.slim b{font-size:15.5px}
+.verdict .vs{display:block;font-size:13.5px;color:var(--muted)}
+.phead .pname{letter-spacing:-.01em}
+.phead .num{font-size:13px;font-weight:750;color:var(--signal-deep)}
+
 </style>
 
 <header class="band"><div class="gut">
@@ -489,18 +558,18 @@ nav.tabs button{letter-spacing:0}
 <main class="gut">
 <!-- CUSTOMER -->
 <section class="view" id="v-customer">
-  <div><h2>Size up the customer</h2><p class="sub">Three taps for a walk-in. Measurements can wait until they get home.</p></div>
   <div class="panel quick">
-    <p class="eyebrow">1 · Who lives there</p>
+    <p class="eyebrow">Who lives there</p>
     <div class="fields">
       <div class="f"><label class="f" for="adults">Adults</label><div class="stepper"><button data-step="adults" data-d="-1" aria-label="Fewer adults">−</button><output id="adults">2</output><button data-step="adults" data-d="1" aria-label="More adults">+</button></div></div>
       <div class="f"><label class="f" for="kids">Kids</label><div class="stepper"><button data-step="kids" data-d="-1" aria-label="Fewer kids">−</button><output id="kids">1</output><button data-step="kids" data-d="1" aria-label="More kids">+</button></div></div>
     </div>
-    <p class="eyebrow">2 · Style they want</p>
+    <p class="eyebrow">Style</p>
     <div class="chips" id="qStyle"><button class="chip" data-qs="FD" aria-pressed="false">French door</button><button class="chip" data-qs="SS" aria-pressed="false">Side by side</button><button class="chip" data-qs="BF" aria-pressed="false">Bottom freezer</button><button class="chip" data-qs="TF" aria-pressed="false">Top freezer</button><button class="chip" data-qs="" aria-pressed="true">Not sure</button></div>
-    <p class="eyebrow">3 · Budget</p>
+    <p class="eyebrow">Budget <span class="hintx">tap two to cover a range</span></p>
     <div class="chips" id="qBud"><button class="chip" data-qb="0-1000" aria-pressed="false">Under $1k</button><button class="chip" data-qb="1000-2000" aria-pressed="false">$1–2k</button><button class="chip" data-qb="2000-3000" aria-pressed="false">$2–3k</button><button class="chip" data-qb="3000-" aria-pressed="false">$3k+</button><button class="chip" data-qb="" aria-pressed="true">No limit</button></div>
-    <p class="eyebrow">Optional · What width are they replacing?</p>
+    <p class="note" id="qBudNote" hidden></p>
+    <p class="eyebrow">Width they're replacing <span class="hintx">optional</span></p>
     <div class="chips" id="qWidth"><button class="chip" data-qw="30" aria-pressed="false">30"</button><button class="chip" data-qw="33" aria-pressed="false">33"</button><button class="chip" data-qw="36" aria-pressed="false">36"</button><button class="chip" data-qw="" aria-pressed="true">Not sure</button></div>
     <p class="note" id="qWidthNote" hidden></p>
     <details class="mhelp"><summary>More about them</summary><div class="morebox">
@@ -516,6 +585,7 @@ nav.tabs button{letter-spacing:0}
       <label class="f" style="max-width:220px">Exact budget $<input id="budget" type="number" inputmode="numeric" placeholder="No limit"></label>
     </div></details>
   </div>
+  <div class="walkline" id="walkto"></div>
   <div class="panel quickres" id="quickRes"></div>
   <details class="panel measdet" id="measDet"><summary><span>They have measurements</span><span class="ct" id="measCt"></span></summary>
     <div class="optnote"><p class="eyebrow">Their kitchen · inches</p><button class="rm" id="loadEx">Load example kitchen</button></div>
@@ -540,8 +610,6 @@ nav.tabs button{letter-spacing:0}
       <li>Tap <b>None</b> next to a field when it doesn't apply (no cabinet above, no island, no wall beside it, not in a nook). The customer's page then shows it as covered. Tap again to undo.</li></ul></details>
     <p class="note">Fractions work: type 35 3/4, 35-3/4, or tap a fraction.</p>
   </details>
-  <div class="callout" id="walkto"></div>
-  <button class="btn y" id="goFind">See the fridges that fit</button>
 </section>
 
 <!-- FIND -->
@@ -585,35 +653,33 @@ nav.tabs button{letter-spacing:0}
 
 <!-- TAKE HOME -->
 <section class="view" id="v-home" hidden>
-  <div><h2>Send them home with it</h2><p class="sub">Most people don't buy on the first visit. This text is how they come back to you instead of ordering somewhere else.</p></div>
+  <div><h2>Send them home with it</h2><p class="sub">The QR opens their picks on their phone, so they come back to you.</p></div>
   <div class="panel"><div class="fields">
     <label class="f">Your name<input id="me" type="text" value="Julian"></label>
     <label class="f">Customer first name<input id="cust" type="text" placeholder="optional"></label>
   </div></div>
-  <div class="panel"><pre class="sum" id="sum"></pre></div>
-  <div class="row"><button class="btn y" id="qrHome">Show QR code</button><button class="btn ghost" id="copySum">Copy text</button><button class="btn ghost" id="reset">Next customer</button></div>
-  <div class="panel">
-    <p class="eyebrow">Money they can still get back · Atlanta</p>
+  <div class="row qbtns"><button class="btn y" id="qrHome">Show QR code</button><button class="btn ghost" id="reset">Next customer</button></div>
+  <details class="panel fold"><summary>Text message version</summary><pre class="sum" id="sum"></pre><button class="btn ghost" id="copySum">Copy text</button></details>
+  <p class="eyebrow foldhead">For you</p>
+  <details class="panel fold"><summary>Rebates, promos and recalls</summary>
     <ul class="plain">
       <li id="promoLi"><b>Spend More Save More on fridges</b> through 12/2: $75 off at $998+, $150 at $1,498+, $300 at $1,998+, $500 at $2,498+. Shown as the yellow "after promo" price on fridges tagged for it. Confirm at the register.</li>
       <li><b>Georgia Power Refrigerator Recycling+.</b> Free pickup of a working spare fridge plus a rebate. Great for anyone moving the old one to the garage. <a href="https://www.georgiapower.com/refrigerator" target="_blank" rel="noopener">georgiapower.com/refrigerator</a></li>
       <li><b>Georgia HEAR rebates</b> stopped taking new applications Aug 14, 2026. Don't promise these. <a href="https://energyrebates.georgia.gov/hear-program-updates" target="_blank" rel="noopener">Status</a></li>
       <li><b>Recall check</b> before recommending: <a href="https://www.cpsc.gov/Recalls" target="_blank" rel="noopener">cpsc.gov/Recalls</a></li>
     </ul>
-  </div>
-  <div class="panel bk">
-    <p class="eyebrow">Saved on this phone</p>
+  </details>
+  <details class="panel bk fold"><summary>Saved on this phone</summary>
     <p class="note" id="bkStat"></p>
     <div class="row"><button class="btn ghost" id="bkCopy">Copy backup</button><button class="btn ghost" id="bkPaste">Restore backup</button></div>
     <p class="note">Your floor list and linked barcodes live on this phone only. Copy a backup to move them to the home-screen app or a new phone.</p>
-  </div>
-  <div class="panel miss" id="missPanel">
-    <p class="eyebrow">Not in the catalog</p>
+  </details>
+  <details class="panel miss fold" id="missPanel"><summary>Not in the catalog <span id="missCt"></span></summary>
     <p class="note" id="missStat"></p>
     <ul class="misslist" id="missList"></ul>
     <div class="row" id="missBtns"><button class="btn ghost" id="missCopy">Copy list</button><button class="btn ghost" id="missClear">Clear list</button></div>
     <p class="note">Codes you scanned or searched that matched no fridge. Send the list to the price refresh (add the models to <b>data/watchlist.txt</b>) so it looks them up. Box barcodes can't be looked up: link those by hand instead.</p>
-  </div>
+  </details>
 </section>
 </main>
 
@@ -624,6 +690,7 @@ nav.tabs button{letter-spacing:0}
   <button data-v="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg>Take-home</button>
 </div></nav>
 
+<button class="presentx" id="presentX" hidden>Done</button>
 <div class="sheet" id="psheet" hidden><div class="body" role="dialog" aria-modal="true" id="psheetBody"></div></div>
 <div class="sheet" id="sheet" hidden><div class="body" role="dialog" aria-modal="true" id="sheetBody"></div></div>
 <div class="qrwrap" id="qrwrap" hidden role="dialog" aria-modal="true" aria-label="QR code for the customer">
@@ -3710,6 +3777,8 @@ const RAW=`204511021|1000026447|ABB2224BRW|Amana|22 cu. ft. Bottom Freezer Refri
 700452087|1016629052|BCD-213|BANGSON|BANGSON 7.7 Cu. Ft. 2-Door Freestanding Refrigerator with Top Freezer in Red|TF|475.99|475.99|0.0||21.46|55.91|21.26|21.26|42.72|7.7||None|C|0||N|0|0|1-Year||O|21.26|0|0|
 700452139|1016629049|BCD-210VX|BANGSON|BANGSON 7.5 Cu. Ft. Retro 2-Door Refrigerator with Top Freezer in Red|TF|569.99|569.99|0.0||21.46|57.88|23.04|23.04|44.5|7.5||None|C|0||N|0|0|1-Year||O|21.26|0|0|`;
 const STYLE={FD:"French door",SS:"Side by side",TF:"Top freezer",BF:"Bottom freezer",SP:"Specialty",FL:"All fridge, no freezer"};
+/* review count, short: 13308 -> "13k", 1582 -> "1.6k" (cards on both pages) */
+const kRev=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1).replace(/\.0$/,"")+"k":String(n);
 /* floor list: fc_floor_v2 = {itemId:{a:"aisle note",s:"YYYY-MM-DD last seen" or null}}. fc_floor_v1 ({itemId:"aisle note"})
    is still written alongside so an older cached copy of the app keeps working, and is migrated in on load. */
 const FLOORK="fc_floor_v1",FLOORK2="fc_floor_v2";let FLOOR={};
@@ -3969,18 +4038,17 @@ function filtered(){const c=ctx(),q=$("q").value.trim().toLowerCase();
  r.sort(sorter(S.sort,c));return r;}
 function cardHTML({u,f},c){const p=promo(u);const save=u.price&&u.orig&&u.orig>u.price?u.orig-u.price:0;
  const mfn=SORTMAP[S.sort][3];const m=mfn?mfn(u,f,c):null;
- const tags=[`<span class="tag ${fitCls(f)}">${f.verdict==="na"?STYLE[u.type]:fitWord(f)}</span>`];
- if(f.verdict!=="na")tags.push(`<span class="tag">${STYLE[u.type]}</span>`);
- if(onFloor(u))tags.unshift(`<span class="tag floor">${floorTxt(u)}</span>`);
- if(u.counter)tags.push(`<span class="tag">Counter depth</span>`);if(u.garage)tags.push(`<span class="tag">Garage ready</span>`);if(u.disp!=="None")tags.push(`<span class="tag">${u.disp==="Both"?"Ice + water":u.disp}</span>`);tags.push(`<span class="tag ${u.av==="O"?"chk":""}">${AV[u.av]}</span>`);if(u.zero)tags.push(`<span class="tag fit">Zero clearance</span>`);if(u.returnable)tags.push(`<span class="tag fit">90-day returns</span>`);
+ /* List card: name, price, one facts line, at most 3 tags (floor, fit, one feature). Everything else lives in the details sheet. */
+ const tags=[];if(onFloor(u))tags.push(`<span class="tag floor">${floorTxt(u)}</span>`);
+ if(f.verdict!=="na")tags.push(`<span class="tag ${fitCls(f)}">${fitWord(f)}</span>`);
+ const feat=u.counter?"Counter depth":u.garage&&S.habits.garage?"Garage ready":u.disp==="Both"?"Ice + water":"";if(feat)tags.push(`<span class="tag">${feat}</span>`);
  return `<button class="card ${f.verdict==="no"?"nofit":""}" data-id="${u.id}">${miniSil(u)}<div class="meta">
-  <div class="top"><span class="brand">${u.brand}</span><span class="model">${u.model}</span></div>
-  <p class="ttl">${u.label}</p>
-  <div class="pricerow">${priceHTML(u.price)}${save?`<span class="was">${fmt(u.orig)}</span><span class="save">Save ${fmt(save)}</span>`:""}${p&&p.save?`<span class="eff">${fmt(p.eff)} after promo</span>`:""}</div>
+  <p class="ttl"><b>${u.brand}</b> ${STYLE[u.type].toLowerCase()}</p>
+  <div class="pricerow">${priceHTML(u.price)}${save?`<span class="was">${fmt(u.orig)}</span>`:""}${p&&p.save?`<span class="eff">${fmt(p.eff)} after promo</span>`:""}</div>
   ${m?`<div><span class="metric">${m}</span></div>`:""}
-  <div class="specs">${u.cap} cu ft · ${inch(u.w)} W × ${inch(u.h)} H × ${inch(u.d)} D</div>
-  ${u.reviews?`<div class="stars"><b>★ ${u.rating?.toFixed(1)}</b> · ${u.reviews.toLocaleString()} reviews</div>`:`<div class="stars">No reviews yet</div>`}
-  <div class="tags">${tags.join("")}</div></div></button>`;}
+  <div class="specs">${u.cap} cu ft · ${inch(u.w)} wide${u.reviews?` · <b>★ ${u.rating?.toFixed(1)}</b> (${kRev(u.reviews)})`:""}</div>
+  <div class="model">${u.model}</div>
+  ${tags.length?`<div class="tags">${tags.join("")}</div>`:""}</div></button>`;}
 function activeCount(){return S.f.brands.size+S.f.disp.size+Object.keys(S.f.r).length+FLAGS.filter(([k])=>S.t[k]&&!QUICK.includes(k)).length}
 function renderToggles(){const c=ctx(),sp=c.sp;const base=CAT.map(u=>({u,f:fit(u,sp)}));
  const pills=[];
@@ -4009,16 +4077,17 @@ function renderFloor(){const el=$("floorView");if(!el)return;const q=$("q").valu
   const keys=[...G.keys()].sort((a,b)=>!a?1:!b?-1:a.localeCompare(b,undefined,{numeric:true,sensitivity:"base"}));
   const row=({u,f})=>{const ok=floorWorks(u,f,c),tags=[`<span class="tag ${fitCls(f)}">${f.verdict==="na"?"Fit not checked":fitWord(f)}</span>`];
    if(u.cap<c.n.lo-1)tags.push(`<span class="tag chk">Small for ${c.n.people}</span>`);if(c.b&&effPrice(u)>c.b)tags.push(`<span class="tag no">Over budget</span>`);
-   return `<div class="frow2 ${ok?"":"dim"}"><button class="fopen" data-open="${u.id}"><b>${u.brand} ${u.model}</b><small>${STYLE[u.type]} · ${u.cap} cu ft · ${fmt(u.price==null?null:effPrice(u))}${u.reviews?` · ★ ${u.rating.toFixed(1)} (${u.reviews.toLocaleString()})`:""}</small></button>
-    <div class="ftags">${tags.join("")}</div><div class="fact">${FLOOR[u.id].s===today()?`<span>Seen today</span>`:`<span>Last seen ${seenTxt(FLOOR[u.id].s)}</span><button class="rm" data-seen="${u.id}">Mark seen today</button>`}<button class="rm" data-gone="${u.id}">No longer on display</button></div></div>`};
+   /* list upkeep (last seen, remove) only shows in Edit list mode, so the view stays clean when a customer is looking */
+   return `<div class="frow2 ${ok?"":"dim"}"><button class="fopen" data-open="${u.id}"><span class="qtop"><b>${u.brand} <span>${STYLE[u.type].toLowerCase()}</span></b><span class="qp">${fmt(u.price==null?null:effPrice(u))}</span></span><small>${u.cap} cu ft${u.reviews?` · ★ ${u.rating.toFixed(1)} (${kRev(u.reviews)})`:""} · ${u.model}</small></button>
+    <div class="ftags">${tags.join("")}</div>${S.floorEdit?`<div class="fact">${FLOOR[u.id].s===today()?`<span>Seen today</span>`:`<span>Last seen ${seenTxt(FLOOR[u.id].s)}</span><button class="rm" data-seen="${u.id}">Mark seen today</button>`}<button class="rm" data-gone="${u.id}">No longer on display</button></div>`:""}</div>`};
   const sc=x=>matchScore(x,c);
-  el.innerHTML=head+`<div class="floorin">${keys.map(k=>{const L=G.get(k).sort((a,b)=>(floorWorks(b.u,b.f,c)-floorWorks(a.u,a.f,c))||(sc(b)-sc(a)));
-   return `<div class="fgroup"><h4>${k||"No aisle noted"}</h4><div class="frows">${L.map(row).join("")}</div></div>`}).join("")}
-   <button class="btn ghost" id="walkBtn">Walk the aisle</button></div>`;}
+  el.innerHTML=head+`<div class="floorin"><div class="fedit">${S.floorEdit?`<button class="btn ghost sm" id="walkBtn">Walk the aisle</button>`:""}<button class="rm" id="floorEdit">${S.floorEdit?"Done editing":"Edit list"}</button></div>${keys.map(k=>{const L=G.get(k).sort((a,b)=>(floorWorks(b.u,b.f,c)-floorWorks(a.u,a.f,c))||(sc(b)-sc(a)));
+   return `<div class="fgroup"><h4>${k||"No aisle noted"}</h4><div class="frows">${L.map(row).join("")}</div></div>`}).join("")}</div>`;}
  el.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openSheet(b.dataset.open));
  el.querySelectorAll("[data-seen]").forEach(b=>b.onclick=()=>{floorSet(b.dataset.seen,null);toast("Marked as seen today");renderFloor();});
  el.querySelectorAll("[data-gone]").forEach(b=>b.onclick=()=>{const u=CAT.find(x=>x.id===b.dataset.gone);floorDel(u.id);toast(`Removed ${u.brand} ${u.model} from the floor list`);renderList(true);});
- $("walkBtn").onclick=openWalk;}
+ if($("walkBtn"))$("walkBtn").onclick=openWalk;
+ if($("floorEdit"))$("floorEdit").onclick=()=>{S.floorEdit=!S.floorEdit;renderFloor();};}
 function openWalk(){openPS(`<div class="ps-head"><h3>Walk the aisle</h3><button class="x" data-close aria-label="Close">×</button></div><div class="ps-inner" style="gap:12px;padding-top:14px">
   <label class="f">Where are you standing?<input id="walkA" type="text" maxlength="40" autocomplete="off" placeholder="e.g. Aisle 12, end cap" value="${(S.walkAisle||"").replace(/"/g,"&quot;")}"></label>
   <p class="note">Every shelf tag you scan next goes on the floor list with this note. A fridge that's already saved just gets this aisle and today's date. The camera stays on between scans.</p></div>
@@ -4123,28 +4192,24 @@ function openSheet(id){const u=CAT.find(x=>x.id===id),sp=space(),f=fit(u,sp),p=p
  const kwh=S.kwh[u.id]??u.kwh, yr=kwh?kwh*RATE:null;
  const save=u.price&&u.orig&&u.orig>u.price?u.orig-u.price:0, inCmp=S.cmp.includes(u.id);
  const sizeNote=u.cap<n.lo?`${u.cap} cu ft is under their ${n.lo}–${n.hi} range`:`${u.cap} cu ft fits their ${n.lo}–${n.hi} range`;
- $("sheetBody").innerHTML=`<div class="head"><div><div class="brand">${u.brand} · ${STYLE[u.type]}</div><h3>${u.label}</h3><div class="model">Model ${u.model}</div></div><button class="x" id="closeSheet" aria-label="Close">×</button></div>
+ $("sheetBody").innerHTML=`<div class="head"><div><h3>${u.brand} <span class="hst">${STYLE[u.type].toLowerCase()}${u.counter?", counter depth":""}</span></h3><div class="model">${shortLabel(u)} · Model ${u.model}</div></div><button class="x" id="closeSheet" aria-label="Close">×</button></div>
  <div class="inner">
   ${S.pendingCode?`<div class="panel linkpanel"><p class="note" style="margin:0">Scanned code <b>${S.pendingCode}</b> is not linked to a fridge yet. Is this the one?</p><div class="row"><button class="btn y" id="linkCode">Link code to this fridge</button><button class="rm" id="linkStop">Stop linking</button></div></div>`:""}
   <div class="note">Price as of ${priceDay()}</div><div class="pricerow" style="font-size:1.25em">${priceHTML(u.price)}${save?`<span class="was">${fmt(u.orig)}</span><span class="save">Save ${fmt(save)}</span>`:""}</div>
   ${p?`<div class="panel promobox"><p class="eyebrow">Spend More Save More, through Dec 2</p>
      <div style="font-size:15px">${p.save?`Qualifies for <b>${fmt(p.save)} off</b>. Effective price <b>${fmt(p.eff)}</b>.`:"Under the first tier."}${p.next?` Next tier at ${fmt(p.next.at)} saves ${fmt(p.next.save)}${p.next.at-u.price<=200?`. Only <b>${fmt(p.next.at-u.price)}</b> away, so a step-up model may net out cheaper`:""}.`:""}</div></div>`
    :`<p class="note">${u.promo==="S"?"Special Buy pricing. Not tagged for Spend More Save More.":"Check the tag for Spend More Save More eligibility."}</p>`}
-  <div class="row"><button class="btn ${inCmp?"ghost":"y"}" id="addCmp">${inCmp?"Remove from compare":"Compare"}</button><a class="btn ghost" href="https://www.homedepot.com/p/${u.id}" target="_blank" rel="noopener">Open on homedepot.com</a></div>
-  <div class="panel floorpanel"><div class="optnote"><p class="eyebrow">On display at our store</p><label class="tick"><input type="checkbox" id="floorChk" ${onFloor(u)?"checked":""}> On our floor</label></div>
-   <label class="f" ${onFloor(u)?"":"hidden"} id="floorWhere">Where (optional)<input id="floorNote" type="text" maxlength="40" placeholder="e.g. Aisle 12, end cap" value="${floorAisle(u).replace(/"/g,"&quot;")}"></label>
-   ${onFloor(u)?`<p class="note">Last seen ${seenTxt(FLOOR[u.id].s)}. <button class="rm" id="floorSeen">Seen it today</button></p>`:""}
-   <p class="note">Saved on this phone. Shows on cards, the Options view, and the customer's QR page.</p></div>
+  <div class="row"><button class="btn ${inCmp?"ghost":"y"}" id="addCmp">${inCmp?"Remove from options":"Add to their options"}</button><a class="btn ghost" href="https://www.homedepot.com/p/${u.id}" target="_blank" rel="noopener">See it online</a></div>
+  ${onFloor(u)?`<div class="ondisp">${floorPickTxt(u)}</div>`:""}
   <div class="panel"><p class="eyebrow">Will it fit at their house</p>
    ${(sp.ow||sp.island)?`<div class="drawings"><div class="drawing"><span class="cap">Front · in their opening</span>${frontDrawing(u,sp)}${frontLegend(u,sp)}</div><div class="drawing"><span class="cap">From above · door swing</span>${planDrawing(u,sp)}${planLegend(u,sp)}</div></div>`:`<p class="note">Add their opening on the Customer tab to see this drawn to scale.</p>`}
    <div class="checks">${f.checks.map(c=>`<div class="ck"><span class="pill ${c.s}">${{ok:"OK",chk:"Check",no:"No"}[c.s]}</span><span><b>${c.k}.</b> ${c.t}</span></div>`).join("")}
    <div class="ck"><span class="pill ${u.cap<n.lo?"chk":"ok"}">${u.cap<n.lo?"Check":"OK"}</span><span><b>Size.</b> ${sizeNote}</span></div>
    ${!u.returnable?`<div class="ck"><span class="pill chk">Note</span><span><b>No change-of-mind returns.</b> Issues are covered for 2 days after delivery, so measure twice.</span></div>`:""}</div>
    <p class="disc">Fit check is a guide based on the measurements entered. Confirm with the model’s installation guide before buying.</p></div>
-  ${!yr&&!S.showKwh?`<button class="rm" id="showKwh" style="align-self:flex-start">+ Add kWh from the yellow EnergyGuide label to see power cost</button>`:`<div class="panel"><p class="eyebrow">Power cost at Georgia Power rates</p>
-   ${yr?`<div class="money"><div><div class="k">Per month</div><div class="v">$${(yr/12).toFixed(2)}</div></div><div><div class="k">Per year</div><div class="v">${fmt(yr)}</div></div><div><div class="k">${YEARS}-yr total</div><div class="v">${fmt(effPrice(u)+yr*YEARS)}</div></div></div>`:""}
-   <label class="f">kWh/yr from the yellow EnergyGuide label<input id="kwhIn" type="number" inputmode="numeric" value="${kwh??""}" placeholder="read it off the floor model"></label>
-   <p class="note">Uses 14.8¢/kWh, the metro Atlanta average. The label uses a national rate, so this is their real local cost.</p></div>`}
+  ${yr?`<div class="panel"><p class="eyebrow">Power cost at Georgia Power rates</p>
+   <div class="money"><div><div class="k">Per month</div><div class="v">$${(yr/12).toFixed(2)}</div></div><div><div class="k">Per year</div><div class="v">${fmt(yr)}</div></div><div><div class="k">${YEARS}-yr total</div><div class="v">${fmt(effPrice(u)+yr*YEARS)}</div></div></div>
+   <p class="note">Uses 14.8¢/kWh, the metro Atlanta average.</p></div>`:""}
   <div class="panel"><p class="eyebrow">Specs</p><dl class="kv">
    <dt>Store SKU</dt><dd><button class="copyable" data-copy="${u.sku}">${u.sku}</button></dd>
    <dt>Internet #</dt><dd><button class="copyable" data-copy="${u.id}">${u.id}</button></dd>
@@ -4152,6 +4217,12 @@ function openSheet(id){const u=CAT.find(x=>x.id===id),sp=space(),f=fit(u,sp),p=p
    <dt>Depth</dt><dd>${inch(u.d)} with handles · ${inch(u.dnd)} doors off</dd><dt>Doors open 90°</dt><dd>${inch(u.d90)} from back of fridge</dd><dt>Hinge side needs</dt><dd>${u.zero?"0\" (zero-clearance hinges)":"about "+inch(hingeNeed(u))+" (estimated from door thickness)"}${u.rev?" · reversible door":""}</dd>
    <dt>Dispenser</dt><dd>${u.disp}</dd><dt>Energy Star</dt><dd>${u.estar?"Yes":"No"}</dd><dt>Warranty</dt><dd>${u.warranty}</dd><dt>Availability</dt><dd>${AV[u.av]}${u.av==="O"?" · ships to their home":""}</dd><dt>Returns</dt><dd>${u.returnable?"90-day returns":"Issues covered 2 days after delivery; no change-of-mind returns"}</dd>
    <dt>Rating</dt><dd>★ ${u.rating?.toFixed(1)} from ${(u.reviews||0).toLocaleString()} reviews</dd></dl></div>
+  <details class="panel assoc" id="assocDet" ${S.assocOpen?"open":""}><summary>Associate tools <span>floor list, power cost</span></summary><div class="associn">
+   <label class="tick"><input type="checkbox" id="floorChk" ${onFloor(u)?"checked":""}> On our floor</label>
+   <label class="f" ${onFloor(u)?"":"hidden"} id="floorWhere">Where (optional)<input id="floorNote" type="text" maxlength="40" placeholder="e.g. Aisle 12, end cap" value="${floorAisle(u).replace(/"/g,"&quot;")}"></label>
+   ${onFloor(u)?`<p class="note">Last seen ${seenTxt(FLOOR[u.id].s)}. <button class="rm" id="floorSeen">Seen it today</button></p>`:""}
+   <label class="f">kWh/yr from the yellow EnergyGuide label<input id="kwhIn" type="number" inputmode="numeric" value="${kwh??""}" placeholder="read it off the floor model"></label>
+   <p class="note">Saved on this phone. The floor list shows on cards, the Options view and the customer's QR page; kWh adds a power cost panel above.</p></div></details>
  </div>`;
  $("sheet").hidden=false;document.body.style.overflow="hidden";
  $("closeSheet").onclick=closeSheet;
@@ -4163,7 +4234,7 @@ function openSheet(id){const u=CAT.find(x=>x.id===id),sp=space(),f=fit(u,sp),p=p
  $("floorChk").onchange=e=>{if(e.target.checked)floorSet(u.id,null);else floorDel(u.id);toast(e.target.checked?"Marked as on our floor":"Removed from floor list");openSheet(u.id);if(e.target.checked)setTimeout(()=>$("floorNote")&&$("floorNote").focus(),50);};
  $("floorNote").oninput=e=>{if(onFloor(u)){FLOOR[u.id].a=e.target.value.trim().slice(0,40);saveFloor();}};
  if($("floorSeen"))$("floorSeen").onclick=()=>{floorSet(u.id,null);toast("Marked as seen today");openSheet(u.id);};
- if($("showKwh"))$("showKwh").onclick=()=>{S.showKwh=true;openSheet(u.id);setTimeout(()=>$("kwhIn")&&$("kwhIn").focus(),50)};
+ $("assocDet").ontoggle=e=>{S.assocOpen=e.target.open;};
  if($("kwhIn")){$("kwhIn").oninput=e=>{const v=num(e.target.value);if(v)S.kwh[u.id]=v;else delete S.kwh[u.id];};
  $("kwhIn").onchange=()=>openSheet(u.id);}
  $$(".copyable",$("sheetBody")).forEach(b=>b.onclick=()=>copy(b.dataset.copy,"Copied "+b.dataset.copy));}
@@ -4233,28 +4304,33 @@ function verdictHTML(f){const k=fitKey(f),first=f.checks.find(c=>c.s==="no"&&c.k
  const m={ok:["✓",f.est?fitWord(f):"Fits",f.est?"Based on the width they're replacing. Measure the space to confirm":"Checked against the measurements entered"],chk:["✓",fitWord(f),first?first.t:""],tight:["!","Tight, double check",first?first.t:""],no:["✕","Won't fit as measured",first?first.t:""],na:["?","Fit not checked yet","Add measurements to check"]}[k];
  return `<div class="verdict ${k==="chk"?"ok":k==="tight"?"chk":k}"><span class="ic" aria-hidden="true">${m[0]}</span><span><b>${m[1]}</b>${m[2]}</span></div>`;}
 function shortLabel(u){return u.label.replace(/\s+(in|with)\s+(Fingerprint|Smudge|PrintProof|Print|Stainless|White|Black|Slate|Panel|Matte|Bespoke|P$|Pr)[\s\S]*$/i,"").replace(/[\s,]+$/,"").trim()}
-function optCard(u,i,us,auto,sp){const f=fit(u,sp),p=promo(u),kwh=S.kwh[u.id]??u.kwh;
- const short=shortLabel(u);
- return `<article class="opt" aria-label="${u.brand} ${u.model}">
-  <div class="opt-top">${miniSil(u)}<div>${auto?`<div class="rank">Match #${i+1}</div>`:""}<div class="tag ${onFloor(u)?"floor":""}" style="display:inline-block;margin:4px 0">${floorPickTxt(u)}</div><div class="brand">${u.brand}</div><h3>${short}</h3><div class="model">Model ${u.model}</div></div></div>
-  <div class="pricerow">${priceHTML(u.price)}${p&&p.save?`<span class="eff">${fmt(p.eff)} after promo</span>`:""}</div>
+/* Shared top of a pick card, used by the floor tool's Options view and the customer page's Your picks so both look the same:
+   drawing, "Brand style" name, model, optional floor tag, price with date and promo, then 3 key facts. o: {num, tag} */
+function pickTop(u,o={}){const p=promo(u),day=DATA_DATE.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+ return `<div class="phead">${miniSil(u)}<div class="ptext">${o.num?`<div class="num">${o.num}</div>`:""}<h2 class="pname">${u.brand} <span>${STYLE[u.type].toLowerCase()}${u.counter?", counter depth":""}</span></h2><div class="model">Model ${u.model}</div>${o.tag?`<span class="ondisp">${o.tag}</span>`:""}</div></div>
+  <div class="pline"><div>${priceHTML(u.price)}<small>Price on ${day}</small></div>${p&&p.save?`<div class="eff">${fmt(p.eff)} with promotion</div>`:""}</div>
+  <ul class="kfacts"><li><b>${u.cap}</b> cu ft</li><li><b>${people(u).replace(" people","")}</b> people</li><li>${u.reviews?`<b>★ ${u.rating.toFixed(1)}</b> ${kRev(u.reviews)} reviews`:"No reviews yet"}</li></ul>`;}
+/* Customer-facing card (Options tab): same top as the customer page, then fit, 2 reasons, good-to-know folded. */
+function optCard(u,i,us,auto,sp){const f=fit(u,sp),why=whyList(u,us),g=gtkList(u,f,sp);
+ return `<article class="opt pick" aria-label="${u.brand} ${u.model}">
+  ${pickTop(u,{num:`Option ${i+1}${us.length>1?` of ${us.length}`:""}`,tag:onFloor(u)?floorPickTxt(u):""})}
   ${verdictHTML(f)}
-  <ul class="facts"><li><small>Room for</small>${people(u)}</li><li><small>Inside</small>${u.cap} cu ft</li>
-<li><small>Owners rate it</small>${u.reviews?`★ ${u.rating.toFixed(1)} (${u.reviews.toLocaleString()})`:"No reviews yet"}</li>
-   ${kwh?`<li><small>Power</small>about $${(kwh*RATE/12).toFixed(2)}/mo</li>`:""}<li><small>Style</small>${STYLE[u.type]}</li></ul>
-  <h4>Why this one</h4><ul class="why">${whyList(u,us).map(x=>`<li>${x}</li>`).join("")||"<li>Solid all-around pick in your size</li>"}</ul>
-  ${(()=>{const g=gtkList(u,f,sp);return g.length?`<h4>Good to know</h4><ul class="gtk">${g.map(x=>`<li>${x}</li>`).join("")}</ul>`:""})()}
+  <ul class="why">${why.slice(0,2).map(x=>`<li>${x}</li>`).join("")||"<li>Solid all-around pick in your size</li>"}</ul>
+  ${g.length?`<details class="gtkd"><summary>Good to know (${g.length})</summary><ul class="gtk">${g.map(x=>`<li>${x}</li>`).join("")}</ul></details>`:""}
   <div class="row"><button class="btn ghost" data-open="${u.id}">Full details</button>${auto?"":`<button class="rm" data-rm="${u.id}">Remove</button>`}</div>
  </article>`;}
 function renderCmp(){const {us,auto}=optSet(),sp=space();
  if(!us.length){$("cmp").innerHTML=`<div class="empty">Nothing fits with these filters and measurements. Remove a filter on the Fridges tab or double-check the opening on Customer.</div>`;return;}
  if(S.optMode==="cust"){
   const rel=optSet().relaxed;
-  $("cmp").innerHTML=`<div class="optnote"><span>${auto?"Top 3 matches. Updates as you change their answers.":"Your saved picks. These stay put until you change them."}</span>${auto?`<button class="rm" id="keepAuto">Keep these three</button>`:`<button class="rm" id="backAuto">Show top matches instead</button>`}</div>
-   ${auto?`<button class="btn y qrbtn" id="qrOpt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg>Send these home with a QR code</button>
-   <div class="tags basis"><b>Matched on</b>${basisChips()}</div><p class="note">Orange tags come from the Fridges tab. Change filters or sort there and these picks follow.</p>${rel?`<p class="note">Nothing matched everything they asked for, so these skip ${rel.join(" and ")}. Their kitchen measurements still apply.</p>`:""}`:""}
+  const me=$("me").value.trim();
+  $("cmp").innerHTML=`<div class="presenthead"><b>Your fridge options</b><span>${me?`Picked with ${me}, appliance associate`:"Picked for your home"} · ${needs().lo}–${needs().hi} cu ft for ${needs().people} ${needs().people===1?"person":"people"}</span></div>
+   <div class="optbar"><span>${auto?"Top 3 matches":"Your saved picks"}</span>${auto?`<button class="rm" id="keepAuto">Keep these</button>`:`<button class="rm" id="backAuto">Show top matches</button>`}<button class="btn dark sm" id="present"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>Show customer</button></div>
+   ${auto&&rel?`<p class="note">Nothing matched everything, so these skip ${rel.join(" and ")}. Kitchen measurements still apply.</p>`:""}
    <div class="rail"><div class="optrail">${us.map((u,i)=>optCard(u,i,us,auto,sp)).join("")}</div></div>
-   <p class="disc">Fit check is a guide based on the measurements entered. Confirm with the model’s installation guide before buying. Prices as of ${priceDay()}.</p>`;
+   <p class="disc">Fit check is a guide based on the measurements entered. Confirm with the model’s installation guide before buying. Prices as of ${priceDay()}.</p>
+   <button class="btn y qrbtn" id="qrOpt"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg>Send these home with a QR code</button>
+   ${auto?`<details class="mhelp basisd"><summary>What these are matched on</summary><div class="tags basis">${basisChips()}</div><p class="note">Orange tags come from the Fridges tab. Change filters or sort there and these picks follow.</p></details>`:""}`;
  } else {
   const w=winner(us);S.diffOnly=S.diffOnly??true;
   const rows=[];const R=(label,fn,best)=>{const cells=us.map(fn);if(S.diffOnly&&label&&new Set(cells.map(c=>c.replace(/<[^>]+>/g,""))).size===1&&us.length>1)return "";
@@ -4271,7 +4347,8 @@ function renderCmp(){const {us,auto}=optSet(),sp=space();
   ${auto?"":R("",u=>`<button class="rm" data-rm="${u.id}">Remove</button>`)}</tbody></table></div>
   <p class="note">Green marks the best value in each row.</p>`;
   $("diffOnly").onchange=e=>{S.diffOnly=e.target.checked;renderCmp();};}
- $("optSub").textContent=S.optMode==="cust"?"Turn the phone around. This view is written for the customer.":"Side by side specs for you.";
+ $("optSub").textContent=S.optMode==="cust"?"Written for the customer. Tap Show customer to fill the screen.":"Side by side specs for you.";
+ if($("present"))$("present").onclick=()=>presentMode(true);
  if(!$("qrOpt")&&S.optMode==="cust"&&us.length){$("cmp").insertAdjacentHTML("afterbegin",`<button class="btn y qrbtn" id="qrOpt">Send these home with a QR code</button>`);}
  if($("qrOpt"))$("qrOpt").onclick=()=>showQR();
  if($("backAuto"))$("backAuto").onclick=()=>{S.cmp=[];renderBadge();renderCmp();toast("Showing top matches");};
@@ -4292,36 +4369,51 @@ function renderSum(){const n=needs(),sp=space(),me=$("me").value.trim()||"your a
  s+=`\nBefore delivery\n• Measure the path one more time, front door to kitchen\n• Moving the old fridge to the garage? Georgia Power will pick up a working spare for free and pay you a rebate: georgiapower.com/refrigerator\n\nReady to order or have questions? Ask for ${me} in Appliances.`;
  $("sum").textContent=s;}
 
+/* ---------- Show customer: Options cards full screen, no tool chrome, for turning the phone around ---------- */
+function presentMode(on){document.body.classList.toggle("present",on);$("presentX").hidden=!on;window.scrollTo(0,0);}
+$("presentX").onclick=()=>presentMode(false);
+
 /* ---------- plumbing ---------- */
-function show(v){S.view=v;if(v==="home")renderBk();["customer","find","compare","home"].forEach(k=>$("v-"+k).hidden=k!==v); $$("nav.dock button").forEach(b=>{if(b.dataset.v===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+function show(v){if(v!=="compare")presentMode(false);S.view=v;if(v==="home")renderBk();["customer","find","compare","home"].forEach(k=>$("v-"+k).hidden=k!==v); $$("nav.dock button").forEach(b=>{if(b.dataset.v===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
  if(v==="find")renderList();if(v==="compare")renderCmp();if(v==="home")renderSum();window.scrollTo(0,0);}
 $$("nav.dock button").forEach(b=>b.onclick=()=>show(b.dataset.v));
-$("goFind").onclick=()=>show("find");
-function renderWalk(){const n=needs();$("walkto").innerHTML=`<div class="num">${n.lo}–${n.hi}<small>cu ft</small></div><p><b>Walk them to this size.</b></p><p>${n.people} ${n.people===1?"person":"people"} in the home</p><ul>${n.style.map(s=>`<li>${s}</li>`).join("")}${n.say.map(s=>`<li><b>Say:</b> ${s}</li>`).join("")}</ul>`;}
+/* One strip between their answers and the picks: the size to walk to, the style hint, talking points folded. */
+function renderWalk(){const n=needs();$("walkto").innerHTML=`<div class="wl-top"><b>${n.lo}–${n.hi}<small> cu ft</small></b><span>${n.people} ${n.people===1?"person":"people"} · ${n.style[0]}</span></div>
+ ${n.style.length>1||n.say.length?`<details class="wl-say"><summary>${n.say.length?`What to say (${n.say.length})`:"More tips"}</summary><ul>${n.style.slice(1).map(s=>`<li>${s}</li>`).join("")}${n.say.map(s=>`<li>${s}</li>`).join("")}</ul></details>`:""}`;}
 /* ---------- quick path ---------- */
 function quickPicks(){const us=optSet().us.slice();return us.map((u,i)=>({u,i})).sort((a,b)=>(onFloor(b.u)-onFloor(a.u))||(a.i-b.i)).map(x=>x.u);}
 function renderQuick(){const el=$("quickRes");if(!el)return;const sp=space(),us=quickPicks(),saved=!!S.cmp.length;
  if(!us.length){el.innerHTML=`<h3>Walk them to these</h3><div class="empty">Nothing matches yet. Try "Not sure" on style or a wider budget.</div>`;return}
  el.innerHTML=`<div class="optnote"><h3>Walk them to these</h3>${saved?`<span class="note">Your saved picks</span>`:""}</div>
   <div class="qpicks">${us.map((u,i)=>{const f=fit(u,sp),p=promo(u);return `<button class="qpick" data-open="${u.id}"><span class="n">${i+1}</span><span class="t">
-   <span class="where ${onFloor(u)?"":"off"}">${floorPickTxt(u)}</span><b>${u.brand} ${u.model}</b>
-   <small>${STYLE[u.type]} · ${u.cap} cu ft · ${fmt(u.price)}${p&&p.save?` (${fmt(p.eff)} after promo)`:""}${u.reviews?` · ★ ${u.rating.toFixed(1)} (${u.reviews.toLocaleString()})`:""}</small>
-   <span class="ftags"><span class="tag ${fitCls(f)}">${f.verdict==="na"?"Fit not checked":fitWord(f)}</span></span></span></button>`}).join("")}</div>
-  <div class="row"><button class="btn y" id="qMeasure">Send home to measure</button><button class="btn ghost" id="qOpts">Show them the options</button></div>
-  <p class="note">${sp.est?`Width is an estimate from the ${sp.ow}" fridge they're replacing, not a measurement. `:""}The QR opens these on their phone with a guide to measure. Once they measure, the picks re-rank for their space.</p>`;
+   <span class="qtop"><b>${u.brand} <span>${STYLE[u.type].toLowerCase()}</span></b><span class="qp">${fmt(p&&p.save?p.eff:u.price)}</span></span>
+   <small>${u.cap} cu ft${u.reviews?` · ★ ${u.rating.toFixed(1)} (${kRev(u.reviews)})`:""} · ${u.model}</small>
+   <span class="ftags"><span class="tag ${onFloor(u)?"floor":""}">${floorPickTxt(u)}</span><span class="tag ${fitCls(f)}">${f.verdict==="na"?"Fit not checked":fitWord(f)}</span></span></span></button>`}).join("")}</div>
+  <div class="row qbtns"><button class="btn y" id="qMeasure">Send home to measure</button><button class="btn dark" id="qOpts">Show customer</button></div>
+  <p class="note">${sp.est?`Width is an estimate, not a measurement. `:""}The QR opens these on their phone with a measuring guide; the picks re-rank once they measure.</p>`;
  el.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openSheet(b.dataset.open));
- $("qMeasure").onclick=()=>showQR({us,measure:true});$("qOpts").onclick=()=>show("compare");}
+ $("qMeasure").onclick=()=>showQR({us,measure:true});$("qOpts").onclick=()=>{S.optMode="cust";$$(".seg button").forEach(x=>x.setAttribute("aria-selected",x.dataset.mode==="cust"));show("compare");presentMode(true);};}
 function syncQuick(){$$("#qStyle .chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.qs===(S.qstyle||"")));
- $$("#qBud .chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.qb===(S.qbud||"")));
+ const [blo,bhi]=S.qbr||[];$$("#qBud .chip").forEach((c,i)=>c.setAttribute("aria-pressed",c.dataset.qb===""?!S.qbr&&!S.qbud:!!S.qbr&&i>=blo&&i<=bhi));
+ const bn=$("qBudNote");bn.hidden=!S.qbr||blo===bhi;if(S.qbr)bn.textContent=S.bmin&&$("budget").value?`${fmt(S.bmin)} to ${fmt(+$("budget").value)}`:S.bmin?`${fmt(S.bmin)} and up`:`Under ${fmt(+$("budget").value)}`;
  $$("#qWidth .chip").forEach(c=>c.setAttribute("aria-pressed",c.dataset.qw===String(S.est||"")));
  const real=parseIn($("ow").value)!=null,wn=$("qWidthNote");wn.hidden=!S.est;
  wn.textContent=real?`They measured the width (${inch(parseIn($("ow").value))}), so the estimate is ignored.`:S.est?`Estimate only. Fit labels say "estimate" until they measure.`:"";
  const n=["ow","oh","cab","island","hinge","nook","door"].filter(id=>$(id).value.trim()).length;$("measCt").textContent=n?`${n} entered`:"";
  if(n&&!S.measAuto){$("measDet").open=true;S.measAuto=true;}if(!n)S.measAuto=false;}
 $$("#qStyle .chip").forEach(c=>c.onclick=()=>{S.qstyle=c.dataset.qs||null;all();});
-$$("#qBud .chip").forEach(c=>c.onclick=()=>{S.qbud=c.dataset.qb;const [lo,hi]=(c.dataset.qb||"-").split("-");S.bmin=+lo||null;$("budget").value=hi||"";all();});
+/* Budget chips cover a range: tap one, then tap another to stretch to it (e.g. Under $1k + $1–2k = under $2,000).
+   Tapping an end chip trims it, a middle chip starts over from that one, No limit clears. S.qbr = [first, last] chip index. */
+$$("#qBud .chip").forEach((c,i)=>c.onclick=()=>{const r=S.qbr;
+ if(c.dataset.qb==="")S.qbr=null;
+ else if(!r)S.qbr=[i,i];
+ else if(i<r[0]||i>r[1])S.qbr=[Math.min(i,r[0]),Math.max(i,r[1])];
+ else if(r[0]===r[1])S.qbr=null;
+ else if(i===r[0])S.qbr=[i+1,r[1]];else if(i===r[1])S.qbr=[r[0],i-1];else S.qbr=[i,i];
+ const ch=$$("#qBud .chip");let lo=null,hi="";if(S.qbr){lo=+ch[S.qbr[0]].dataset.qb.split("-")[0]||null;hi=ch[S.qbr[1]].dataset.qb.split("-")[1]||"";}
+ S.qbud=S.qbr?"r":"";S.bmin=lo;$("budget").value=hi;all();});
 $$("#qWidth .chip").forEach(c=>c.onclick=()=>{S.est=+c.dataset.qw||null;all();});
-$("budget").addEventListener("input",()=>{S.qbud=$("budget").value?"x":"";S.bmin=null;});
+$("budget").addEventListener("input",()=>{S.qbud=$("budget").value?"x":"";S.qbr=null;S.bmin=null;});
 function all(){syncQuick();renderQuick();renderWalk();renderFitbar();if(S.view==="find")renderList();if(S.view==="compare")renderCmp();if(S.view==="home")renderSum();}
 $$("[data-step]").forEach(b=>b.onclick=()=>{const k=b.dataset.step;S[k]=Math.max(k==="adults"?1:0,Math.min(12,S[k]+ +b.dataset.d));$(k).textContent=S[k];all();});
 $$("#habits .chip").forEach(c=>c.onclick=()=>{const on=c.getAttribute("aria-pressed")!=="true";c.setAttribute("aria-pressed",on);S.habits[c.dataset.k]=on;
@@ -4340,7 +4432,7 @@ $("list").addEventListener("click",e=>{if(e.target.id==="more"){S.lim+=40;render
 function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,1700);}
 function copy(text,msg){navigator.clipboard.writeText(text).then(()=>toast(msg||"Copied")).catch(()=>toast("Copy blocked here. Press and hold to select"));}
 $("copySum").onclick=()=>copy($("sum").textContent,"Summary copied");
-function resetCustomer(){setTimeout(syncNone);["ow","oh","cab","island","hinge","nook","door","budget","cust","q"].forEach(id=>$(id).value="");$("path").value="straight";$("water").value="unsure";S.adults=2;S.kids=1;$("adults").textContent=2;$("kids").textContent=1;S.habits={};S.cmp=[];S.kwh={};S.qstyle=null;S.qbud="";S.bmin=null;S.est=null;S.measAuto=false;$("measDet").open=false;
+function resetCustomer(){setTimeout(syncNone);["ow","oh","cab","island","hinge","nook","door","budget","cust","q"].forEach(id=>$(id).value="");$("path").value="straight";$("water").value="unsure";S.adults=2;S.kids=1;$("adults").textContent=2;$("kids").textContent=1;S.habits={};S.cmp=[];S.kwh={};S.qstyle=null;S.qbud="";S.qbr=null;S.bmin=null;S.est=null;S.measAuto=false;$("measDet").open=false;
  $$("#habits .chip").forEach(c=>c.setAttribute("aria-pressed","false"));S.t={fits:true};S.f={styles:new Set(),brands:new Set(),disp:new Set(),r:{}};S.sort="best";renderBadge();all();show("customer");toast("Ready for the next customer");}
 
 /* ---------- fractions ---------- */
@@ -4448,7 +4540,7 @@ function renderBk(){const f=Object.keys(FLOOR).length,c=Object.keys(CODES).lengt
 function renderMiss(){const L=Object.entries(MISS).sort((a,b)=>b[1].d.localeCompare(a[1].d));
  $("missStat").textContent=L.length?`${L.length} code${L.length===1?"":"s"} saved`:"Nothing saved. Scans and searches that match no fridge show up here.";
  $("missList").innerHTML=L.map(([k,v])=>`<li><b>${escH(v.raw)}</b><span>${escH([v.a,v.d].filter(Boolean).join(" · "))}</span><button class="x" data-miss="${escH(k)}" aria-label="Remove ${escH(v.raw)}">×</button></li>`).join("");
- $("missBtns").hidden=!L.length;}
+ $("missBtns").hidden=!L.length;$("missCt").textContent=L.length?`(${L.length})`:"";}
 $("missList").addEventListener("click",e=>{const b=e.target.closest("[data-miss]");if(b){delete MISS[b.dataset.miss];saveMiss();}});
 $("missCopy").onclick=()=>copy(Object.values(MISS).map(v=>v.raw+(v.a?"  # "+v.a:"")).join("\n"),"Missing list copied");
 $("missClear").onclick=()=>{if(confirm("Clear the missing list?")){MISS={};saveMiss();}};
@@ -4474,7 +4566,7 @@ $("aa").onclick=()=>{zi=(zi+1)%ZS.length;try{localStorage.setItem("fc_z",zi)}cat
 
 /* ---------- price date note ---------- */
 const priceDay=()=>DATA_DATE.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});
-$("priceNote").textContent=`Prices from homedepot.com for the Cumberland store, updated ${priceDay()}. They refresh every Sunday night. Confirm at the register.`;
+$("priceNote").textContent=`Prices as of ${priceDay()}. Confirm at the register.`;
 
 /* ---------- freshness + promo end ---------- */
 (function(){const a=ageDays(),el=$("fresh");el.textContent=a===0?"prices today":a===1?"prices 1 day old":`prices ${a} days old`;if(a>3){el.classList.add("fresh-old");el.textContent+=", refresh"}

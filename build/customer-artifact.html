@@ -214,23 +214,6 @@ td .tag{display:inline-block;white-space:nowrap}
 .cdet summary{font-size:14px;font-weight:650;color:var(--blue)}
 .cdet[open] summary{margin-bottom:4px}
 .pick{gap:12px}
-.phead{display:grid;grid-template-columns:68px 1fr;gap:14px;align-items:center}
-.phead .sil{width:68px;background:var(--sunk);border-radius:var(--r-s);padding:6px 4px}
-.ptext{display:flex;flex-direction:column;gap:2px;min-width:0}
-.pick .phead h2{margin:0;font-size:20px;line-height:1.2;font-weight:760}
-.pick .phead h2 span{font-weight:500;color:var(--muted)}
-.ondisp{align-self:flex-start;margin-top:4px;font-size:12.5px;font-weight:700;padding:3px 8px;border-radius:4px;background:var(--ink);color:var(--card)}
-.pline{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:6px 10px}
-.pline .price{font-size:34px}
-.pline small{display:block;font-size:12px;color:var(--muted);margin-top:3px}
-.pline .eff{font-size:13.5px;padding:4px 8px;margin:0}
-.kfacts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:var(--r-s)}
-.kfacts li{padding:8px 6px;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.25}
-.kfacts li+li{border-left:1px solid var(--line)}
-.kfacts b{display:block;font-size:16px;color:var(--ink);font-variant-numeric:tabular-nums}
-.verdict.slim{padding:10px 12px}
-.verdict.slim b{font-size:15.5px}
-.verdict .vs{display:block;font-size:13.5px;color:var(--muted)}
 .pick .why{font-size:14.5px;gap:6px}
 .pick>.btn.ghost{align-self:stretch}
 .fullname{margin:0;font-size:14px;color:var(--muted)}
@@ -394,6 +377,27 @@ nav.tabs button{letter-spacing:0}
 .promobox b{color:var(--ink)}
 .pickbar button[aria-selected="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);background:var(--card)}
 .pickbar button[aria-selected="true"] b{background:var(--ink);color:var(--card)}
+
+/* Shared pick card top (pickTop() in the floor template): drawing, name, price, 3 key facts. Same on both pages. */
+.phead{display:grid;grid-template-columns:68px 1fr;gap:14px;align-items:center}
+.phead .sil{width:68px;background:var(--sunk);border-radius:var(--r-s);padding:6px 4px}
+.ptext{display:flex;flex-direction:column;gap:2px;min-width:0}
+.phead .pname{margin:0;font-size:20px;line-height:1.2;font-weight:760}
+.phead .pname span{font-weight:500;color:var(--muted)}
+.ondisp{align-self:flex-start;margin-top:4px;font-size:12.5px;font-weight:700;padding:3px 8px;border-radius:4px;background:var(--ink);color:var(--card)}
+.pline{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:6px 10px}
+.pline .price{font-size:34px}
+.pline small{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+.pline .eff{font-size:13.5px;padding:4px 8px;margin:0}
+.kfacts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:var(--r-s)}
+.kfacts li{padding:8px 6px;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.25}
+.kfacts li+li{border-left:1px solid var(--line)}
+.kfacts b{display:block;font-size:16px;color:var(--ink);font-variant-numeric:tabular-nums}
+.verdict.slim{padding:10px 12px}
+.verdict.slim b{font-size:15.5px}
+.verdict .vs{display:block;font-size:13.5px;color:var(--muted)}
+.phead .pname{letter-spacing:-.01em}
+.phead .num{font-size:13px;font-weight:750;color:var(--signal-deep)}
 
 </style>
 
@@ -1175,6 +1179,8 @@ const RAW=`204511021|1000026447|ABB2224BRW|Amana|22 cu. ft. Bottom Freezer Refri
 700452087|1016629052|BCD-213|BANGSON|BANGSON 7.7 Cu. Ft. 2-Door Freestanding Refrigerator with Top Freezer in Red|TF|475.99|475.99|0.0||21.46|55.91|21.26|21.26|42.72|7.7||None|C|0||N|0|0|1-Year||O|21.26|0|0|
 700452139|1016629049|BCD-210VX|BANGSON|BANGSON 7.5 Cu. Ft. Retro 2-Door Refrigerator with Top Freezer in Red|TF|569.99|569.99|0.0||21.46|57.88|23.04|23.04|44.5|7.5||None|C|0||N|0|0|1-Year||O|21.26|0|0|`;
 const STYLE={FD:"French door",SS:"Side by side",TF:"Top freezer",BF:"Bottom freezer",SP:"Specialty",FL:"All fridge, no freezer"};
+/* review count, short: 13308 -> "13k", 1582 -> "1.6k" (cards on both pages) */
+const kRev=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1).replace(/\.0$/,"")+"k":String(n);
 /* floor list: fc_floor_v2 = {itemId:{a:"aisle note",s:"YYYY-MM-DD last seen" or null}}. fc_floor_v1 ({itemId:"aisle note"})
    is still written alongside so an older cached copy of the app keeps working, and is migrated in on load. */
 const FLOORK="fc_floor_v1",FLOORK2="fc_floor_v2";let FLOOR={};
@@ -1379,6 +1385,13 @@ function verdictHTML(f){const k=fitKey(f),first=f.checks.find(c=>c.s==="no"&&c.k
  const m={ok:["✓",f.est?fitWord(f):"Fits",f.est?"Based on the width they're replacing. Measure the space to confirm":"Checked against the measurements entered"],chk:["✓",fitWord(f),first?first.t:""],tight:["!","Tight, double check",first?first.t:""],no:["✕","Won't fit as measured",first?first.t:""],na:["?","Fit not checked yet","Add measurements to check"]}[k];
  return `<div class="verdict ${k==="chk"?"ok":k==="tight"?"chk":k}"><span class="ic" aria-hidden="true">${m[0]}</span><span><b>${m[1]}</b>${m[2]}</span></div>`;}
 function shortLabel(u){return u.label.replace(/\s+(in|with)\s+(Fingerprint|Smudge|PrintProof|Print|Stainless|White|Black|Slate|Panel|Matte|Bespoke|P$|Pr)[\s\S]*$/i,"").replace(/[\s,]+$/,"").trim()}
+/* Shared top of a pick card, used by the floor tool's Options view and the customer page's Your picks so both look the same:
+   drawing, "Brand style" name, model, optional floor tag, price with date and promo, then 3 key facts. o: {num, tag} */
+function pickTop(u,o={}){const p=promo(u),day=DATA_DATE.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+ return `<div class="phead">${miniSil(u)}<div class="ptext">${o.num?`<div class="num">${o.num}</div>`:""}<h2 class="pname">${u.brand} <span>${STYLE[u.type].toLowerCase()}${u.counter?", counter depth":""}</span></h2><div class="model">Model ${u.model}</div>${o.tag?`<span class="ondisp">${o.tag}</span>`:""}</div></div>
+  <div class="pline"><div>${priceHTML(u.price)}<small>Price on ${day}</small></div>${p&&p.save?`<div class="eff">${fmt(p.eff)} with promotion</div>`:""}</div>
+  <ul class="kfacts"><li><b>${u.cap}</b> cu ft</li><li><b>${people(u).replace(" people","")}</b> people</li><li>${u.reviews?`<b>★ ${u.rating.toFixed(1)}</b> ${kRev(u.reviews)} reviews`:"No reviews yet"}</li></ul>`;}
+/* Customer-facing card (Options tab): same top as the customer page, then fit, 2 reasons, good-to-know folded. */
 
 const STORE="Home Depot Cumberland, 2450 Cumberland Pkwy SE, Atlanta";
 const MAXP=3;
@@ -1481,7 +1494,6 @@ function verdictBox(u,f){const k=fitKey(f),cw=checkedWords();
   ${items.length?`<ul class="vlist">${items.slice(0,3).map(c=>`<li>${c.t}</li>`).join("")}</ul>`:""}
   ${cw.miss.length?`<small>Not checked yet: ${cw.miss.join(", ")}.</small>`:""}</span></div>`;}
 function checkedLine(){const cw=checkedWords();return cw.done.length?`We checked: ${cw.done.join(", ")}.`:"";}
-const kRev=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1).replace(/\.0$/,"")+"k":String(n);
 function extrasList(u,sp){const g=[];
  if(hasIce(u)&&sp.water!=="yes"&&!(sp.water==="no"))g.push("Needs a water line behind it for ice and water");
  if(hasIce(u)&&S.habits.reliable)g.push("Ice makers are the most common repair. Ask us about the protection plan");
@@ -1491,9 +1503,7 @@ function extrasList(u,sp){const g=[];
 function cardHTML(u,i,us,sp){const f=fit(u,sp),p=promo(u),why=whyList(u,us),ex=extrasList(u,sp);
  const onFloor=st.floor.includes(u.id),cl=fitKey(f)!=="na"?checkedLine():"";
  return `<article class="pick">
-  <div class="phead">${miniSil(u)}<div class="ptext"><div class="num">Option ${i+1}${us.length>1?` of ${us.length}`:""}</div><h2>${u.brand} <span>${STYLE[u.type].toLowerCase()}${u.counter?", counter depth":""}</span></h2><div class="model">Model ${u.model}</div>${onFloor?`<span class="ondisp">On display in store</span>`:""}</div></div>
-  <div class="pline"><div>${priceHTML(u.price)}<small>Price on ${dShort()}</small></div>${p&&p.save?`<div class="eff">${fmt(p.eff)} with promotion</div>`:""}</div>
-  <ul class="kfacts"><li><b>${u.cap}</b> cu ft</li><li><b>${people(u).replace(" people","")}</b> people</li><li>${u.reviews?`<b>★ ${u.rating.toFixed(1)}</b> ${kRev(u.reviews)} reviews`:"No reviews yet"}</li></ul>
+  ${pickTop(u,{num:`Option ${i+1}${us.length>1?` of ${us.length}`:""}`,tag:onFloor?"On display in store":""})}
   ${verdictBox(u,f)}
   <ul class="why">${(why.slice(0,2).map(x=>`<li>${x}</li>`).join(""))||"<li>Solid all-around pick in your size</li>"}</ul>
   <a class="btn ghost" href="https://www.homedepot.com/p/${u.id}" rel="noopener">See today's price</a>
